@@ -12,6 +12,7 @@
       <a href="index.html" class="brand">Veer Phatak</a>
       <div class="nav-links">
         <a href="index.html#projects">Projects</a>
+        <a href="index.html#contact">Contact</a>
       </div>
     </div>
   </nav>
@@ -91,6 +92,16 @@
     <h2>Results &amp; analysis</h2>
     <p>From the validated trajectories, the pipeline computed and plotted instantaneous speed vs. time and streamwise velocity vs. time per run; velocity vs. normalised projected area for rods and discs (linking how much surface a particle presents to the flow to how fast it travels); rod orientation vs. velocity; and a pooled comparison of overall velocity behaviour across spheres, rods, and discs. Every figure was regenerated directly from exported CSVs, so any plotted value could be audited back to source, a reproducibility standard I set deliberately.</p>
 
+    <figure>
+      <img src="media/plot-streamwise-velocity.png" alt="Bar chart comparing streamwise velocity of 10 mm and 14 mm spheres in the water tunnel versus the flume, with error bars." loading="lazy">
+      <figcaption>Streamwise velocity by particle size and facility. Particles travelled markedly faster in the flume than the water tunnel, and the error bars capture the run-to-run spread across repeated trials.</figcaption>
+    </figure>
+
+    <figure>
+      <img src="media/plot-reynolds-distribution.png" alt="Box plot of Reynolds number distribution for 10 mm and 14 mm spheres in the water tunnel and flume." loading="lazy">
+      <figcaption>Reynolds number distribution across conditions. Placing every run in dimensionless terms makes the flow regimes directly comparable and anchors the results in established fluid dynamics rather than raw pixel measurements.</figcaption>
+    </figure>
+
     <h2>What this demonstrates</h2>
     <ul>
       <li>Building a real data pipeline from noisy, raw input to validated, decision-ready output, the exact loop that motorsport data and race-strategy work runs on.</li>
@@ -101,7 +112,7 @@
   </article>
 
   <footer>
-    <div class="footer-inner">Southampton, UK · <a href="mailto:veerphatak@gmail.com">veerphatak@gmail.com</a></div>
+    <div class="footer-inner">Veer Phatak · Southampton, UK · <a href="mailto:veerphatak@gmail.com">veerphatak@gmail.com</a> · <a href="https://www.linkedin.com/in/veer-phatak-683665238" target="_blank" rel="noopener">LinkedIn</a></div>
   </footer>
 </body>
 </html>
