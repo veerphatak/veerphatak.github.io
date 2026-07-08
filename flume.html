@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tracking Plastics in Moving Water — Veer Phatak</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="brand">Veer Phatak</a>
+      <div class="nav-links">
+        <a href="index.html#projects">Projects</a>
+      </div>
+    </div>
+  </nav>
+
+  <article class="wrap project">
+    <a href="index.html#projects" class="back">← Back to projects</a>
+
+    <h1 class="project-title">Tracking Plastics in Moving Water</h1>
+    <p class="project-hook">An individual Master's research project: turning raw high-speed footage of plastic fragments in a laboratory flume into validated, physically-meaningful trajectory data, built end-to-end in Python and OpenCV.</p>
+
+    <div class="meta">
+      <span class="tag">Python</span>
+      <span class="tag">OpenCV</span>
+      <span class="tag">Computer Vision</span>
+      <span class="tag">Kalman Filtering</span>
+      <span class="tag">Data Pipeline</span>
+      <span class="tag">Individual Project</span>
+    </div>
+
+    <figure>
+      <div class="video-embed">
+        <iframe src="https://www.youtube-nocookie.com/embed/zCHYtiB7o4U" title="Mesoplastic Particle Tracking — Individual Project Summary" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <figcaption>Project summary: the computer-vision pipeline detecting and tracking plastic particles through the flume, producing validated trajectories and derived physics.</figcaption>
+    </figure>
+
+    <div class="stats">
+      <div class="stat"><div class="num">98.4%</div><div class="label">Mean detection coverage</div></div>
+      <div class="stat"><div class="num">1.5 mm</div><div class="label">Positional accuracy</div></div>
+      <div class="stat"><div class="num">58</div><div class="label">Experimental runs analysed</div></div>
+    </div>
+
+    <h2>The problem</h2>
+    <p>Plastic pollution in rivers and oceans is not uniform. How a fragment travels through moving water depends heavily on its shape, size, and orientation: a sphere, a rod, and a flat disc of the same material behave very differently in the same flow. Understanding that behaviour is a prerequisite for modelling where plastics accumulate and how to intercept them.</p>
+    <p>The experimental challenge: you can film a particle moving through a flume, but a video is not data. To say anything quantitative, you need the particle's exact position in every single frame, reconstructed reliably despite reflections, bubbles, changing light, and the container walls, then converted from pixels into real-world velocities and physics. That conversion, from raw footage to trustworthy trajectory data, was the core of this project, and it was mine to build from scratch.</p>
+
+    <h2>What I built</h2>
+    <p>A modular Python/OpenCV pipeline that:</p>
+    <ul>
+      <li><strong>Detects and tracks</strong> a plastic particle through every frame of high-speed video, with a separate tuned tracker for each particle geometry (sphere, rod, disc).</li>
+      <li><strong>Smooths and validates</strong> each trajectory using Kalman filtering and automated quality-control checks designed to catch the tracker locking onto the wrong thing.</li>
+      <li><strong>Calibrates</strong> pixel coordinates into real-world distances using per-view homography.</li>
+      <li><strong>Derives the physics</strong>: instantaneous and streamwise velocity, orientation, projected area, and pooled comparisons across particle types, regenerating every report figure directly from the exported data.</li>
+    </ul>
+
+    <h2>The engineering detail</h2>
+
+    <h3>Geometry-specific tracking</h3>
+    <p>A single generic tracker fails here, because a tumbling rod, a spinning disc, and a rolling sphere present completely different visual signatures. So the pipeline splits into three purpose-built trackers:</p>
+    <ul>
+      <li><strong>Spheres:</strong> colour and grayscale segmentation (including distinguishing red vs. white spheres), followed by Kalman smoothing.</li>
+      <li><strong>Rods:</strong> binarised contour extraction, fitting a quadrilateral to the rod each frame, plus orientation estimation, then Kalman smoothing.</li>
+      <li><strong>Discs:</strong> binarised contours with projected-area and orientation extraction, capturing how the disc's presented face changes as it moves.</li>
+    </ul>
+
+    <h3>Stopping the tracker from lying to you</h3>
+    <p>The hardest part of visual tracking isn't finding the object once, it's not losing it. Two specific failure modes were engineered against:</p>
+    <ul>
+      <li><strong>Auto-initialisation by motion:</strong> rather than manually marking where the particle starts, the pipeline uses frame differencing and shape-descriptor scoring (circularity, solidity) to detect the exact frame the particle enters the scene, and locks on automatically.</li>
+      <li><strong>Anti-drift:</strong> a normalised cross-correlation template, updated slowly so it adapts to changing light but resists sudden jumps, keeps the tracker centred on the particle instead of drifting onto a high-contrast container corner, the classic way these systems fail silently.</li>
+    </ul>
+
+    <h3>Kalman smoothing &amp; calibration</h3>
+    <p>Raw frame-by-frame detections are noisy. A Kalman filter smooths each trajectory into a physically-plausible path, filling small gaps and suppressing single-frame jitter without erasing real motion, essential for velocity calculations, which amplify any positional noise. Pixel positions are then mapped to the real world using per-camera-view homography, with explicit checks that the calibration suits each view (side, bottom-panel, straight).</p>
+
+    <h2>Quality control</h2>
+    <p>The project treated validation as a first-class step, not an afterthought. For every processed run, the workflow enforced:</p>
+    <ul>
+      <li>confirmation that the particle was detected <strong>continuously</strong> through the reported section, no silent gaps;</li>
+      <li>inspection of annotated videos and still overlays against the original footage, to confirm the trajectory follows the real particle and not a reflection, bubble, or hand;</li>
+      <li>verification that the calibration/homography suited the camera view;</li>
+      <li>a check that velocity plots contained no artefacts caused by missed detections;</li>
+      <li>comparison of repeated trials before pooling any particle-type trend.</li>
+    </ul>
+    <p>This is the difference between "I got a number" and "I got a number I'd defend."</p>
+
+    <h2>Results &amp; analysis</h2>
+    <p>From the validated trajectories, the pipeline computed and plotted instantaneous speed vs. time and streamwise velocity vs. time per run; velocity vs. normalised projected area for rods and discs (linking how much surface a particle presents to the flow to how fast it travels); rod orientation vs. velocity; and a pooled comparison of overall velocity behaviour across spheres, rods, and discs. Every figure was regenerated directly from exported CSVs, so any plotted value could be audited back to source, a reproducibility standard I set deliberately.</p>
+
+    <h2>What this demonstrates</h2>
+    <ul>
+      <li>Building a real data pipeline from noisy, raw input to validated, decision-ready output, the exact loop that motorsport data and race-strategy work runs on.</li>
+      <li>Engineering judgment under imperfect real-world conditions (reflections, drift, changing light), not textbook data.</li>
+      <li>Discipline around validation and reproducibility, trusting a result because it was checked, not because it looked right.</li>
+      <li>Working independently across the full stack of a technical problem: experiment, capture, computer vision, filtering, calibration, physics, and reporting.</li>
+    </ul>
+  </article>
+
+  <footer>
+    <div class="footer-inner">Southampton, UK · <a href="mailto:veerphatak@gmail.com">veerphatak@gmail.com</a></div>
+  </footer>
+</body>
+</html>
