@@ -1,0 +1,6 @@
+# FastF1 downloads official F1 timing data into a local cache.
+# That data belongs to Formula 1 and is not ours to republish, so it stays out
+# of the repository. Anyone running the scripts will rebuild it automatically.
+code/f1-lapsim/cache/
+**/__pycache__/
+*.pyc
