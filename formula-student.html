@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Three seasons in race engineering and chassis with Southampton University Formula Student: lap-time simulation, tyre degradation modelling and MoTeC lap analysis.">
+  <title>Formula Student: Race Engineering | Veer Phatak</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="brand">Veer Phatak</a>
+      <div class="nav-links">
+        <a href="index.html#projects">Projects</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <article class="wrap project">
+    <a href="index.html#projects" class="back">← Back to projects</a>
+
+    <h1 class="project-title">Formula Student: Race Engineering</h1>
+    <p class="project-hook">Three seasons with Southampton University Formula Student in the race engineering and chassis groups, building the simulation and data analysis that setup decisions were made from.</p>
+
+    <div class="meta">
+      <span class="tag">Python</span>
+      <span class="tag">MATLAB</span>
+      <span class="tag">MoTeC i2</span>
+      <span class="tag">Lap-Time Simulation</span>
+      <span class="tag">Tyre Modelling</span>
+      <span class="tag">Race Engineering</span>
+    </div>
+
+    <div class="notice">
+      <strong>A note on what is shown here.</strong> The team's own data, code and reports belong to Southampton University Formula Student, so none of it appears on this page. What follows describes my work and the methods I used. Any code or figures I add here later will be written from scratch as illustrative examples, using synthetic data, and will be labelled as such.
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="num">2nd</div><div class="label">FSUK Simulator Championship 2025</div></div>
+      <div class="stat"><div class="num">10th</div><div class="label">Overall at FSUK 2025</div></div>
+      <div class="stat"><div class="num">3</div><div class="label">Seasons in the team</div></div>
+    </div>
+
+    <h2>What race engineering actually has to answer</h2>
+    <p>A student team has limited track time, limited tyres and limited money. Every physical test costs all three. The job of the race engineering group is to make sure that when the car does run, it runs the setup most likely to be quick, and that the reasons for that choice can be explained rather than guessed at.</p>
+    <p>That turns into two questions asked constantly: what does changing this setup variable actually do to lap time, and do we believe the data telling us so?</p>
+
+    <h2>Simulation</h2>
+    <p>I built lap-time and tyre load and degradation models in Python, MATLAB and Excel to answer the first question. The point of these tools was never to produce a single headline number. It was to rank changes: to show which setup variables moved lap time enough to be worth spending track time on, and which did not.</p>
+    <p>Running sensitivity studies across those variables meant we could arrive at a test day with a shortlist that had already been filtered, rather than burning runs finding out that something did not matter. Wasted test cycles are the most expensive thing a student team does.</p>
+
+    <h2>Data analysis and correlation</h2>
+    <p>I used MoTeC i2 to break down race and qualifying laps, comparing logged channel data against what the simulation had predicted and against what the driver said the car was doing. Those three sources disagree more often than people expect, and the disagreement is usually where the useful information is. A model that matches the data but contradicts the driver is a model that is missing something physical.</p>
+    <p>This feedback loop, predict, measure, listen, reconcile, is the part of race engineering I found most valuable, and it is the closest thing in student motorsport to how a professional strategy or performance group works.</p>
+
+    <h2>Chassis</h2>
+    <p>Alongside the race engineering work I researched integrating front roll hoops into the chassis for future cars, and presented the technical and feasibility findings to the department and to team management. Presenting to people who will have to live with the consequences of a design decision is a different skill from doing the analysis, and a more uncomfortable one.</p>
+
+    <h2>Results</h2>
+    <p>Across my time with the team, SUFST finished <strong>2nd in the FSUK Simulator Championship and the lap time challenge in 2025</strong>, and <strong>10th overall at FSUK 2025</strong>. The simulator result is the one most directly connected to the setup and simulation work.</p>
+
+    <h2>What this demonstrates</h2>
+    <ul>
+      <li>Building simulation tools that exist to support a decision, not to look impressive.</li>
+      <li>Working with real, noisy, logged vehicle data and reconciling it against both models and human feedback.</li>
+      <li>Operating inside a multidisciplinary team to hard competition deadlines.</li>
+      <li>Communicating technical findings to people with the authority to act on them.</li>
+    </ul>
+  </article>
+
+  <footer>
+    <div class="footer-inner">Veer Phatak · Southampton, UK · <a href="mailto:veerphatak@gmail.com">veerphatak@gmail.com</a> · <a href="https://www.linkedin.com/in/veer-phatak-683665238" target="_blank" rel="noopener">LinkedIn</a></div>
+  </footer>
+</body>
+</html>

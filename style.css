@@ -84,6 +84,29 @@ a:hover { text-decoration: underline; }
 .project li { margin-bottom: 0.5rem; }
 .project strong { color: var(--text); }
 
+/* ---- Notice box ---- */
+.notice {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  background: var(--bg-soft);
+  padding: 0.9rem 1.1rem;
+  margin: 0 0 1.75rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.notice strong { color: var(--text); }
+
+/* ---- Plain content card (about, skills, coursework) ---- */
+.plain-card { cursor: default; }
+.plain-card:hover { border-color: var(--border); transform: none; }
+.plain-card p { color: #c9d1d9; margin-bottom: 0.75rem; }
+.plain-card p:last-child { margin-bottom: 0; }
+.plain-card strong { color: var(--text); }
+ul.tight { margin: 0 0 0 1.1rem; padding: 0; color: #c9d1d9; }
+ul.tight li { margin-bottom: 0.6rem; font-size: 0.95rem; }
+ul.tight li:last-child { margin-bottom: 0; }
+
 /* ---- Figure / video ---- */
 figure { margin: 2rem 0; }
 figure video { width: 100%; border-radius: 12px; border: 1px solid var(--border); display: block; background: #000; }

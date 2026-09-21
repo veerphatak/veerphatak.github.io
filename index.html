@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Veer Phatak — Engineering Portfolio</title>
+  <meta name="description" content="Veer Phatak, final-year MEng Aeronautics and Astronautics student at the University of Southampton. Engineering projects in aerodynamics, race strategy and design.">
+  <title>Veer Phatak | Engineering Portfolio</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,6 +13,7 @@
       <a href="index.html" class="brand">Veer Phatak</a>
       <div class="nav-links">
         <a href="#projects">Projects</a>
+        <a href="#about">About</a>
         <a href="#contact">Contact</a>
       </div>
     </div>
@@ -19,26 +21,75 @@
 
   <header class="hero">
     <h1>Veer <span class="accent">Phatak</span></h1>
-    <p class="tagline">Aeronautics &amp; Astronautics Engineer specialising in motorsport, aerodynamics &amp; race strategy.</p>
+    <p class="tagline">Final-year MEng Aeronautics &amp; Astronautics student at the University of Southampton, specialising in aerodynamics, race strategy and engineering design.</p>
   </header>
 
   <main class="wrap" id="projects">
-    <p class="section-title">Selected Projects</p>
+    <p class="section-title">Projects</p>
     <div class="cards">
 
-      <a class="card" href="flume.html">
-        <h3>Tracking Plastics in Moving Water</h3>
-        <p>An individual Master's research project: a Python/OpenCV computer-vision pipeline turning high-speed footage of plastic particles in a flume into validated trajectory and velocity data.</p>
+      <a class="card" href="motogp.html">
+        <h3>Cornering Aerodynamics of a MotoGP-Style Motorcycle</h3>
+        <p>Final-year group design project using CFD and wind tunnel testing. I am team leader, aerodynamic design lead, and lead for CAD development and manufacture of the test model.</p>
         <span class="arrow">View project →</span>
       </a>
 
-      <div class="card soon">
-        <h3>Formula Student — Race Engineering</h3>
-        <p>Lap-time and tyre-degradation simulation for Southampton's Formula Student team, feeding setup and strategy decisions. Coming soon.</p>
-      </div>
+      <a class="card" href="flume.html">
+        <h3>Tracking Plastics in Moving Water</h3>
+        <p>Individual Master's research project, graded 75%. A Python and OpenCV computer-vision pipeline turning high-speed footage of plastic particles in a flume into validated trajectory and velocity data.</p>
+        <span class="arrow">View project →</span>
+      </a>
+
+      <a class="card" href="formula-student.html">
+        <h3>Formula Student: Race Engineering</h3>
+        <p>Three seasons with Southampton University Formula Student. Lap-time and tyre degradation simulation, and MoTeC lap analysis feeding setup and strategy decisions. 2nd in the FSUK Simulator Championship.</p>
+        <span class="arrow">View project →</span>
+      </a>
+
+      <a class="card" href="internship.html">
+        <h3>R&amp;D Engineering Internship, TREND Networks</h3>
+        <p>Seven weeks in the R&amp;D team at TREND Networks, designing test and measurement equipment. Three design projects, one of which reached manufacture after ten iterations, plus ownership of the office 3D printing.</p>
+        <span class="arrow">View project →</span>
+      </a>
+
+      <a class="card" href="uav.html">
+        <h3>Fixed-Wing UAV Wing Design</h3>
+        <p>Second-year group project, ranked 1st in the cohort. Delivered the widest operating speed range in the year at 23.1 m/s, more than 10% clear of any other team.</p>
+        <span class="arrow">View project →</span>
+      </a>
 
     </div>
+
+    <p class="section-title" style="margin-top:2.5rem">Laboratory &amp; Computational Coursework</p>
+    <div class="card plain-card">
+      <ul class="tight">
+        <li><strong>Wind tunnel testing.</strong> Measured pressure distribution over a NACA 0020 aerofoil against angle of attack, boundary layer development, and finite wing lift and drag, then correlated the results against CFD, XFOIL and XFLR5 and analysed the discrepancies.</li>
+        <li><strong>Computational aerodynamics.</strong> Implemented a doublet panel method in Python, including an order-of-accuracy study against panel count and a comparison of cosine against uniform panel distributions.</li>
+        <li><strong>Finite element analysis.</strong> Mesh convergence study in ANSYS Mechanical from roughly 24,000 to 1.9 million elements, balancing peak stress accuracy against solve time and memory.</li>
+        <li><strong>Aircraft design.</strong> Constraint analysis and V-n diagrams built in Python.</li>
+      </ul>
+    </div>
   </main>
+
+  <section class="wrap" id="about">
+    <p class="section-title">About</p>
+    <div class="card plain-card">
+      <p>I am in the final year of a four-year integrated MEng in Aeronautics and Astronautics at the University of Southampton, specialising in aerodynamics, and I graduate in July 2027. I finished my third year with a 71.7% first-class average.</p>
+      <p>My work sits where design meets data. I like problems that start with something physical, a wing, a test rig, an enclosure, and end with a number you can defend. That has meant building a flume and the computer-vision system to measure what happens inside it, writing lap-time and tyre models that change what a race team actually does, and designing parts that had to survive being manufactured and used.</p>
+      <p>I am looking for graduate roles in motorsport aerodynamics and race strategy.</p>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <p class="section-title">Skills</p>
+    <div class="card plain-card">
+      <p><strong>Aerodynamics &amp; CFD:</strong> ANSYS Fluent, XFLR5, XFOIL, OpenVSP/VSPAERO, panel methods, wind tunnel testing and correlation</p>
+      <p><strong>Programming &amp; data:</strong> Python (NumPy, pandas, OpenCV, Matplotlib), MATLAB, Excel, Git; Kalman filtering, uncertainty analysis, automation</p>
+      <p><strong>Design &amp; manufacture:</strong> SolidWorks, design for manufacture including injection moulding, 3D-printed prototyping, Arduino instrumentation</p>
+      <p><strong>Structures &amp; FEA:</strong> ANSYS Mechanical, mesh convergence studies, stress and displacement interpretation</p>
+      <p><strong>Motorsport:</strong> MoTeC i2, lap-time simulation, tyre load and degradation modelling, setup evaluation</p>
+    </div>
+  </section>
 
   <section class="contact" id="contact">
     <h2>Get in touch</h2>
