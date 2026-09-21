@@ -135,6 +135,12 @@ pre code {
   white-space: pre;
 }
 
+.video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 2rem 0; }
+.video-grid figure { margin: 0; }
+@media (max-width: 640px) { .video-grid { grid-template-columns: 1fr; } }
+code { font-family: "Cascadia Code", Consolas, monospace; font-size: 0.9em; color: var(--accent); }
+.project p code { background: rgba(88,166,255,0.08); padding: 0.1em 0.35em; border-radius: 4px; }
+
 .sub-meta { color: var(--accent); font-size: 0.9rem; margin: -0.5rem 0 1rem; }
 .muted-note { color: var(--muted); font-size: 0.88rem; font-style: italic; }
 hr.rule { border: 0; border-top: 1px solid var(--border); margin: 3rem 0 2rem; }

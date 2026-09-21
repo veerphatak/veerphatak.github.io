@@ -84,6 +84,84 @@
     <h3>Kalman smoothing &amp; calibration</h3>
     <p>Raw frame-by-frame detections are noisy. A Kalman filter smooths each trajectory into a physically-plausible path, filling small gaps and suppressing single-frame jitter without erasing real motion, essential for velocity calculations, which amplify any positional noise. Pixel positions are then mapped to the real world using per-camera-view homography, with explicit checks that the calibration suits each view (side, bottom-panel, straight).</p>
 
+    <h2>Seeing the tracker work</h2>
+    <p>These are real outputs from the pipeline, not demonstrations made for this page. The green box and centre marker are drawn by the tracker on every frame it processes.</p>
+
+    <div class="video-grid">
+      <figure>
+        <video controls muted loop playsinline preload="metadata">
+          <source src="media/video/sphere-tracked-raw.mp4" type="video/mp4">
+        </video>
+        <figcaption>What you see: a 10 mm sphere travelling through the flume, with the tracked position overlaid.</figcaption>
+      </figure>
+      <figure>
+        <video controls muted loop playsinline preload="metadata">
+          <source src="media/video/sphere-tracked-binary.mp4" type="video/mp4">
+        </video>
+        <figcaption>What the tracker sees: the same run after background subtraction and thresholding. Everything the algorithm decides is based on this.</figcaption>
+      </figure>
+    </div>
+    <p>That pair is the clearest way to explain the whole method. The colour image on the left is meaningless to the algorithm. The job of the first half of the pipeline is to turn it into the black and white image on the right, where the particle is the only bright object left, and the job of the second half is to follow that object reliably from frame to frame.</p>
+
+    <figure>
+      <video controls muted loop playsinline preload="metadata">
+        <source src="media/video/rod-tracked.mp4" type="video/mp4">
+      </video>
+      <figcaption>A rod, tracked with a fitted quadrilateral rather than a point. Rods tumble, so orientation matters as much as position, and the fitted box gives both.</figcaption>
+    </figure>
+
+    <figure>
+      <video controls muted loop playsinline preload="metadata">
+        <source src="media/video/disc-tracked.mp4" type="video/mp4">
+      </video>
+      <figcaption>A disc. Here the projected area changes as the disc turns relative to the camera, which is the measurement that links its orientation to how much drag it experiences.</figcaption>
+    </figure>
+
+    <h2>How the code works</h2>
+    <p>The pipeline is about 9,400 lines of Python across 23 scripts: three trackers (one per particle geometry), batch runners for each experiment, the physics and plotting scripts, and the validation tools. Four ideas do most of the work.</p>
+
+    <h3>1. Isolating the particle</h3>
+    <p>Each frame is blurred, background subtracted using an averaged background built from frames before the particle enters, and thresholded. The threshold uses Otsu's method, which chooses the split point automatically from the image histogram rather than being hard coded, but with a floor applied so that a frame containing no particle cannot produce a nonsense threshold and fill the image with noise:</p>
+
+    <pre><code>def otsu_threshold_with_floor(gray_image, min_threshold):
+    otsu_thr, bw = cv2.threshold(gray_image, 0, 255,
+                                 cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    if otsu_thr &lt; min_threshold:
+        _, bw = cv2.threshold(gray_image, int(round(min_threshold)),
+                              255, cv2.THRESH_BINARY)</code></pre>
+
+    <p>Red spheres take a different route, segmented in HSV colour space with <code>cv2.inRange</code>, because hue separates them from the background far more cleanly than brightness does.</p>
+
+    <h3>2. Choosing the right blob</h3>
+    <p>Thresholding usually leaves more than one candidate: a reflection, a bubble, a shadow on the flume wall. Each contour is scored on shape, and the metrics are the same ones used across all three trackers:</p>
+
+    <pre><code>circularity = 4.0 * np.pi * area / (perimeter * perimeter)
+solidity    = area / hull_area          # area vs its own convex hull
+aspect_ratio = max(w, h) / min(w, h)</code></pre>
+
+    <p>Circularity is 1.0 for a perfect circle and falls away for ragged shapes, so it separates a sphere from a streak of glare. Solidity compares a shape to its own convex hull, which catches contours with bites taken out of them, typically two objects merging. Aspect ratio does the equivalent job for rods, where the shape should be long and thin.</p>
+
+    <h3>3. Kalman filtering</h3>
+    <p>Even good detections jitter by a pixel or two, and velocity is a derivative, so that jitter is amplified rather than averaged away. A Kalman filter estimates position and velocity together, predicting where the particle should be next and correcting that prediction with the measurement:</p>
+
+    <pre><code>kf = cv2.KalmanFilter(4, 2)          # state: x, y, vx, vy | measured: x, y
+kf.transitionMatrix = np.array([[1, 0, 1, 0],
+                                [0, 1, 0, 1],
+                                [0, 0, 1, 0],
+                                [0, 0, 0, 1]], dtype=np.float32)
+kf.processNoiseCov     = np.diag([0.001, 0.001, 0.008, 0.008]).astype(np.float32)
+kf.measurementNoiseCov = np.diag([1.2, 1.2]).astype(np.float32)</code></pre>
+
+    <p>The transition matrix encodes a constant velocity model: next position equals current position plus current velocity. The two noise matrices set how much the filter trusts its own prediction against the camera, and the numbers matter. Measurement noise is set well above process noise, which tells the filter the detections are noisier than the motion model, so it smooths hard. Push that too far and the filter starts inventing smooth motion the particle never had, which is exactly the failure that would quietly corrupt the velocity results.</p>
+
+    <h3>4. Turning pixels into millimetres</h3>
+    <p>All of the above happens in pixels, which are not a unit of physics. A homography, computed from a calibration target in the scene, maps image coordinates onto the real plane of the flume and corrects for the camera not being perfectly square to it. Only after that transform do the numbers become velocities in mm/s that can be compared between runs.</p>
+
+    <p>
+      <a class="dl" href="https://github.com/veerphatak/veerphatak.github.io/tree/main/code/flume-tracking" target="_blank" rel="noopener">Browse the full code on GitHub</a>
+    </p>
+    <p class="muted-note">Includes the three trackers, the batch runners for each experiment, the physics and plotting scripts, and the validation tools, with a README describing the processing route from raw video to final figures.</p>
+
     <h2>Quality control</h2>
     <p>The project treated validation as a first-class step, not an afterthought. For every processed run, the workflow enforced:</p>
     <ul>

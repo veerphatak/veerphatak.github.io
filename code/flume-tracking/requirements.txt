@@ -1,0 +1,8 @@
+imageio
+imageio-ffmpeg
+matplotlib
+numpy
+openpyxl
+opencv-python-headless
+pandas
+Pillow
