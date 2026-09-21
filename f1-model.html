@@ -6,6 +6,7 @@
   <meta name="description" content="A physics lap time and race strategy model validated against real Formula 1 telemetry from the 2025 Bahrain Grand Prix.">
   <title>F1 Lap Time &amp; Race Strategy Model | Veer Phatak</title>
   <link rel="stylesheet" href="style.css">
+  <script src="assets/sim.js" defer></script>
 </head>
 <body>
   <nav class="nav">
@@ -44,6 +45,55 @@
       <div class="stat"><div class="num">14,532</div><div class="label">Race strategies evaluated</div></div>
     </div>
 
+    <h2>Drive the model yourself</h2>
+    <p>The solver below is the same model, ported to JavaScript and running in your browser on circuit geometry taken from real position telemetry. Move a slider and the lap is re-solved immediately. The blue line is what the real car did; the red line is your car.</p>
+    <p class="sub-meta" id="simCircuit">Loading circuit data...</p>
+
+    <div class="sim">
+      <div class="sim-grid">
+        <div class="sim-controls">
+          <label>Tyre grip, <span class="muted">peak μ</span>
+            <input type="range" id="mu" min="1.0" max="2.5" step="0.01" value="1.48">
+            <output id="muVal"></output>
+          </label>
+          <label>Downforce, <span class="muted">C<sub>L</sub>A</span>
+            <input type="range" id="clA" min="2" max="14" step="0.05" value="8.95">
+            <output id="clAVal"></output>
+          </label>
+          <label>Drag, <span class="muted">C<sub>D</sub>A</span>
+            <input type="range" id="cdA" min="0.6" max="4.5" step="0.05" value="2.49">
+            <output id="cdAVal"></output>
+          </label>
+          <label>Mass, <span class="muted">kg</span>
+            <input type="range" id="mass" min="700" max="1000" step="5" value="850">
+            <output id="massVal"></output>
+          </label>
+          <label>Power, <span class="muted">kW at the wheels</span>
+            <input type="range" id="power" min="400" max="1000" step="10" value="760">
+            <output id="powerVal"></output>
+          </label>
+          <label>Braking, <span class="muted">peak g</span>
+            <input type="range" id="brakeG" min="3" max="7" step="0.1" value="5">
+            <output id="brakeGVal"></output>
+          </label>
+          <button id="resetSim" class="btn">Reset to the real car</button>
+        </div>
+
+        <div class="sim-output">
+          <div class="sim-readouts">
+            <div><span class="big" id="lapTime">–</span><span class="lbl">Lap time</span></div>
+            <div><span class="big" id="lapDelta">–</span><span class="lbl">Against the real lap</span></div>
+            <div><span class="big" id="lapRmse">–</span><span class="lbl">Speed trace error</span></div>
+            <div><span class="big" id="lapVmax">–</span><span class="lbl">Top speed</span></div>
+            <div><span class="big" id="lapVmin">–</span><span class="lbl">Slowest corner</span></div>
+          </div>
+          <canvas id="lapChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <p class="muted-note">Things worth trying: cut downforce and watch the straights get quicker while every corner gets slower; add grip and see which corners respond most; drop the mass and see how little it gives you compared with aerodynamics.</p>
+
     <h2>Why bother comparing against real data</h2>
     <p>Anyone can write a lap time simulation. The difficulty is knowing whether it is right, and a model that has never been checked against measurement is really just an opinion expressed in Python. Formula 1 publishes enough telemetry to remove that excuse: speed, throttle, brake, gear, DRS and car position, sampled around every lap of every session.</p>
     <p>So this project does two things. It predicts a qualifying lap from physics and compares it corner by corner with what the car actually did, and it fits a tyre degradation model to a full race and asks whether the strategy that won was the quickest one available.</p>
@@ -61,10 +111,6 @@
       <img src="media/figures/f1-track-map.png" alt="Left: the Bahrain circuit reconstructed from position telemetry, coloured by speed. Right: the same circuit coloured by the difference between model and measured speed." loading="lazy">
       <figcaption>Left: the Bahrain International Circuit, drawn entirely from the pole lap's position telemetry and coloured by measured speed. Right: where the model disagrees. Red means the model is carrying more speed than the driver did.</figcaption>
     </figure>
-
-    <h3>An honest debugging note</h3>
-    <p>The first version of this model produced a 56 second lap against a real 89 second lap, and sat pinned at its top speed through every corner. The cause was that FastF1 reports position in tenths of a metre, and I had treated it as metres. That inflates every corner radius by a factor of ten, which effectively deletes the corners.</p>
-    <p>It is worth recording because the failure was not subtle and the fix was one line, but the symptom that identified it was physical rather than numerical: a car that never slows down has not got a maths problem, it has got a geometry problem.</p>
 
     <h3>Solving the lap</h3>
     <p>The solver is quasi-steady and makes three passes: a cornering limit that accounts for downforce growing with speed, then a forward pass limited by power and traction, then a backward pass limited by braking, with longitudinal and lateral tyre demand sharing capacity through a friction ellipse. DRS is taken from the real telemetry and applied as a reduction in drag where the driver had it open.</p>
@@ -118,6 +164,63 @@
 
     <p>The model says a two-stop was correct, that the ideal shape was three roughly equal stints of about 19 laps, and that the best available one-stop would have cost around 3.6 seconds. Piastri, who won, stopped on lap 14 and ran 14, 18 and 25. The model scores that at <strong>3.8 seconds off its own optimum</strong>, over a race lasting more than 94 minutes: an error of roughly 0.07%.</p>
     <p>The right conclusion is not that a professional strategy team got it wrong by 3.8 seconds. It is that a model built from public data lands within a few seconds of what a team with vastly more information chose to do, and that the flat basin in the left-hand plot explains why: anywhere from about lap 16 to lap 22 costs almost nothing, so the exact stop lap was never the decision that mattered. Track position and traffic, which this model does not represent at all, matter far more than the last second of theoretical pace.</p>
+
+    <h2>Run your own strategy</h2>
+    <p>The same calculation, live. Set the tyre behaviour and the pit loss, and it evaluates every legal one and two stop strategy, picks the quickest, and draws the pit window. The values it starts with are the ones fitted to the 2025 Bahrain race data.</p>
+
+    <div class="sim">
+      <div class="sim-grid">
+        <div class="sim-controls">
+          <label>Race length, <span class="muted">laps</span>
+            <input type="range" id="raceLaps" min="40" max="70" step="1" value="57">
+            <output id="raceLapsVal"></output>
+          </label>
+          <label>Pit loss, <span class="muted">s</span>
+            <input type="range" id="pitLoss" min="14" max="36" step="0.5" value="26">
+            <output id="pitLossVal"></output>
+          </label>
+          <label>Fuel effect, <span class="muted">s per lap</span>
+            <input type="range" id="fuelEffect" min="0" max="0.15" step="0.002" value="0.064">
+            <output id="fuelEffectVal"></output>
+          </label>
+          <label>Soft degradation, <span class="muted">s per lap</span>
+            <input type="range" id="degS" min="0" max="0.4" step="0.005" value="0.112">
+            <output id="degSVal"></output>
+          </label>
+          <label>Medium degradation, <span class="muted">s per lap</span>
+            <input type="range" id="degM" min="0" max="0.4" step="0.005" value="0.104">
+            <output id="degMVal"></output>
+          </label>
+          <label>Hard degradation, <span class="muted">s per lap</span>
+            <input type="range" id="degH" min="0" max="0.4" step="0.005" value="0.117">
+            <output id="degHVal"></output>
+          </label>
+          <label>Soft base pace, <span class="muted">s</span>
+            <input type="range" id="baseS" min="94" max="104" step="0.05" value="98.91">
+            <output id="baseSVal"></output>
+          </label>
+          <label>Medium base pace, <span class="muted">s</span>
+            <input type="range" id="baseM" min="94" max="104" step="0.05" value="99.02">
+            <output id="baseMVal"></output>
+          </label>
+          <label>Hard base pace, <span class="muted">s</span>
+            <input type="range" id="baseH" min="94" max="104" step="0.05" value="99.02">
+            <output id="baseHVal"></output>
+          </label>
+        </div>
+
+        <div class="sim-output">
+          <div class="sim-readouts">
+            <div><span class="big" id="stratTime">–</span><span class="lbl">Predicted race time</span></div>
+            <div><span class="big" id="stratStops">–</span><span class="lbl">Optimal</span></div>
+            <div class="wide"><span class="big" id="stratPlan">–</span><span class="lbl">Stint plan</span></div>
+          </div>
+          <canvas id="stratChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <p class="muted-note">Worth trying: raise the pit loss above about 30 seconds and watch the one stop become correct; make the hard tyre durable and see the strategy change shape entirely.</p>
 
     <h2>What this demonstrates</h2>
     <ul>

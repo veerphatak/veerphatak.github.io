@@ -84,6 +84,65 @@ a:hover { text-decoration: underline; }
 .project li { margin-bottom: 0.5rem; }
 .project strong { color: var(--text); }
 
+/* ---- Interactive simulators ---- */
+.sim {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg-soft);
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+}
+.sim-grid { display: grid; grid-template-columns: 260px 1fr; gap: 1.5rem; }
+@media (max-width: 780px) { .sim-grid { grid-template-columns: 1fr; } }
+
+.sim-controls label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text);
+  margin-bottom: 0.85rem;
+}
+.sim-controls label .muted { color: var(--muted); font-weight: 400; }
+.sim-controls output {
+  display: inline-block;
+  float: right;
+  color: var(--accent);
+  font-family: Consolas, monospace;
+  font-size: 0.85rem;
+}
+.sim-controls input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 4px; margin-top: 0.45rem;
+  background: #30363d; border-radius: 2px; outline: none;
+}
+.sim-controls input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 15px; height: 15px; border-radius: 50%;
+  background: var(--accent); cursor: pointer; border: 0;
+}
+.sim-controls input[type="range"]::-moz-range-thumb {
+  width: 15px; height: 15px; border-radius: 50%;
+  background: var(--accent); cursor: pointer; border: 0;
+}
+.sim-controls .btn { width: 100%; text-align: center; margin-top: 0.4rem; cursor: pointer; font-family: inherit; }
+
+.sim-readouts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 0.9rem;
+}
+.sim-readouts > div {
+  background: #0b1016; border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.5rem 0.7rem;
+}
+.sim-readouts .wide { grid-column: span 2; }
+.sim-readouts .big {
+  display: block; font-size: 1.15rem; font-weight: 700; color: var(--text);
+  font-family: Consolas, monospace;
+}
+.sim-readouts .lbl { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+.sim canvas { width: 100%; height: 320px; display: block; }
+
 /* ---- Notice box ---- */
 .notice {
   border: 1px solid var(--border);

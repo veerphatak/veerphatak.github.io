@@ -300,6 +300,34 @@ def main():
     plt.colorbar(pts, ax=ax, label="Model minus measured (km/h)", shrink=0.8)
     fig.tight_layout(); fig.savefig(FIGS / "f1-track-map.png", dpi=150); plt.close(fig)
 
+    # ---------------- Export for the interactive browser version ----------------
+    # The JavaScript simulator on the website runs the same solver on this data,
+    # so visitors can change the car and watch the lap respond.
+    import json
+    step = 2                              # halve the resolution to keep it light
+    data = {
+        "circuit": f"{ses.event['EventName']} {YEAR}",
+        "session": "Qualifying, pole lap",
+        "driver": str(lap["Driver"]),
+        "team": str(lap["Team"]),
+        "realLapTime": round(real_time, 3),
+        "ds": DS * step,
+        "fitted": {"mu": round(car.mu, 3), "clA": round(car.cl_a, 3),
+                   "cdA": round(car.cd_a, 3), "mass": car.mass,
+                   "power": car.power, "brakeG": car.brake_g, "vMax": car.v_max},
+        "distance": [round(v, 1) for v in d[::step]],
+        "radius": [None if not np.isfinite(r) else round(float(r), 1) for r in R[::step]],
+        "speedReal": [round(float(v) * 3.6, 1) for v in v_real[::step]],
+        "drs": [int(v) for v in drs[::step]],
+        "x": [round(float(v), 1) for v in tel["X"].to_numpy()[::step]],
+        "y": [round(float(v), 1) for v in tel["Y"].to_numpy()[::step]],
+    }
+    out = HERE.parent.parent / "data" / "bahrain-lap.json"
+    out.parent.mkdir(exist_ok=True)
+    out.write_text(json.dumps(data), encoding="utf-8")
+    print(f"\nExported {out.name}: {len(data['distance'])} points, "
+          f"{out.stat().st_size/1024:.0f} KB")
+
     # corner error table for the write-up
     print("\nCorner       measured   model    error")
     for n_, i in enumerate(corners, 1):
