@@ -61,6 +61,49 @@
     <h2>Results</h2>
     <p>Across my time with the team, SUFST finished <strong>2nd in the FSUK Simulator Championship and the lap time challenge in 2025</strong>, and <strong>10th overall at FSUK 2025</strong>. The simulator result is the one most directly connected to the setup and simulation work.</p>
 
+    <h2>A representative lap time model</h2>
+    <p>Because the team's own model is not mine to publish, I wrote a fresh one for this site: a quasi-steady lap time simulation with tyre degradation, built from scratch on a synthetic track with generic vehicle parameters. It demonstrates the same method I used in the team, and it runs, so the figures below are its actual output rather than illustrations.</p>
+
+    <h3>How it works</h3>
+    <p>The solver makes three passes over a discretised lap. First it finds the cornering limit at every point. That limit has to be solved rather than assumed, because grip depends on downforce, downforce depends on speed, and speed is what we are trying to find:</p>
+
+    <pre><code>def corner_limit_speed(car, radius, mu):
+    """Speed at which the car is exactly on the lateral grip limit."""
+    k = mu * 0.5 * car.rho * car.cl_a / car.mass       # aero grip term
+    bracket = 1.0 / radius - k
+    v2 = np.where(bracket &gt; 0, mu * 9.81 / bracket, np.inf)
+    return np.minimum(np.sqrt(v2), car.v_max)</code></pre>
+
+    <p>If that bracket goes to zero or below, the car is no longer grip limited in the corner at all: downforce is arriving faster than the corner demands it, and the limit becomes power or gearing instead. Then a forward pass applies acceleration, a backward pass applies braking, both sharing tyre capacity with cornering through a friction ellipse, and lap time is the integral of ds/v.</p>
+
+    <figure>
+      <img src="media/figures/lapsim-speed-trace.png" alt="Speed trace around a simulated lap, showing the car on the grip limit through shaded corner sections and accelerating along the straights." loading="lazy">
+      <figcaption>Simulated speed around the lap. Shaded bands are corners, where the car sits exactly on the dashed lateral grip limit. Between them it accelerates until power, drag or the next braking point takes over.</figcaption>
+    </figure>
+
+    <h3>Tyre degradation</h3>
+    <p>Grip falls as the tyres do work, so the model drops peak friction through a stint, and drops it faster when the car is loading the tyres harder.</p>
+
+    <figure>
+      <img src="media/figures/lapsim-degradation.png" alt="Lap time rising over twelve laps for three different tyre degradation rates." loading="lazy">
+      <figcaption>Lap time through a twelve lap stint at three degradation rates. The gap to the fresh-tyre lap grows steadily, which is what makes stint length a strategic decision rather than an arbitrary one.</figcaption>
+    </figure>
+
+    <h3>The result that matters</h3>
+    <p>Running the model across downforce levels produces the point of the whole exercise. Downforce buys cornering speed but costs drag, and the drag penalty grows with the <em>square</em> of the downforce because most of it is induced. Downforce also works the tyres harder, so it charges rent across a stint.</p>
+
+    <figure>
+      <img src="media/figures/lapsim-sensitivity.png" alt="Left: lap time against downforce level for a single lap and for a twelve lap average, with different optimum points. Right: lap time increasing linearly with vehicle mass." loading="lazy">
+      <figcaption>Left: the quickest single lap wants roughly C_L A = 4.75, but the best twelve lap average wants about 3.25. The setup that sets the fastest lap is not the setup that wins the race. Right: mass sensitivity comes out at 0.131 s per 10 kg on this track.</figcaption>
+    </figure>
+
+    <p>That divergence is exactly why a model like this is worth building. A number such as "0.131 seconds per 10 kg" turns a vague preference for a lighter car into a budget you can argue with, and the split between the qualifying and race optima is a decision no one can make by feel.</p>
+
+    <p>
+      <a class="dl" href="code/lap_time_simulation.py" target="_blank" rel="noopener">Download the simulation code (Python)</a>
+    </p>
+    <p class="muted-note">Roughly 250 lines of documented Python, requiring only NumPy and Matplotlib. Running it reproduces all three figures above.</p>
+
     <h2>What this demonstrates</h2>
     <ul>
       <li>Building simulation tools that exist to support a decision, not to look impressive.</li>
