@@ -62,6 +62,20 @@
       <li><strong>CAD development and manufacturing lead.</strong> Responsible for the CAD model and for the manufacture of the wind tunnel test model.</li>
     </ul>
 
+    <h2>What the project is looking at</h2>
+    <p>The starting question is straightforward to state and awkward to answer: how do the aerodynamic forces and moments on a racing motorcycle change as it leans, and what does that mean for the machine and the rider?</p>
+    <p>Under lean, several things happen at once. The flow field loses its symmetry about the centreline. The frontal area presented to the oncoming air changes. The wake behind the machine is displaced laterally rather than sitting squarely behind it. Any aerodynamic surface tuned for the upright case is now operating at an effective sideslip it was never designed for. The quantities the project is set up to resolve are therefore not just drag and downforce, but the side force and the yaw and roll moments that appear once the symmetry is gone, and how all of these vary across a range of lean angles.</p>
+    <p>That matters because a motorcycle is a balance problem before it is a performance problem. Aerodynamic loads that would be a minor bookkeeping exercise on a car act on a machine that the rider is actively balancing, and at the point in the lap where the tyres have the least margin left.</p>
+
+    <h2>How the work is structured</h2>
+    <ul>
+      <li><strong>Geometry and CAD.</strong> Defining a representative MotoGP-style machine, in a form that is both meshable for CFD and manufacturable as a physical test model.</li>
+      <li><strong>CFD.</strong> Sweeping lean angle and flow conditions computationally, where the cost of an extra case is machine time rather than tunnel time.</li>
+      <li><strong>Wind tunnel model and mounting.</strong> Building the physical model and the arrangement that holds it at lean in the working section without the support dominating the measurement.</li>
+      <li><strong>Testing.</strong> Measuring forces and moments across the lean range.</li>
+      <li><strong>Correlation.</strong> Comparing prediction against measurement, and resolving the disagreements.</li>
+    </ul>
+
     <h2>Approach</h2>
     <p>The project runs two parallel strands. CFD provides full-field information and allows conditions to be swept at low cost. Wind tunnel testing provides physical measurements on a real model, with the experimental uncertainty that entails. The value lies in the correlation between them: where the two disagree, the discrepancy identifies a deficiency in the model, the mesh, the test setup or the underlying assumptions, and resolving that is a significant part of the engineering work.</p>
     <p>Taking responsibility for manufacturing the test model alongside the CAD is a deliberate decision. Geometry that is straightforward to model is not always straightforward to manufacture, mount or instrument in a tunnel, and holding both roles keeps those constraints in view from the outset rather than allowing them to emerge late in the programme.</p>

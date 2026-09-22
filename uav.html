@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Second-year group project ranked 1st in the cohort: a fixed-wing UAV wing with the widest operating speed range in the year at 23.1 m/s.">
+  <meta name="description" content="Second-year fixed-wing UAV wing design project, ranked first in the cohort, with box spar structural design validated against a bending and torsion rig.">
   <title>Fixed-Wing UAV Wing Design | Veer Phatak</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="canonical" href="https://veerphatak.github.io/uav.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Veer Phatak">
   <meta property="og:title" content="Fixed-Wing UAV Wing Design | Veer Phatak">
-  <meta property="og:description" content="Second-year fixed-wing UAV wing design project, ranked first in the cohort with the widest operating speed range in the year group.">
+  <meta property="og:description" content="Second-year fixed-wing UAV wing design project, ranked first in the cohort, with box spar structural design validated against a bending and torsion rig.">
   <meta property="og:url" content="https://veerphatak.github.io/uav.html">
   <meta property="og:image" content="https://veerphatak.github.io/media/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Fixed-Wing UAV Wing Design | Veer Phatak">
-  <meta name="twitter:description" content="Second-year fixed-wing UAV wing design project, ranked first in the cohort with the widest operating speed range in the year group.">
+  <meta name="twitter:description" content="Second-year fixed-wing UAV wing design project, ranked first in the cohort, with box spar structural design validated against a bending and torsion rig.">
   <meta name="twitter:image" content="https://veerphatak.github.io/media/og-image.png">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -36,41 +36,63 @@
     <a href="index.html#projects" class="back">← Back to projects</a>
 
     <h1 class="project-title">Fixed-Wing UAV Wing Design</h1>
-    <p class="project-hook">Second-year group design project, ranked 1st in the cohort. I was the aerodynamics and stability lead, and the wing achieved the widest operating speed range in the year group.</p>
+    <p class="project-hook">Second-year group design project, ranked 1st in the cohort. I was the aerodynamics and stability lead and designed the wing structure, and the wing achieved the largest operating speed range of any team in the year group.</p>
 
     <div class="meta">
+      <span class="tag">Aerodynamic Design</span>
+      <span class="tag">Structural Design</span>
       <span class="tag">XFLR5</span>
       <span class="tag">XFOIL</span>
-      <span class="tag">Aerodynamic Design</span>
-      <span class="tag">Stability</span>
+      <span class="tag">SolidWorks</span>
+      <span class="tag">Test Rig</span>
       <span class="tag">Project Planning</span>
     </div>
 
     <div class="stats">
       <div class="stat"><div class="num">1st</div><div class="label">Ranked in the cohort</div></div>
-      <div class="stat"><div class="num">23.1 m/s</div><div class="label">Operating speed range</div></div>
-      <div class="stat"><div class="num">&gt;10%</div><div class="label">Ahead of the next team</div></div>
+      <div class="stat"><div class="num">19.8 m/s</div><div class="label">Speed range measured in flight, largest in the year</div></div>
+      <div class="stat"><div class="num">0.42&deg;</div><div class="label">Measured wing twist under load</div></div>
     </div>
 
     <h2>The brief</h2>
-    <p>The task was to design the wing for a fixed-wing UAV, assessed principally on the range between its minimum and maximum operating speed, and subject to fixed limits on mass and volume. A wide speed range requires a wing that performs at both ends of its envelope: sufficient lift at low speed to remain airborne, and sufficiently low drag at high speed to continue accelerating. Optimising too heavily for either condition compromises the other, or exceeds the mass limit.</p>
+    <p>The task was to design the wing for a fixed-wing UAV, assessed principally on the range between its minimum and maximum operating speed, and subject to fixed limits on mass and volume. A wide speed range demands a wing that works at both ends of its envelope: enough lift at low speed to stay airborne, and low enough drag at high speed to keep accelerating. Optimising heavily for either condition compromises the other or breaches the mass limit.</p>
+
+    <h2>Structural design of the wing</h2>
+    <p>A wide speed range is only useful if the wing holds its shape while producing it. My work focused on the spar and rib structure, where the requirement was maximum stiffness per unit mass in both bending and torsion.</p>
+    <p>The spar used a rectangular cross section rather than an I-beam, chosen for ease of manufacture and integration into the ribs. That simpler baseline allowed long uninterrupted sections with the wood grain oriented to exploit the material's anisotropy, which bought stiffness that a more complex section would have given away at the joints.</p>
+    <p>The structure was developed through physical testing rather than analysis alone, on a purpose-built bending and torsion rig:</p>
+    <ul>
+      <li>The initial single spar gave a second moment of area of <strong>13,643 mm<sup>4</sup></strong>.</li>
+      <li>After the first structural test, a second spar was added further aft in the ribs, contributing <strong>11,539 mm<sup>4</sup></strong>.</li>
+      <li>After the second test, cross members were added between the two spars, using the spars as webs to form a <strong>box spar</strong>. This raised the second moment of area and the enclosed volume substantially, the latter being what governs torsional stiffness.</li>
+    </ul>
+    <p>The crosses were included for geodetic-inspired weight reduction while maintaining torsional strength. Both predictions were conservative against test:</p>
+    <ul>
+      <li><strong>Bending:</strong> predicted tip deflection of 18.7 mm against a measured <strong>13.8 mm</strong>.</li>
+      <li><strong>Torsion:</strong> predicted twist of 1.57&deg; against a measured <strong>0.42&deg;</strong>.</li>
+    </ul>
+    <p>The rib cutout pattern was based on a NACA study into wooden rib patterns and specific strength, and the same truss logic was carried into the spars, whose second moment of area was reduced progressively along the span to follow the spanwise lift distribution rather than carrying unnecessary material to the tip.</p>
 
     <h2>Aerodynamic design</h2>
-    <p>I led the aerodynamic configuration work, comparing candidate planforms in XFLR5 and XFOIL and assessing the performance of each across the full speed envelope rather than at a single design point. Flaps and ailerons were used to extend the usable range further, and this was the principal factor separating our wing from the remainder of the year group.</p>
-    <p>Configuration decisions were made using decision matrices, weighting speed range against stability under load and against manufacturability. Defining the selection criteria before evaluating the options makes the trade-off explicit and produces a design that can be justified afterwards on its merits.</p>
+    <p>I led the aerodynamic configuration work. The aerofoil was selected in XFOIL with forced transition at 0.16c, screening sections above 12% thickness so the structure had depth to work with, and comparing maximum lift coefficient, maximum lift-to-drag ratio and the angle of attack separating the two. N22 and NACA 2412 came out ahead, and NACA 2412 was selected after further analysis of minimum speed in XFLR5.</p>
+    <p>Planform taper was chosen using a ranking matrix backed by XFLR5 sweeps, with a Python script used to convert the aerodynamic data into a predicted speed range for each candidate layout. Defining the selection criteria before evaluating the options makes the trade-off explicit and produces a design that can be defended afterwards on its merits.</p>
+    <p>Speed range at the low end was extended with single-slot Fowler flaps at 30% chord, deployed to 45&deg; with a 0.02c overlap and a 0.04c slot, giving a lift coefficient multiplier of 1.87 and around a 20% increase in area. Counter-rotating rectangular vortex generators were added to delay stall. In flight the wing showed strong roll authority with no tip stall at high angle of attack.</p>
 
     <h2>Result</h2>
-    <p>The wing achieved a <strong>23.1 m/s</strong> minimum-to-maximum speed range, <strong>over 10% greater than any other team in the year group</strong>, and the project was <strong>ranked 1st in the cohort</strong>.</p>
+    <p>The XFLR5 and Python analysis predicted a <strong>23.1 m/s</strong> speed range for the chosen layout. Flight testing measured <strong>19.8 m/s</strong> between minimum and maximum airspeed, <strong>the largest speed range of all participating groups</strong>, and the project was <strong>ranked 1st in the cohort</strong>.</p>
+    <p>A 3.3 m/s shortfall against prediction is worth stating rather than hiding. The aerodynamic model was optimistic, most plausibly on the high-lift device performance and on the drag of a real assembled airframe against a clean analysis case. The structural predictions ran the other way and were conservative in both bending and torsion, which indicates the analytical model understated how much the box spar and cross members were contributing. Knowing which direction each model errs in is more useful than either number on its own.</p>
 
     <h2>Project management</h2>
-    <p>I also produced the Gantt charts and resource plans used to manage the project. The work was delivered ahead of schedule, which provided time to verify the analysis properly rather than submitting the first result that appeared reasonable.</p>
+    <p>I produced the Gantt charts and resource plans used to run the project. Work was broken into research, design, manufacture, integration and testing, with the critical path tracked and buffer time placed ahead of high-risk tasks. The project was delivered ahead of schedule, which left time to verify the analysis properly rather than submitting the first result that looked reasonable.</p>
 
     <h2>Relevant skills</h2>
     <ul>
-      <li>Aerodynamic design against competing objectives and fixed physical constraints.</li>
+      <li>Structural design for stiffness per unit mass, validated against physical test rather than analysis alone.</li>
+      <li>Iterating a design through successive test results instead of committing to the first configuration.</li>
       <li>Structured decision-making using defined and documented selection criteria.</li>
-      <li>Leading the technical direction of a group project and planning its delivery.</li>
+      <li>Planning and delivering a group project against a critical path.</li>
     </ul>
+
   </article>
 
   <footer>
