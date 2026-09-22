@@ -23,7 +23,7 @@
     <a href="index.html#projects" class="back">← Back to projects</a>
 
     <h1 class="project-title">Predicting a Formula 1 Lap, and Checking It Against the Real One</h1>
-    <p class="project-hook">A physics lap time model and a tyre degradation model, both built from scratch and both scored against real telemetry from the 2025 Bahrain Grand Prix. The model predicts the pole lap to within 0.7%, and says the winning strategy was 3.8 seconds off optimal.</p>
+    <p class="project-hook">A physics lap time model and a tyre degradation model, both developed from first principles and validated against telemetry from the 2025 Bahrain Grand Prix. The lap model predicts the pole lap to within 0.7%, and the strategy model places the winning strategy 3.8 seconds from its calculated optimum.</p>
 
     <div class="meta">
       <span class="tag">Python</span>
@@ -45,8 +45,8 @@
       <div class="stat"><div class="num">14,532</div><div class="label">Race strategies evaluated</div></div>
     </div>
 
-    <h2>Drive the model yourself</h2>
-    <p>The solver below is the same model, ported to JavaScript and running in your browser on circuit geometry taken from real position telemetry. Move a slider and the lap is re-solved immediately. The blue line is what the real car did; the red line is your car.</p>
+    <h2>Interactive lap simulation</h2>
+    <p>The solver below is the same model, ported to JavaScript and running in the browser on circuit geometry derived from position telemetry. Adjusting any parameter re-solves the lap immediately. The blue trace is the measured pole lap and the red trace is the configured car.</p>
     <p class="sub-meta" id="simCircuit">Loading circuit data...</p>
 
     <div class="sim">
@@ -92,20 +92,20 @@
       </div>
     </div>
 
-    <p class="muted-note">Things worth trying: cut downforce and watch the straights get quicker while every corner gets slower; add grip and see which corners respond most; drop the mass and see how little it gives you compared with aerodynamics.</p>
+    <p class="muted-note">Suggested comparisons: reducing downforce increases straight-line speed while reducing cornering speed throughout; increasing grip shows which corners are most sensitive to it; reducing mass produces a noticeably smaller gain than an equivalent aerodynamic change.</p>
 
-    <h2>Why bother comparing against real data</h2>
-    <p>Anyone can write a lap time simulation. The difficulty is knowing whether it is right, and a model that has never been checked against measurement is really just an opinion expressed in Python. Formula 1 publishes enough telemetry to remove that excuse: speed, throttle, brake, gear, DRS and car position, sampled around every lap of every session.</p>
-    <p>So this project does two things. It predicts a qualifying lap from physics and compares it corner by corner with what the car actually did, and it fits a tyre degradation model to a full race and asks whether the strategy that won was the quickest one available.</p>
+    <h2>Rationale</h2>
+    <p>A lap time simulation is only useful once its accuracy has been established, and that requires comparison against measured data. Formula 1 publishes sufficient telemetry for this: speed, throttle, brake, gear, DRS and car position, sampled throughout every lap of every session.</p>
+    <p>This project therefore has two parts. The first predicts a qualifying lap from physics and compares it corner by corner against the measured lap. The second fits a tyre degradation model to a full race and evaluates whether the winning strategy was the quickest available.</p>
 
     <h2>Part one: the lap</h2>
 
-    <h3>Building the circuit from the car</h3>
+    <h3>Deriving circuit geometry from telemetry</h3>
     <p>The model needs circuit geometry, specifically the corner radius at every point. Rather than looking up a track map, I derived it from the car's own X and Y position telemetry. Curvature is computed analytically from the path:</p>
 
     <pre><code>kappa = |x' y'' - y' x''| / (x'^2 + y'^2)^(3/2)     R = 1 / kappa</code></pre>
 
-    <p>That needs second derivatives of noisy measured data, which is a good way to produce garbage. Savitzky-Golay filtering avoids it by fitting a low-order polynomial over a moving window and differentiating that instead of differencing raw samples.</p>
+    <p>This requires second derivatives of noisy measured data, which amplifies noise considerably. Savitzky-Golay filtering addresses this by fitting a low-order polynomial over a moving window and differentiating that polynomial, rather than differencing the raw samples directly.</p>
 
     <figure>
       <img src="media/figures/f1-track-map.png" alt="Left: the Bahrain circuit reconstructed from position telemetry, coloured by speed. Right: the same circuit coloured by the difference between model and measured speed." loading="lazy">
@@ -114,16 +114,16 @@
 
     <h3>Solving the lap</h3>
     <p>The solver is quasi-steady and makes three passes: a cornering limit that accounts for downforce growing with speed, then a forward pass limited by power and traction, then a backward pass limited by braking, with longitudinal and lateral tyre demand sharing capacity through a friction ellipse. DRS is taken from the real telemetry and applied as a reduction in drag where the driver had it open.</p>
-    <p>Mass, power and braking limits are public. Grip, downforce and drag are not, so those three are fitted to the measured speed trace. Everything else follows from physics.</p>
+    <p>Mass, power and braking limits are publicly available. Grip, downforce and drag are not, so those three parameters are fitted to the measured speed trace. The remainder of the solution is determined by the physics and the circuit geometry.</p>
 
     <figure>
       <img src="media/figures/f1-speed-trace.png" alt="Upper: measured and modelled speed around the lap with corners shaded. Lower: throttle, brake and DRS traces from the real car." loading="lazy">
       <figcaption>The model (dashed) against Piastri's pole lap (solid), with the driver's real throttle, brake and DRS inputs below. Predicted lap time 89.197 s against an actual 89.841 s.</figcaption>
     </figure>
 
-    <h3>Where it is wrong, and why</h3>
-    <p>The overall lap time lands within 0.65 seconds, but the interesting part is the residual. Speed trace RMSE is about 18 km/h, and the corner-by-corner errors run to roughly 14 km/h either way.</p>
-    <p>The pattern is systematic rather than random, and it points at what a quasi-steady model leaves out. It carries too much speed through the slowest corners, because it assumes grip is available the instant it is asked for, whereas a real car has to transfer load, settle, and deal with a driver easing the car to the apex. It is slightly slow through some of the faster sections, where the real car benefits from aerodynamic behaviour a simple point mass with a single downforce coefficient cannot represent. Nothing here models tyre temperature, suspension, or the fact that a driver is managing a lap rather than solving an optimisation problem.</p>
+    <h3>Accuracy and limitations</h3>
+    <p>Predicted lap time falls within 0.65 seconds of the measured lap. Speed trace RMSE is approximately 18 km/h, and corner-by-corner errors reach roughly 14 km/h in either direction.</p>
+    <p>The residuals are systematic, and they identify the effects the quasi-steady formulation omits. The model carries excess speed through the slowest corners, as it assumes grip becomes available immediately, whereas the vehicle requires time to transfer load and settle, and the driver eases the car towards the apex. It is marginally slow through several of the faster sections, where the vehicle benefits from aerodynamic behaviour that a point mass with a single downforce coefficient cannot represent. The model contains no representation of tyre temperature, suspension response, or the driver's management of the lap.</p>
 
     <figure>
       <img src="media/figures/f1-corner-gear.png" alt="Left: bar chart comparing measured and modelled minimum speed for each corner. Right: scatter of gear against speed coloured by throttle." loading="lazy">
@@ -132,29 +132,29 @@
 
     <h2>Part two: the race</h2>
 
-    <h3>Cleaning the data first</h3>
-    <p>The race contains 1,128 laps, and most of them are useless as a measurement of tyre behaviour. Safety car and yellow flag laps are not racing laps. In-laps and out-laps contain pit lane time. Laps spent stuck behind another car measure traffic, not degradation. Filtering to green-flag racing laps, excluding pit-affected laps, and dropping anything more than 7% off each driver's own best leaves <strong>979 usable laps</strong>.</p>
+    <h3>Data preparation</h3>
+    <p>The race comprises 1,128 laps, a substantial proportion of which are unsuitable as measurements of tyre behaviour. Safety car and yellow flag laps are not representative racing laps. In-laps and out-laps include pit lane transit time. Laps completed in traffic measure the effect of the car ahead. Filtering to green-flag racing laps, excluding pit-affected laps, and removing laps more than 7% slower than each driver's own best leaves <strong>979 usable laps</strong>.</p>
 
-    <h3>The confounding problem</h3>
-    <p>A lap time does not measure tyre condition cleanly, because two effects move it in opposite directions at once. The tyres wear, which costs time. The car burns roughly 1.7 kg of fuel a lap and gets lighter, which gains time. Fit degradation without accounting for fuel and you will underestimate it, because fuel burn has been quietly cancelling part of it.</p>
-    <p>So both are fitted simultaneously in a single regression rather than sequentially:</p>
+    <h3>Separating degradation from fuel burn</h3>
+    <p>Lap time is not a direct measurement of tyre condition, as two effects act on it in opposite directions simultaneously. The tyres wear, which costs time. The car consumes approximately 1.7 kg of fuel per lap and becomes lighter, which gains time. Fitting degradation without accounting for fuel consumption therefore underestimates it, as the fuel effect has offset part of the degradation.</p>
+    <p>Both terms are consequently fitted simultaneously within a single regression rather than sequentially:</p>
 
     <pre><code>laptime = driver_baseline + compound_offset + degradation(compound) * tyre_age
                            + fuel_effect * lap_number</code></pre>
 
-    <p>The driver baseline term matters more than it looks. Without it the regression compares a front-running car on hards against a midfield car on softs and attributes the difference to the tyre. Giving every driver their own intercept cut the model's error from <strong>0.821 s to 0.576 s</strong>, which is the single biggest improvement I made to it.</p>
-    <p>The fitted fuel effect came out at 0.064 s per lap, worth about 3.6 seconds across the race, which is in the right region for a car shedding around 100 kg.</p>
+    <p>The driver baseline term is more significant than it appears. Without it, the regression compares a front-running car on hard tyres against a midfield car on softs and attributes the difference to the compound. Assigning each driver an individual intercept reduced the model error from <strong>0.821 s to 0.576 s</strong>, the largest single improvement made during development.</p>
+    <p>The fitted fuel effect is 0.064 s per lap, equivalent to approximately 3.6 seconds across the race, which is consistent with a car shedding around 100 kg of fuel.</p>
 
     <figure>
       <img src="media/figures/f1-degradation.png" alt="Left: scatter of fuel-corrected lap time against tyre age for each compound with fitted lines. Right: cumulative time lost to degradation over 30 laps by compound." loading="lazy">
       <figcaption>Left: every usable racing lap, fuel effect removed, with the fitted degradation per compound. Right: what those slopes cost cumulatively across a stint.</figcaption>
     </figure>
 
-    <h3>A limitation I am not going to hide</h3>
-    <p>The model separates <em>base pace</em> correctly: the soft is the quickest compound and the harder tyres are slower, which is what should happen. It does <strong>not</strong> cleanly separate degradation <em>rates</em> between compounds. All three come out near 0.1 seconds per lap, and the hard even appears to degrade slightly fastest, which is not believable.</p>
-    <p>The likely reason is that compound choice is not randomly assigned. Compounds get used in particular phases of a race, in particular track and traffic conditions, by particular cars, and a linear model fitted to one Grand Prix cannot untangle that from the tyre itself. Fixing it properly would need several races pooled together, and a stint-level model rather than a lap-level one. Reporting the degradation numbers as if they were reliable would be the dishonest option.</p>
+    <h3>Limitations of the degradation fit</h3>
+    <p>The model resolves <em>base pace</em> correctly, with the soft compound quickest and the harder compounds progressively slower, as expected. It does not resolve degradation <em>rates</em> between compounds. All three return values close to 0.1 seconds per lap, and the hard compound returns a marginally higher rate than the soft, which is not physically credible.</p>
+    <p>The probable cause is that compound allocation is not random. Compounds are used in particular phases of a race, under particular track and traffic conditions, and by particular cars, and a linear model fitted to a single Grand Prix cannot separate those effects from the behaviour of the tyre itself. Resolving this would require several races pooled together and a stint-level rather than lap-level formulation. The degradation rates should therefore be treated as indicative only.</p>
 
-    <h3>Was the winning strategy the right one?</h3>
+    <h3>Strategy evaluation</h3>
     <p>Pit loss was measured from the race itself rather than assumed, by comparing in-laps and out-laps against normal racing laps: <strong>26.1 seconds</strong>. With that, the model enumerates every legal strategy, including the rule that a dry race requires two different compounds, and ranks all <strong>14,532</strong> of them.</p>
 
     <figure>
@@ -163,10 +163,10 @@
     </figure>
 
     <p>The model says a two-stop was correct, that the ideal shape was three roughly equal stints of about 19 laps, and that the best available one-stop would have cost around 3.6 seconds. Piastri, who won, stopped on lap 14 and ran 14, 18 and 25. The model scores that at <strong>3.8 seconds off its own optimum</strong>, over a race lasting more than 94 minutes: an error of roughly 0.07%.</p>
-    <p>The right conclusion is not that a professional strategy team got it wrong by 3.8 seconds. It is that a model built from public data lands within a few seconds of what a team with vastly more information chose to do, and that the flat basin in the left-hand plot explains why: anywhere from about lap 16 to lap 22 costs almost nothing, so the exact stop lap was never the decision that mattered. Track position and traffic, which this model does not represent at all, matter far more than the last second of theoretical pace.</p>
+    <p>The appropriate interpretation is that a model built from publicly available data agrees to within a few seconds with the decision taken by a team holding considerably more information. The flat region in the left-hand plot explains why: any first stop between approximately lap 16 and lap 22 carries almost no time penalty, so the precise stop lap was not the decisive factor. Track position and traffic, neither of which this model represents, are considerably more influential than the remaining theoretical pace.</p>
 
-    <h2>Run your own strategy</h2>
-    <p>The same calculation, live. Set the tyre behaviour and the pit loss, and it evaluates every legal one and two stop strategy, picks the quickest, and draws the pit window. The values it starts with are the ones fitted to the 2025 Bahrain race data.</p>
+    <h2>Interactive strategy calculator</h2>
+    <p>The same calculation, running in the browser. Setting the tyre behaviour and pit loss causes it to evaluate every legal one and two stop strategy, identify the quickest, and plot the resulting pit window. The initial values are those fitted to the 2025 Bahrain race data.</p>
 
     <div class="sim">
       <div class="sim-grid">
@@ -220,14 +220,14 @@
       </div>
     </div>
 
-    <p class="muted-note">Worth trying: raise the pit loss above about 30 seconds and watch the one stop become correct; make the hard tyre durable and see the strategy change shape entirely.</p>
+    <p class="muted-note">Suggested comparisons: raising the pit loss above approximately 30 seconds makes the one stop optimal; reducing the hard compound degradation rate changes the structure of the optimal strategy entirely.</p>
 
-    <h2>What this demonstrates</h2>
+    <h2>Relevant skills</h2>
     <ul>
-      <li>Building a physical model and then holding it to account against measured data, including reporting where it fails.</li>
-      <li>Working with real, messy telemetry: filtering, resampling, differentiating noisy signals, and knowing which laps are not measurements at all.</li>
-      <li>Recognising confounded effects and handling them properly, rather than fitting the first regression that runs.</li>
-      <li>Turning a fitted model into a decision, and being clear about the limits of that decision.</li>
+      <li>Developing a physical model and validating it against measured data, including quantifying and reporting its limitations.</li>
+      <li>Processing experimental telemetry: filtering, resampling, differentiating noisy signals, and identifying which data are not valid measurements.</li>
+      <li>Identifying confounded effects and accounting for them within the regression.</li>
+      <li>Converting a fitted model into a decision, with the confidence limits of that decision stated.</li>
     </ul>
 
     <p>

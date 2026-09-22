@@ -22,38 +22,38 @@
     <a href="index.html#projects" class="back">← Back to projects</a>
 
     <h1 class="project-title">Coursework &amp; Papers</h1>
-    <p class="project-hook">Selected technical coursework from my MEng at Southampton, with the reports available to download. Each summary explains the method used and what the analysis showed.</p>
+    <p class="project-hook">Selected technical coursework from my MEng at the University of Southampton, with the full reports available to download. Each summary sets out the method applied and the results obtained.</p>
 
     <div class="notice">
-      These are my own submitted reports. They are shared to show how I work and how I present technical results. If you are a student on one of these modules, read the method rather than the answers, since the parameters are assigned individually and copying will not help you.
+      These are my own submitted reports, provided to demonstrate method and technical reporting. Students taking these modules should note that parameters are assigned individually, so the numerical results here do not transfer.
     </div>
 
     <h2>Karman-Trefftz Aerofoil Analysis</h2>
     <p class="sub-meta">Advanced Aeronautics (SESA3025) · Graded 74%</p>
-    <p>This coursework generates an aerofoil by conformal mapping, analyses it with a panel method, and then compares it against a real NACA section in a viscous solver. My assigned parameters were a thickness factor of ε = 0.07, camber β = 0.07 and trailing-edge angle τ = 0.05.</p>
+    <p>This coursework generates an aerofoil by conformal mapping, analyses it using a panel method, and compares it against a standard NACA section in a viscous solver. My assigned parameters were a thickness factor of ε = 0.07, camber β = 0.07 and trailing-edge angle τ = 0.05.</p>
 
     <h3>Geometry generation</h3>
-    <p>A Karman-Trefftz aerofoil is produced by mapping a circle in the complex plane onto an aerofoil shape, with three parameters controlling thickness, camber and trailing-edge angle. I swept each parameter independently to show how the geometry responds, and extracted maximum thickness and camber, with their chordwise positions, directly from the resulting coordinates.</p>
+    <p>A Karman-Trefftz aerofoil is produced by mapping a circle in the complex plane onto an aerofoil section, with three parameters controlling thickness, camber and trailing-edge angle. I swept each parameter independently to establish its effect on the geometry, and extracted maximum thickness and camber, together with their chordwise positions, directly from the resulting coordinates.</p>
 
     <figure>
       <img src="media/figures/kt-thickness-sweep.png" alt="Left: maximum thickness increasing linearly with the thickness parameter epsilon. Right: aerofoil sections becoming thicker as epsilon increases." loading="lazy">
-      <figcaption>Thickness parameter ε swept from 0 to 0.1. Maximum thickness responds almost perfectly linearly, while the section shape fills out.</figcaption>
+      <figcaption>Thickness parameter ε swept from 0 to 0.1. Maximum thickness varies almost linearly with ε, and the section profile thickens accordingly.</figcaption>
     </figure>
 
     <figure>
       <img src="media/figures/kt-camber-sweep.png" alt="Left: maximum camber increasing linearly with the camber parameter beta. Right: aerofoil sections becoming more cambered as beta increases." loading="lazy">
-      <figcaption>Camber parameter β swept over the same range, with the camber line shown dashed. The mapping gives near-linear control of camber independently of thickness.</figcaption>
+      <figcaption>Camber parameter β swept over the same range, with the camber line shown dashed. The mapping provides near-linear control of camber independently of thickness.</figcaption>
     </figure>
 
-    <p>Converting those geometric values to the nearest standard designation identified the <strong>NACA 3509</strong> as the closest equivalent section, which became the benchmark for comparison. The two share a global thickness distribution but differ at the leading and trailing edges, which is a direct consequence of how the conformal mapping closes the trailing edge.</p>
+    <p>Converting the resulting geometric values to the nearest standard designation identified the <strong>NACA 3509</strong> as the closest equivalent section, which was then used as the benchmark for comparison. The two sections share a similar global thickness distribution but differ at the leading and trailing edges, which follows from the way the conformal mapping closes the trailing edge.</p>
 
     <h3>Panel method and viscous comparison</h3>
-    <p>I implemented a doublet panel method in Python to estimate lift, and used it to run an order-of-accuracy study against panel count, plus a comparison of cosine against uniform panel spacing. Cosine spacing clusters panels where the geometry changes fastest, which is why it converges faster for the same number of panels.</p>
-    <p>The aerofoils were then compared in XFOIL across angle of attack, Reynolds number and transition criterion, looking at the boundary layer rather than just the force coefficients.</p>
+    <p>I implemented a doublet panel method in Python to estimate lift, and used it to carry out an order-of-accuracy study against panel count together with a comparison of cosine and uniform panel spacing. Cosine spacing concentrates panels where the geometry changes most rapidly, and converges more quickly for a given panel count.</p>
+    <p>The two aerofoils were then compared in XFOIL across angle of attack, Reynolds number and transition criterion, examining boundary layer behaviour in addition to the force coefficients.</p>
 
     <figure>
       <img src="media/figures/kt-boundary-layer-re1e5.png" alt="Four panel plot comparing momentum thickness, displacement thickness, skin friction coefficient and shape factor for the Karman-Trefftz and NACA aerofoils at Reynolds number 100,000." loading="lazy">
-      <figcaption>Boundary layer development at Re = 1×10⁵ for both sections at several angles of attack: momentum thickness θ, displacement thickness D*, skin friction C_f and shape factor H. The sharp rise in H and collapse in C_f mark separation.</figcaption>
+      <figcaption>Boundary layer development at Re = 1×10⁵ for both sections at several angles of attack: momentum thickness θ, displacement thickness D*, skin friction C_f and shape factor H. The rapid increase in H together with the collapse in C_f indicates separation.</figcaption>
     </figure>
 
     <p><a class="dl" href="docs/Veer Phatak - Advanced Aeronautics Karman-Trefftz Report.pdf" target="_blank" rel="noopener">Download the full report (PDF)</a></p>
@@ -62,10 +62,10 @@
 
     <h2>Minimum-Length Supersonic Nozzle by the Method of Characteristics</h2>
     <p class="sub-meta">Aerothermodynamics (SESA3029)</p>
-    <p>The method of characteristics is a way of solving supersonic flow by following the lines along which information actually travels. This coursework applies it to design the shortest nozzle that will accelerate a flow to a target Mach number without generating shocks.</p>
-    <p>My assigned case was <strong>M_des = 2.3 in helium</strong>, so γ = 1.667 rather than the familiar 1.4, which changes the Prandtl-Meyer function and therefore every downstream value.</p>
-    <p>The design starts at the expansion corner, where the wall turns outwards to expand the flow smoothly. I used five characteristic lines, each representing an expansion wave reflecting between the centreline and the wall. At every intersection the flow angle θ and Prandtl-Meyer angle ν are found from the Riemann invariants of the two incoming characteristics, which gives the local Mach number and Mach angle. Tracing those lines outward gives the wall coordinates, and hence the minimum nozzle length.</p>
-    <p>The interesting part is why it is the <em>minimum</em> length: any shorter and the expansion cannot be cancelled cleanly, so waves reflect off the wall and coalesce into shocks, which is precisely what the method is designed to avoid.</p>
+    <p>The method of characteristics solves supersonic flow by following the lines along which information propagates. This coursework applies it to design the shortest nozzle capable of accelerating a flow to a target Mach number without generating shocks.</p>
+    <p>My assigned case was <strong>M_des = 2.3 in helium</strong>, giving γ = 1.667 rather than the more familiar 1.4, which alters the Prandtl-Meyer function and therefore every subsequent calculation.</p>
+    <p>The design begins at the expansion corner, where the wall turns outwards to expand the flow smoothly. I used five characteristic lines, each representing an expansion wave reflecting between the centreline and the wall. At each intersection the flow angle θ and Prandtl-Meyer angle ν are determined from the Riemann invariants of the two incoming characteristics, which gives the local Mach number and Mach angle. Tracing those lines outward produces the wall coordinates and hence the minimum nozzle length.</p>
+    <p>The length is a minimum because any shorter contour cannot cancel the expansion cleanly. The waves then reflect from the wall and coalesce into shocks, which is the outcome the method is intended to avoid.</p>
 
     <p><a class="dl" href="docs/Veer Phatak - Method of Characteristics Report.pdf" target="_blank" rel="noopener">Download the full report (PDF)</a></p>
 
@@ -73,9 +73,9 @@
 
     <h2>Wind Tunnel Testing of a NACA 0020 Aerofoil</h2>
     <p class="sub-meta">Aerodynamics laboratories</p>
-    <p>Three linked wind tunnel experiments on a symmetric NACA 0020 section, written up as a single report: surface pressure distribution against angle of attack, boundary layer development towards the trailing edge, and lift and drag on a finite half-wing.</p>
-    <p>The value of the exercise is the comparison. The measured results were checked against thin aerofoil theory, against XFOIL and XFLR5, and against CFD, and the report is largely about explaining the discrepancies rather than hiding them: viscous effects the inviscid theory cannot capture, laminar to turbulent transition along the boundary layer, and the tip effects and induced drag that appear once the wing is finite rather than two-dimensional.</p>
-    <p>Working out which of four sources to trust when they disagree, and why, is the part of experimental aerodynamics that actually transfers to a wind tunnel programme.</p>
+    <p>Three linked wind tunnel experiments on a symmetric NACA 0020 section, reported together: surface pressure distribution against angle of attack, boundary layer development towards the trailing edge, and lift and drag on a finite half-wing.</p>
+    <p>The analysis centres on comparison. The measured results were assessed against thin aerofoil theory, against XFOIL and XFLR5, and against CFD, and a substantial part of the report explains the discrepancies between them: viscous effects not captured by inviscid theory, laminar to turbulent transition along the boundary layer, and the tip effects and induced drag that appear once the wing is finite rather than two-dimensional.</p>
+    <p>Determining which of four sources to rely on when they disagree, and justifying that judgement, is the element of experimental aerodynamics most directly applicable to a wind tunnel programme.</p>
 
     <p><a class="dl" href="docs/Veer Phatak - NACA 0020 Aerofoil Lab Report.pdf" target="_blank" rel="noopener">Download the full report (PDF)</a></p>
 
@@ -83,10 +83,10 @@
 
     <h2>Finite Element Analysis of a Wing Box</h2>
     <p class="sub-meta">Digital Aerospace (SESA3042)</p>
-    <p>Structural analysis of an aircraft wing box in ANSYS Mechanical: spars, ribs, skin and stringers, loaded for both a positive-g (wing up) and negative-g (wing down) manoeuvre, with the requirement that no component yields.</p>
-    <p>Most of the engineering here is in the mesh rather than the result. I ran a convergence study from roughly <strong>24,000 to 1.9 million elements</strong>, tracking peak stress against solve time and memory. Peak stress changed by well under a percent across that range while cost rose by orders of magnitude, which is the whole argument for convergence testing: past a certain point you are buying precision you cannot use, and the honest answer is to stop refining and say why.</p>
+    <p>Structural analysis of an aircraft wing box in ANSYS Mechanical, comprising spars, ribs, skin and stringers, loaded for both a positive-g and a negative-g manoeuvre, with the requirement that no component yields.</p>
+    <p>The principal engineering content is in the meshing rather than the final stress value. I carried out a convergence study from approximately <strong>24,000 to 1.9 million elements</strong>, tracking peak stress against solve time and memory usage. Peak stress varied by well under one percent across that range while computational cost increased by orders of magnitude, which is the justification for convergence testing: beyond a certain refinement the additional precision has no engineering value, and the appropriate decision is to stop refining and state why.</p>
 
-    <p class="muted-note">Report available on request. It is built on the university's assignment template, so I have not republished it here.</p>
+    <p class="muted-note">Report available on request. It is written on the university's assignment template, so it is not reproduced here.</p>
   </article>
 
   <footer>

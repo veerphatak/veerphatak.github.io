@@ -14,7 +14,6 @@
         <a href="index.html#projects">Projects</a>
         <a href="index.html#contact">Contact</a>
       </div>
-
     </div>
   </nav>
 
@@ -22,7 +21,7 @@
     <a href="index.html#projects" class="back">← Back to projects</a>
 
     <h1 class="project-title">Tracking Plastics in Moving Water</h1>
-    <p class="project-hook">An individual Master's research project: turning raw high-speed footage of plastic fragments in a laboratory flume into validated, physically-meaningful trajectory data, built end-to-end in Python and OpenCV.</p>
+    <p class="project-hook">An individual Master's research project developing a Python and OpenCV measurement system that converts high-speed footage of plastic particles in a laboratory flume into validated trajectory and velocity data.</p>
 
     <div class="meta">
       <span class="tag">Python</span>
@@ -42,7 +41,7 @@
       <div class="video-embed">
         <iframe src="https://www.youtube-nocookie.com/embed/zCHYtiB7o4U" title="Mesoplastic Particle Tracking, Individual Project Summary" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
       </div>
-      <figcaption>Project summary: the computer-vision pipeline detecting and tracking plastic particles through the flume, producing validated trajectories and derived physics.</figcaption>
+      <figcaption>Project summary: the measurement system detecting and tracking plastic particles through the flume, producing validated trajectories and derived physics.</figcaption>
     </figure>
 
     <div class="stats">
@@ -51,77 +50,77 @@
       <div class="stat"><div class="num">58</div><div class="label">Experimental runs analysed</div></div>
     </div>
 
-    <h2>The problem</h2>
-    <p>Plastic pollution in rivers and oceans is not uniform. How a fragment travels through moving water depends heavily on its shape, size, and orientation: a sphere, a rod, and a flat disc of the same material behave very differently in the same flow. Understanding that behaviour is a prerequisite for modelling where plastics accumulate and how to intercept them.</p>
-    <p>The experimental challenge: you can film a particle moving through a flume, but a video is not data. To say anything quantitative, you need the particle's exact position in every single frame, reconstructed reliably despite reflections, bubbles, changing light, and the container walls, then converted from pixels into real-world velocities and physics. That conversion, from raw footage to trustworthy trajectory data, was the core of this project, and it was mine to build from scratch.</p>
+    <h2>Background</h2>
+    <p>The transport of plastic debris in rivers and oceans depends strongly on the shape, size and orientation of each fragment. A sphere, a rod and a flat disc of the same material behave differently in the same flow, and quantifying that behaviour is a prerequisite for modelling where plastics accumulate and how they might be intercepted.</p>
+    <p>The experimental difficulty is that video footage of a particle is not in itself measurement data. Quantitative analysis requires the position of the particle in every frame, determined reliably in the presence of reflections, bubbles, varying illumination and the flume walls, and then converted from image coordinates into physical velocities. Developing that conversion, from raw footage to validated trajectory data, was the core of the project.</p>
 
-    <h2>What I built</h2>
-    <p>A modular Python/OpenCV pipeline that:</p>
+    <h2>Scope of the work</h2>
+    <p>I developed a modular Python and OpenCV pipeline which:</p>
     <ul>
-      <li><strong>Detects and tracks</strong> a plastic particle through every frame of high-speed video, with a separate tuned tracker for each particle geometry (sphere, rod, disc).</li>
-      <li><strong>Smooths and validates</strong> each trajectory using Kalman filtering and automated quality-control checks designed to catch the tracker locking onto the wrong thing.</li>
-      <li><strong>Calibrates</strong> pixel coordinates into real-world distances using per-view homography.</li>
-      <li><strong>Derives the physics</strong>: instantaneous and streamwise velocity, orientation, projected area, and pooled comparisons across particle types, regenerating every report figure directly from the exported data.</li>
+      <li><strong>Detects and tracks</strong> a particle through every frame of high-speed video, using a separate tracker tuned for each particle geometry (sphere, rod, disc).</li>
+      <li><strong>Smooths and validates</strong> each trajectory using Kalman filtering and automated quality control checks designed to identify incorrect detections.</li>
+      <li><strong>Calibrates</strong> image coordinates into physical distances using a per-view homography.</li>
+      <li><strong>Derives the physics</strong>: instantaneous and streamwise velocity, orientation, projected area, and pooled comparisons between particle types, with every report figure regenerated directly from the exported data.</li>
     </ul>
 
-    <h2>The engineering detail</h2>
+    <h2>Technical approach</h2>
 
     <h3>Geometry-specific tracking</h3>
-    <p>A single generic tracker fails here, because a tumbling rod, a spinning disc, and a rolling sphere present completely different visual signatures. So the pipeline splits into three purpose-built trackers:</p>
+    <p>A single generic tracker is not sufficient, as a tumbling rod, a rotating disc and a rolling sphere present substantially different visual signatures. The pipeline therefore uses three purpose-built trackers:</p>
     <ul>
-      <li><strong>Spheres:</strong> colour and grayscale segmentation (including distinguishing red vs. white spheres), followed by Kalman smoothing.</li>
-      <li><strong>Rods:</strong> binarised contour extraction, fitting a quadrilateral to the rod each frame, plus orientation estimation, then Kalman smoothing.</li>
-      <li><strong>Discs:</strong> binarised contours with projected-area and orientation extraction, capturing how the disc's presented face changes as it moves.</li>
+      <li><strong>Spheres:</strong> colour and greyscale segmentation, including discrimination between red and white spheres, followed by Kalman smoothing.</li>
+      <li><strong>Rods:</strong> binarised contour extraction with a quadrilateral fitted to the rod in each frame, orientation estimation, and Kalman smoothing.</li>
+      <li><strong>Discs:</strong> binarised contours with projected-area and orientation extraction, capturing the change in presented face as the disc rotates.</li>
     </ul>
 
-    <h3>Stopping the tracker from lying to you</h3>
-    <p>The hardest part of visual tracking isn't finding the object once, it's not losing it. Two specific failure modes were engineered against:</p>
+    <h3>Maintaining track</h3>
+    <p>Acquiring the particle initially is considerably easier than retaining it for the duration of a run. Two specific failure modes were addressed in the design:</p>
     <ul>
-      <li><strong>Auto-initialisation by motion:</strong> rather than manually marking where the particle starts, the pipeline uses frame differencing and shape-descriptor scoring (circularity, solidity) to detect the exact frame the particle enters the scene, and locks on automatically.</li>
-      <li><strong>Anti-drift:</strong> a normalised cross-correlation template, updated slowly so it adapts to changing light but resists sudden jumps, keeps the tracker centred on the particle instead of drifting onto a high-contrast container corner, the classic way these systems fail silently.</li>
+      <li><strong>Automatic initialisation by motion.</strong> Instead of manually marking the starting position, the pipeline uses frame differencing and shape descriptor scoring (circularity and solidity) to identify the frame in which the particle enters the field of view, and acquires it automatically.</li>
+      <li><strong>Drift prevention.</strong> A normalised cross-correlation template, updated gradually so that it accommodates changing illumination while resisting sudden changes, keeps the tracker centred on the particle. Without it the tracker tends to migrate onto a high-contrast feature such as a container corner, a common and easily missed failure.</li>
     </ul>
 
-    <h3>Kalman smoothing &amp; calibration</h3>
-    <p>Raw frame-by-frame detections are noisy. A Kalman filter smooths each trajectory into a physically-plausible path, filling small gaps and suppressing single-frame jitter without erasing real motion, essential for velocity calculations, which amplify any positional noise. Pixel positions are then mapped to the real world using per-camera-view homography, with explicit checks that the calibration suits each view (side, bottom-panel, straight).</p>
+    <h3>Kalman smoothing and calibration</h3>
+    <p>Frame-by-frame detections contain noise. A Kalman filter smooths each trajectory into a physically plausible path, filling small gaps and suppressing single-frame jitter while preserving genuine motion. This is necessary because velocity is obtained by differentiation, which amplifies positional noise. Image positions are then mapped to physical coordinates using a per-view homography, with explicit verification that the calibration is appropriate for each camera view.</p>
 
-    <h2>Seeing the tracker work</h2>
-    <p>These are real outputs from the pipeline, not demonstrations made for this page. The green box and centre marker are drawn by the tracker on every frame it processes.</p>
+    <h2>Tracker output</h2>
+    <p>The following are outputs produced by the pipeline during the project. The green box and centre marker are drawn by the tracker on each frame it processes.</p>
 
     <div class="video-grid">
       <figure>
         <video controls muted loop playsinline preload="metadata">
           <source src="media/video/sphere-tracked-raw.mp4" type="video/mp4">
         </video>
-        <figcaption>What you see: a 10 mm sphere travelling through the flume, with the tracked position overlaid.</figcaption>
+        <figcaption>A 10 mm sphere travelling through the flume, with the tracked position overlaid on the original footage.</figcaption>
       </figure>
       <figure>
         <video controls muted loop playsinline preload="metadata">
           <source src="media/video/sphere-tracked-binary.mp4" type="video/mp4">
         </video>
-        <figcaption>What the tracker sees: the same run after background subtraction and thresholding. Everything the algorithm decides is based on this.</figcaption>
+        <figcaption>The same run following background subtraction and thresholding. All tracking decisions are made from this representation.</figcaption>
       </figure>
     </div>
-    <p>That pair is the clearest way to explain the whole method. The colour image on the left is meaningless to the algorithm. The job of the first half of the pipeline is to turn it into the black and white image on the right, where the particle is the only bright object left, and the job of the second half is to follow that object reliably from frame to frame.</p>
+    <p>The two views together illustrate the structure of the pipeline. The first stage reduces the original image to the binarised representation on the right, in which the particle is the only remaining bright object. The second stage follows that object reliably from frame to frame.</p>
 
     <figure>
       <video controls muted loop playsinline preload="metadata">
         <source src="media/video/rod-tracked.mp4" type="video/mp4">
       </video>
-      <figcaption>A rod, tracked with a fitted quadrilateral rather than a point. Rods tumble, so orientation matters as much as position, and the fitted box gives both.</figcaption>
+      <figcaption>A rod, tracked using a fitted quadrilateral rather than a single point. Rods tumble in the flow, so orientation is required alongside position, and the fitted box provides both.</figcaption>
     </figure>
 
     <figure>
       <video controls muted loop playsinline preload="metadata">
         <source src="media/video/disc-tracked.mp4" type="video/mp4">
       </video>
-      <figcaption>A disc. Here the projected area changes as the disc turns relative to the camera, which is the measurement that links its orientation to how much drag it experiences.</figcaption>
+      <figcaption>A disc. The projected area varies as the disc rotates relative to the camera, and this measurement links its orientation to the drag it experiences.</figcaption>
     </figure>
 
-    <h2>How the code works</h2>
-    <p>The pipeline is about 9,400 lines of Python across 23 scripts: three trackers (one per particle geometry), batch runners for each experiment, the physics and plotting scripts, and the validation tools. Four ideas do most of the work.</p>
+    <h2>Implementation</h2>
+    <p>The pipeline comprises approximately 9,400 lines of Python across 23 scripts: three trackers, batch runners for each experiment, the physics and plotting scripts, and the validation tools. Four elements account for most of the functionality.</p>
 
     <h3>1. Isolating the particle</h3>
-    <p>Each frame is blurred, background subtracted using an averaged background built from frames before the particle enters, and thresholded. The threshold uses Otsu's method, which chooses the split point automatically from the image histogram rather than being hard coded, but with a floor applied so that a frame containing no particle cannot produce a nonsense threshold and fill the image with noise:</p>
+    <p>Each frame is blurred, background subtracted using an averaged background constructed from frames preceding the particle's entry, and then thresholded. The threshold uses Otsu's method, which selects the threshold automatically from the image histogram, with a lower bound applied so that a frame containing no particle cannot produce an invalid threshold and saturate the image with noise:</p>
 
     <pre><code>def otsu_threshold_with_floor(gray_image, min_threshold):
     otsu_thr, bw = cv2.threshold(gray_image, 0, 255,
@@ -130,19 +129,19 @@
         _, bw = cv2.threshold(gray_image, int(round(min_threshold)),
                               255, cv2.THRESH_BINARY)</code></pre>
 
-    <p>Red spheres take a different route, segmented in HSV colour space with <code>cv2.inRange</code>, because hue separates them from the background far more cleanly than brightness does.</p>
+    <p>Red spheres are handled separately, segmented in HSV colour space using <code>cv2.inRange</code>, as hue provides considerably better separation from the background than intensity.</p>
 
-    <h3>2. Choosing the right blob</h3>
-    <p>Thresholding usually leaves more than one candidate: a reflection, a bubble, a shadow on the flume wall. Each contour is scored on shape, and the metrics are the same ones used across all three trackers:</p>
+    <h3>2. Selecting the correct contour</h3>
+    <p>Thresholding generally leaves several candidate regions, such as a reflection, a bubble or a shadow on the flume wall. Each contour is scored on shape using the same metrics across all three trackers:</p>
 
     <pre><code>circularity = 4.0 * np.pi * area / (perimeter * perimeter)
 solidity    = area / hull_area          # area vs its own convex hull
 aspect_ratio = max(w, h) / min(w, h)</code></pre>
 
-    <p>Circularity is 1.0 for a perfect circle and falls away for ragged shapes, so it separates a sphere from a streak of glare. Solidity compares a shape to its own convex hull, which catches contours with bites taken out of them, typically two objects merging. Aspect ratio does the equivalent job for rods, where the shape should be long and thin.</p>
+    <p>Circularity is 1.0 for a perfect circle and decreases for irregular shapes, which distinguishes a sphere from elongated glare. Solidity compares a region against its own convex hull and identifies contours with concave sections, typically caused by two objects merging. Aspect ratio performs the equivalent function for rods, where the expected shape is long and narrow.</p>
 
     <h3>3. Kalman filtering</h3>
-    <p>Even good detections jitter by a pixel or two, and velocity is a derivative, so that jitter is amplified rather than averaged away. A Kalman filter estimates position and velocity together, predicting where the particle should be next and correcting that prediction with the measurement:</p>
+    <p>Detections vary by one or two pixels between frames, and because velocity is a derivative this variation is amplified rather than averaged out. A Kalman filter estimates position and velocity together, predicting the expected position of the particle and correcting that prediction using the measurement:</p>
 
     <pre><code>kf = cv2.KalmanFilter(4, 2)          # state: x, y, vx, vy | measured: x, y
 kf.transitionMatrix = np.array([[1, 0, 1, 0],
@@ -152,10 +151,10 @@ kf.transitionMatrix = np.array([[1, 0, 1, 0],
 kf.processNoiseCov     = np.diag([0.001, 0.001, 0.008, 0.008]).astype(np.float32)
 kf.measurementNoiseCov = np.diag([1.2, 1.2]).astype(np.float32)</code></pre>
 
-    <p>The transition matrix encodes a constant velocity model: next position equals current position plus current velocity. The two noise matrices set how much the filter trusts its own prediction against the camera, and the numbers matter. Measurement noise is set well above process noise, which tells the filter the detections are noisier than the motion model, so it smooths hard. Push that too far and the filter starts inventing smooth motion the particle never had, which is exactly the failure that would quietly corrupt the velocity results.</p>
+    <p>The transition matrix implements a constant velocity model, in which the next position equals the current position plus the current velocity. The two noise covariance matrices determine the relative weighting between the model prediction and the measurement. Measurement noise is set substantially above process noise, indicating that the detections are less reliable than the motion model, which produces heavier smoothing. Excessive smoothing would cause the filter to generate motion the particle did not exhibit, introducing systematic error into the velocity results.</p>
 
-    <h3>4. Turning pixels into millimetres</h3>
-    <p>All of the above happens in pixels, which are not a unit of physics. A homography, computed from a calibration target in the scene, maps image coordinates onto the real plane of the flume and corrects for the camera not being perfectly square to it. Only after that transform do the numbers become velocities in mm/s that can be compared between runs.</p>
+    <h3>4. Conversion to physical units</h3>
+    <p>All of the preceding stages operate in image coordinates. A homography, computed from a calibration target within the scene, maps those coordinates onto the physical plane of the flume and corrects for the camera not being normal to it. Velocities in mm/s, comparable between runs, are obtained only after this transformation.</p>
 
     <p>
       <a class="dl" href="https://github.com/veerphatak/veerphatak.github.io/tree/main/code/flume-tracking" target="_blank" rel="noopener">Browse the full code on GitHub</a>
@@ -163,35 +162,34 @@ kf.measurementNoiseCov = np.diag([1.2, 1.2]).astype(np.float32)</code></pre>
     <p class="muted-note">Includes the three trackers, the batch runners for each experiment, the physics and plotting scripts, and the validation tools, with a README describing the processing route from raw video to final figures.</p>
 
     <h2>Quality control</h2>
-    <p>The project treated validation as a first-class step, not an afterthought. For every processed run, the workflow enforced:</p>
+    <p>Validation was treated as a required stage of the process. For every processed run the workflow checked:</p>
     <ul>
-      <li>confirmation that the particle was detected <strong>continuously</strong> through the reported section, no silent gaps;</li>
-      <li>inspection of annotated videos and still overlays against the original footage, to confirm the trajectory follows the real particle and not a reflection, bubble, or hand;</li>
-      <li>verification that the calibration/homography suited the camera view;</li>
-      <li>a check that velocity plots contained no artefacts caused by missed detections;</li>
-      <li>comparison of repeated trials before pooling any particle-type trend.</li>
+      <li>that the particle was detected continuously through the reported section, with no undetected gaps;</li>
+      <li>annotated videos and still overlays against the original footage, confirming that the trajectory followed the particle rather than a reflection or bubble;</li>
+      <li>that the calibration and homography were appropriate for the camera view;</li>
+      <li>that velocity plots contained no artefacts arising from missed detections;</li>
+      <li>agreement between repeated trials before any particle-type trend was pooled.</li>
     </ul>
-    <p>This is the difference between "I got a number" and "I got a number I'd defend."</p>
 
-    <h2>Results &amp; analysis</h2>
-    <p>From the validated trajectories, the pipeline computed and plotted instantaneous speed vs. time and streamwise velocity vs. time per run; velocity vs. normalised projected area for rods and discs (linking how much surface a particle presents to the flow to how fast it travels); rod orientation vs. velocity; and a pooled comparison of overall velocity behaviour across spheres, rods, and discs. Every figure was regenerated directly from exported CSVs, so any plotted value could be audited back to source, a reproducibility standard I set deliberately.</p>
+    <h2>Results and analysis</h2>
+    <p>From the validated trajectories the pipeline computed instantaneous speed and streamwise velocity against time for each run, velocity against normalised projected area for rods and discs, rod orientation against velocity, and a pooled comparison of velocity behaviour across spheres, rods and discs. Every figure was regenerated directly from the exported CSV files, so that any plotted value could be traced back to its source data.</p>
 
     <figure>
       <img src="media/plot-streamwise-velocity.png" alt="Bar chart comparing streamwise velocity of 10 mm and 14 mm spheres in the water tunnel versus the flume, with error bars." loading="lazy">
-      <figcaption>Streamwise velocity by particle size and facility. Particles travelled markedly faster in the flume than the water tunnel, and the error bars capture the run-to-run spread across repeated trials.</figcaption>
+      <figcaption>Streamwise velocity by particle size and facility. Particles travelled considerably faster in the flume than in the water tunnel, and the error bars show the run-to-run spread across repeated trials.</figcaption>
     </figure>
 
     <figure>
       <img src="media/plot-reynolds-distribution.png" alt="Box plot of Reynolds number distribution for 10 mm and 14 mm spheres in the water tunnel and flume." loading="lazy">
-      <figcaption>Reynolds number distribution across conditions. Placing every run in dimensionless terms makes the flow regimes directly comparable and anchors the results in established fluid dynamics rather than raw pixel measurements.</figcaption>
+      <figcaption>Reynolds number distribution across conditions. Expressing every run in dimensionless terms allows the flow regimes to be compared directly and relates the results to established fluid dynamics.</figcaption>
     </figure>
 
-    <h2>What this demonstrates</h2>
+    <h2>Relevant skills</h2>
     <ul>
-      <li>Building a real data pipeline from noisy, raw input to validated, decision-ready output, the exact loop that motorsport data and race-strategy work runs on.</li>
-      <li>Engineering judgment under imperfect real-world conditions (reflections, drift, changing light), not textbook data.</li>
-      <li>Discipline around validation and reproducibility, trusting a result because it was checked, not because it looked right.</li>
-      <li>Working independently across the full stack of a technical problem: experiment, capture, computer vision, filtering, calibration, physics, and reporting.</li>
+      <li>Developing a complete data pipeline from noisy experimental input to validated output.</li>
+      <li>Applying engineering judgement under non-ideal experimental conditions, including reflections, tracker drift and varying illumination.</li>
+      <li>Maintaining validation and reproducibility standards throughout an extended analysis.</li>
+      <li>Working independently across the full scope of a technical problem: experimental design, data capture, computer vision, filtering, calibration, physical analysis and reporting.</li>
     </ul>
   </article>
 
