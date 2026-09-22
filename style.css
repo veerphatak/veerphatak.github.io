@@ -199,9 +199,15 @@ a:hover { text-decoration: underline; }
 .notice strong { color: var(--text); }
 
 /* ---- Plain content card (about, skills, coursework) ---- */
-.plain-card { cursor: default; }
+.plain-card { cursor: default; padding: 1.85rem 2.1rem; }
+
+/* About and Skills side by side above the projects */
+.intro-grid { display: grid; grid-template-columns: 1.08fr 1fr; gap: 1.25rem; }
+.intro-grid > div { display: flex; flex-direction: column; }
+.intro-grid .plain-card { flex: 1; }
+@media (max-width: 900px) { .intro-grid { grid-template-columns: 1fr; } }
 .plain-card:hover { border-color: var(--border); transform: none; }
-.plain-card p { color: #c9d1d9; margin-bottom: 0.75rem; }
+.plain-card p { color: #c9d1d9; margin-bottom: 1rem; }
 .plain-card p:last-child { margin-bottom: 0; }
 .plain-card strong { color: var(--text); }
 ul.tight { margin: 0 0 0 1.1rem; padding: 0; color: #c9d1d9; }
