@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Veer Phatak, final-year MEng Aeronautics and Astronautics student at the University of Southampton. Engineering projects in aerodynamics, race strategy and design.">
   <title>Veer Phatak | Engineering Portfolio</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://veerphatak.github.io/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Veer Phatak">
+  <meta property="og:title" content="Veer Phatak | Engineering Portfolio">
+  <meta property="og:description" content="Engineering portfolio of Veer Phatak. Aerodynamics, race strategy and design projects, with interactive lap time and race strategy models you can run in the browser.">
+  <meta property="og:url" content="https://veerphatak.github.io/">
+  <meta property="og:image" content="https://veerphatak.github.io/media/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Veer Phatak | Engineering Portfolio">
+  <meta name="twitter:description" content="Engineering portfolio of Veer Phatak. Aerodynamics, race strategy and design projects, with interactive lap time and race strategy models you can run in the browser.">
+  <meta name="twitter:image" content="https://veerphatak.github.io/media/og-image.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -22,52 +36,86 @@
   <header class="hero">
     <h1>Veer <span class="accent">Phatak</span></h1>
     <p class="tagline">Final-year MEng Aeronautics &amp; Astronautics student at the University of Southampton, specialising in aerodynamics, race strategy and engineering design.</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="docs/Veer%20Phatak%20CV.pdf" target="_blank" rel="noopener">Download CV (PDF)</a>
+      <a class="btn" href="f1-model.html">Try the lap time simulator</a>
+      <a class="btn" href="#projects">View projects</a>
+    </div>
+    <div class="facts">
+      <span><b>71.7%</b> first-class Year 3 average</span>
+      <span><b>3 seasons</b> Formula Student race engineering</span>
+      <span><b>Graduating</b> July 2027</span>
+    </div>
   </header>
 
-  <main class="wrap" id="projects">
+  <main class="wrap wide" id="projects">
     <p class="section-title">Projects</p>
     <div class="cards">
 
       <a class="card" href="motogp.html">
-        <h3>Cornering Aerodynamics of a MotoGP-Style Motorcycle</h3>
-        <p>Final-year group design project using CFD and wind tunnel testing. I am the team leader, the aerodynamic design lead, and the lead for CAD development and manufacture of the test model.</p>
-        <span class="arrow">View project →</span>
+        <div class="card-media"><img src="media/thumbs/motogp.svg" alt="Schematic of a leaning motorcycle in airflow" loading="lazy" width="800" height="450"></div>
+        <div class="card-body">
+          <h3>Cornering Aerodynamics of a MotoGP-Style Motorcycle</h3>
+          <p>Final-year group design project using CFD and wind tunnel testing. I am the team leader, the aerodynamic design lead, and the lead for CAD development and manufacture of the test model.</p>
+          <span class="arrow">View project →</span>
+        </div>
       </a>
 
       <a class="card" href="f1-model.html">
-        <h3>Predicting an F1 Lap, and Checking It Against the Real One</h3>
-        <p>A physics lap time model and a tyre degradation model validated against 2025 Bahrain Grand Prix telemetry. The model predicts the pole lap to within 0.7%, and evaluates 14,532 race strategies against the one that won the race.</p>
-        <span class="arrow">View project →</span>
+        <div class="card-media">
+          <span class="badge">Interactive</span><img src="media/thumbs/f1-model.jpg" alt="Bahrain circuit map coloured by speed, model against measured" loading="lazy" width="800" height="450"></div>
+        <div class="card-body">
+          <h3>Predicting an F1 Lap, and Checking It Against the Real One</h3>
+          <p>A physics lap time model and a tyre degradation model validated against 2025 Bahrain Grand Prix telemetry. The model predicts the pole lap to within 0.7%, and evaluates 14,532 race strategies against the one that won the race.</p>
+          <span class="arrow">View project →</span>
+        </div>
       </a>
 
       <a class="card" href="flume.html">
-        <h3>Tracking Plastics in Moving Water</h3>
-        <p>Individual Master's research project, graded 75%. A Python and OpenCV measurement system converting high-speed footage of plastic particles in a flume into validated trajectory and velocity data.</p>
-        <span class="arrow">View project →</span>
+        <div class="card-media">
+          <span class="badge ghost">Video &amp; code</span><img src="media/thumbs/flume.jpg" alt="Streamwise velocity comparison between flume and water tunnel" loading="lazy" width="800" height="450"></div>
+        <div class="card-body">
+          <h3>Tracking Plastics in Moving Water</h3>
+          <p>Individual Master's research project, graded 75%. A Python and OpenCV measurement system converting high-speed footage of plastic particles in a flume into validated trajectory and velocity data.</p>
+          <span class="arrow">View project →</span>
+        </div>
       </a>
 
       <a class="card" href="formula-student.html">
-        <h3>Formula Student: Race Engineering</h3>
-        <p>Three seasons with Southampton University Formula Student. Lap-time and tyre degradation simulation, and MoTeC lap analysis used to inform setup and strategy decisions. 2nd in the FSUK Simulator Championship.</p>
-        <span class="arrow">View project →</span>
+        <div class="card-media"><img src="media/thumbs/formula-student.jpg" alt="Lap time sensitivity to downforce and vehicle mass" loading="lazy" width="800" height="450"></div>
+        <div class="card-body">
+          <h3>Formula Student: Race Engineering</h3>
+          <p>Three seasons with Southampton University Formula Student. Lap-time and tyre degradation simulation, and MoTeC lap analysis used to inform setup and strategy decisions. 2nd in the FSUK Simulator Championship.</p>
+          <span class="arrow">View project →</span>
+        </div>
       </a>
 
       <a class="card" href="internship.html">
-        <h3>R&amp;D Engineering Internship, TREND Networks</h3>
-        <p>Seven weeks in the R&amp;D team at TREND Networks, designing test and measurement equipment. Three design projects, one of which was released for manufacture after ten iterations, alongside responsibility for all office 3D printing.</p>
-        <span class="arrow">View project →</span>
+        <div class="card-media"><img src="media/thumbs/internship.svg" alt="Schematic of an instrument enclosure around a circuit board" loading="lazy" width="800" height="450"></div>
+        <div class="card-body">
+          <h3>R&amp;D Engineering Internship, TREND Networks</h3>
+          <p>Seven weeks in the R&amp;D team at TREND Networks, designing test and measurement equipment. Three design projects, one of which was released for manufacture after ten iterations, alongside responsibility for all office 3D printing.</p>
+          <span class="arrow">View project →</span>
+        </div>
       </a>
 
       <a class="card" href="uav.html">
-        <h3>Fixed-Wing UAV Wing Design</h3>
-        <p>Second-year group project, ranked 1st in the cohort. Achieved the widest operating speed range in the year group at 23.1 m/s, over 10% ahead of any other team.</p>
-        <span class="arrow">View project →</span>
+        <div class="card-media"><img src="media/thumbs/uav.svg" alt="Schematic of a UAV wing planform in airflow" loading="lazy" width="800" height="450"></div>
+        <div class="card-body">
+          <h3>Fixed-Wing UAV Wing Design</h3>
+          <p>Second-year group project, ranked 1st in the cohort. Achieved the widest operating speed range in the year group at 23.1 m/s, over 10% ahead of any other team.</p>
+          <span class="arrow">View project →</span>
+        </div>
       </a>
 
       <a class="card" href="coursework.html">
-        <h3>Coursework &amp; Papers</h3>
-        <p>Selected technical reports, available to download: Karman-Trefftz aerofoil analysis by conformal mapping and panel method, minimum-length supersonic nozzle design by the method of characteristics, wind tunnel testing of a NACA 0020, and a wing box FEA convergence study.</p>
-        <span class="arrow">View coursework →</span>
+        <div class="card-media">
+          <span class="badge ghost">3 PDFs</span><img src="media/thumbs/coursework.jpg" alt="Karman-Trefftz aerofoil shape variation with camber" loading="lazy" width="800" height="450"></div>
+        <div class="card-body">
+          <h3>Coursework &amp; Papers</h3>
+          <p>Selected technical reports, available to download: Karman-Trefftz aerofoil analysis by conformal mapping and panel method, minimum-length supersonic nozzle design by the method of characteristics, wind tunnel testing of a NACA 0020, and a wing box FEA convergence study.</p>
+          <span class="arrow">View coursework →</span>
+        </div>
       </a>
 
     </div>
