@@ -67,7 +67,7 @@
 
     <h2>Background</h2>
     <p>The transport of plastic debris in rivers and oceans depends strongly on the shape, size and orientation of each fragment. A sphere, a rod and a flat disc of the same material behave differently in the same flow, and quantifying that behaviour is a prerequisite for modelling where plastics accumulate and how they might be intercepted.</p>
-    <p>The experimental difficulty is that video footage of a particle is not in itself measurement data. Quantitative analysis requires the position of the particle in every frame, determined reliably in the presence of reflections, bubbles, varying illumination and the flume walls, and then converted from image coordinates into physical velocities. Developing that conversion, from raw footage to validated trajectory data, was the core of the project.</p>
+    <p>The hard part is that footage of a particle is not measurement data. To get anything quantitative out of it I needed the particle's position in every frame, found reliably through reflections, bubbles, changing light and the flume walls, then converted from pixels into physical velocities. Building that conversion, from raw footage to trajectory data I could defend, was the project.</p>
 
     <h2>Scope of the work</h2>
     <p>I developed a modular Python and OpenCV pipeline which:</p>
@@ -81,7 +81,7 @@
     <h2>Technical approach</h2>
 
     <h3>Geometry-specific tracking</h3>
-    <p>A single generic tracker is not sufficient, as a tumbling rod, a rotating disc and a rolling sphere present substantially different visual signatures. The pipeline therefore uses three purpose-built trackers:</p>
+    <p>One generic tracker will not do the job. A tumbling rod, a rotating disc and a rolling sphere look completely different to a camera, so I wrote three trackers:</p>
     <ul>
       <li><strong>Spheres:</strong> colour and greyscale segmentation, including discrimination between red and white spheres, followed by Kalman smoothing.</li>
       <li><strong>Rods:</strong> binarised contour extraction with a quadrilateral fitted to the rod in each frame, orientation estimation, and Kalman smoothing.</li>
@@ -89,17 +89,17 @@
     </ul>
 
     <h3>Maintaining track</h3>
-    <p>Acquiring the particle initially is considerably easier than retaining it for the duration of a run. Two specific failure modes were addressed in the design:</p>
+    <p>Finding the particle in the first frame is easy. Keeping hold of it for a whole run is not. Two failure modes caused most of the trouble:</p>
     <ul>
       <li><strong>Automatic initialisation by motion.</strong> Instead of manually marking the starting position, the pipeline uses frame differencing and shape descriptor scoring (circularity and solidity) to identify the frame in which the particle enters the field of view, and acquires it automatically.</li>
       <li><strong>Drift prevention.</strong> A normalised cross-correlation template, updated gradually so that it accommodates changing illumination while resisting sudden changes, keeps the tracker centred on the particle. Without it the tracker tends to migrate onto a high-contrast feature such as a container corner, a common and easily missed failure.</li>
     </ul>
 
     <h3>Kalman smoothing and calibration</h3>
-    <p>Frame-by-frame detections contain noise. A Kalman filter smooths each trajectory into a physically plausible path, filling small gaps and suppressing single-frame jitter while preserving genuine motion. This is necessary because velocity is obtained by differentiation, which amplifies positional noise. Image positions are then mapped to physical coordinates using a per-view homography, with explicit verification that the calibration is appropriate for each camera view.</p>
+    <p>Detections are noisy frame to frame, and velocity comes from differentiating position, which makes that noise worse rather than averaging it away. A Kalman filter smooths each trajectory into a physically plausible path, closing small gaps and killing single-frame jitter without flattening real motion. I then mapped image positions into physical coordinates with a homography fitted per camera view, and checked each calibration rather than assuming it transferred.</p>
 
     <h2>Tracker output</h2>
-    <p>The following are outputs produced by the pipeline during the project. The green box and centre marker are drawn by the tracker on each frame it processes.</p>
+    <p>These are real outputs from the pipeline. The green box and centre marker are drawn by the tracker on every frame it processes.</p>
 
     <div class="video-grid">
       <figure>
@@ -115,7 +115,7 @@
         <figcaption>The same run following background subtraction and thresholding. All tracking decisions are made from this representation.</figcaption>
       </figure>
     </div>
-    <p>The two views together illustrate the structure of the pipeline. The first stage reduces the original image to the binarised representation on the right, in which the particle is the only remaining bright object. The second stage follows that object reliably from frame to frame.</p>
+    <p>The two views show the pipeline in two stages. The first reduces the original image to the binarised version on the right, where the particle is the only bright object left. The second follows that object from frame to frame.</p>
 
     <figure>
       <video controls muted loop playsinline preload="metadata">
