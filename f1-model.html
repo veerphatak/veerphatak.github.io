@@ -247,7 +247,7 @@
     <p>
       <a class="dl" href="https://github.com/veerphatak/veerphatak.github.io/tree/main/code/f1-lapsim" target="_blank" rel="noopener">View the code on GitHub</a>
     </p>
-    <p class="muted-note">Two scripts: the lap model and the stint and strategy model. Requires FastF1, NumPy, pandas, SciPy and Matplotlib. Running them downloads the session data and reproduces every figure on this page.</p>
+    <p class="muted-note">The lap model and the stint and strategy model, each implemented twice. The Python versions use FastF1 to pull the session data and reproduce every figure on this page. The MATLAB versions (<code>f1_lap_model.m</code>, <code>f1_stint_model.m</code>) carry the same solver and the same regression, reading the extracted circuit geometry and cleaned lap set from <code>data/</code> so they run without a FastF1 install. Session download stays in Python because FastF1 has no MATLAB equivalent. The interactive version above is a JavaScript port of the same solver, since neither Python nor MATLAB runs in a browser.</p>
   </article>
 
   <footer>
