@@ -62,13 +62,14 @@
     <h2>The brief</h2>
     <p>The task was to design the wing for a fixed-wing UAV, assessed principally on the range between its minimum and maximum operating speed, and subject to fixed limits on mass and volume. A wide speed range demands a wing that works at both ends of its envelope: enough lift at low speed to stay airborne, and low enough drag at high speed to keep accelerating. Optimising heavily for either condition compromises the other or breaches the mass limit.</p>
 
-    <figure>
-      <img src="media/uav-wing.jpg" alt="The completed UAV wing, with laser-cut truss ribs and the spar visible through the translucent film covering" loading="lazy">
-      <figcaption>The wing during assembly. The laser-cut truss rib pattern and the spanwise spar are visible through the film covering, along with the hinge line for the flaps and ailerons.</figcaption>
-    </figure>
-
     <h2>Structural design of the wing</h2>
     <p>A wide speed range is only useful if the wing holds its shape while producing it. My work focused on the spar and rib structure, where the requirement was maximum stiffness per unit mass in both bending and torsion.</p>
+
+    <figure>
+      <img src="media/uav-cad.jpg" alt="CAD model of the complete wing assembly, showing the box spar, the geodesic-inspired cap cutouts and the truss rib pattern" loading="lazy">
+      <figcaption>The wing assembly in CAD. The box spar runs the span with geodesic-inspired cutouts in the caps and webbing cuts sized to the lift distribution, and the double taper with a rectangular centre section is visible along the leading and trailing edges.</figcaption>
+    </figure>
+
     <p>The spar used a rectangular cross section rather than an I-beam, chosen for ease of manufacture and integration into the ribs. That simpler baseline allowed long uninterrupted sections with the wood grain oriented to exploit the material's anisotropy, which bought stiffness that a more complex section would have given away at the joints.</p>
     <p>The structure was developed through physical testing rather than analysis alone, on a purpose-built bending and torsion rig:</p>
     <ul>
@@ -87,6 +88,11 @@
     <p>I led the aerodynamic configuration work. The aerofoil was selected in XFOIL with forced transition at 0.16c, screening sections above 12% thickness so the structure had depth to work with, and comparing maximum lift coefficient, maximum lift-to-drag ratio and the angle of attack separating the two. N22 and NACA 2412 came out ahead, and NACA 2412 was selected after further analysis of minimum speed in XFLR5.</p>
     <p>Planform taper was chosen using a ranking matrix backed by XFLR5 sweeps, with a Python script used to convert the aerodynamic data into a predicted speed range for each candidate layout. Defining the selection criteria before evaluating the options makes the trade-off explicit and produces a design that can be defended afterwards on its merits.</p>
     <p>Speed range at the low end was extended with single-slot Fowler flaps at 30% chord, deployed to 45&deg; with a 0.02c overlap and a 0.04c slot, giving a lift coefficient multiplier of 1.87 and around a 20% increase in area. Counter-rotating rectangular vortex generators were added to delay stall. In flight the wing showed strong roll authority with no tip stall at high angle of attack.</p>
+
+    <figure>
+      <img src="media/uav-wing.jpg" alt="The completed UAV wing, with laser-cut truss ribs and the spar visible through the translucent film covering" loading="lazy">
+      <figcaption>The covered wing during assembly. The hinge line for the flaps and ailerons runs along the trailing edge, and the truss ribs remain visible through the film.</figcaption>
+    </figure>
 
     <h2>Result</h2>
     <p>The XFLR5 and Python analysis predicted a <strong>23.1 m/s</strong> speed range for the chosen layout. Flight testing measured <strong>19.8 m/s</strong> between minimum and maximum airspeed, <strong>the largest speed range of all participating groups</strong>, and the project was <strong>ranked 1st in the cohort</strong>.</p>
