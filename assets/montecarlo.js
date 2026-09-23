@@ -48,13 +48,25 @@
         AMBER = "#d29922",
         GREEN = "#3fb950",
         MUTED = "#8b949e",
-        GRID  = "#233041";
+        GRID  = "#233041",
+        PANEL = "#161b22";   /* matches --bg-soft, so the legend reads as opaque */
 
   const SERIES = [
     { key: "one",   label: "One stop",    colour: BLUE,  dash: [6, 4] },
     { key: "two",   label: "Two stops",   colour: GREEN, dash: null   },
     { key: "three", label: "Three stops", colour: AMBER, dash: [2, 3] }
   ];
+
+  /* Round a raw axis step up to the next readable value. The ladder is finer
+     than the usual 1/2/5 so the curves are not left sitting in the bottom
+     half of an over-scaled axis: a peak of 210 gives a step of 60 and a top
+     of 240, not a step of 100 and a top of 400. */
+  const STEPS = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
+  function niceStep(x) {
+    const p = Math.pow(10, Math.floor(Math.log10(x)));
+    const m = x / p;
+    return (STEPS.find(s => m <= s) || 10) * p;
+  }
 
   /* ---------- canvas helpers ---------- */
   function setupCanvas(cv) {
@@ -341,9 +353,12 @@
         const i = Math.floor((v - lo) / wdt);
         if (i >= 0 && i < bins) d[i]++;
       }
-      const s = d.map((_, i) => ((d[i - 1] || 0) + 2 * d[i] + (d[i + 1] || 0)) / 4);
-      const peak = Math.max(...s, 1);
-      return s.map(v => v / peak * 100);
+      // Smoothed, but left as a count of races per bin rather than
+      // normalised to each series' own peak. Every strategy faces the same
+      // number of races, so counts stay directly comparable between curves,
+      // and a tighter distribution is allowed to peak higher instead of
+      // being flattened to match the others.
+      return d.map((_, i) => ((d[i - 1] || 0) + 2 * d[i] + (d[i + 1] || 0)) / 4);
     },
 
     /* ---------- render ---------- */
@@ -396,35 +411,62 @@
       const lo = quantile(pooled, 0.005), hi = quantile(pooled, 0.99);
       const span = Math.max(hi - lo, 4);
       const xr = [lo - span * 0.04, hi + span * 0.04];
-      const yr = [0, 112];
       const BINS = 72;
-
-      axes(ctx, w, h, pad, xr, yr,
-           "Race time relative to the quickest median (s)", "Relative frequency");
 
       const xs = [];
       for (let i = 0; i < BINS; i++) xs.push(xr[0] + (xr[1] - xr[0]) * (i + 0.5) / BINS);
 
+      const curves = [];
+      let peak = 0;
       for (const s of SERIES) {
         if (!r.times[s.key]) continue;
         const d = this.density(r.times[s.key].map(v => v - fastestMed), xr[0], xr[1], BINS);
-        line(ctx, xs, d, xr, yr, pad, w, h, s.colour, 2.2, s.dash);
+        for (const v of d) if (v > peak) peak = v;
+        curves.push({ s, d });
       }
+
+      // Four gridlines, so pick a step that divides the range cleanly and
+      // keeps every tick a whole number of races.
+      const yr = [0, niceStep(Math.max(peak, 4) / 4) * 4];
+
+      axes(ctx, w, h, pad, xr, yr,
+           "Race time relative to the quickest median (s)", "Races per bin");
+
+      for (const c of curves)
+        line(ctx, xs, c.d, xr, yr, pad, w, h, c.s.colour, 2.2, c.s.dash);
 
       // legend: colour plus dash pattern plus text, so identity survives
       // both colour blindness and a black and white print
+      // It sits on an opaque panel and is sized from the measured text, so a
+      // curve passing underneath can no longer run through the labels.
       ctx.font = "12px system-ui, sans-serif";
       ctx.textAlign = "left"; ctx.textBaseline = "middle";
-      let ly = pad.t + 10;
-      for (const s of SERIES) {
-        if (!r.times[s.key]) continue;
+
+      const SW = 22, GAP = 8, ROW = 18, PX = 10, PY = 7;
+      let tw = 0;
+      for (const c of curves) tw = Math.max(tw, ctx.measureText(c.s.label).width);
+      const bw = PX * 2 + SW + GAP + tw;
+      const bh = PY * 2 + ROW * curves.length;
+      const bx = w - pad.r - bw - 4;
+      const by = pad.t + 4;
+
+      ctx.save();
+      ctx.fillStyle = PANEL; ctx.strokeStyle = GRID; ctx.lineWidth = 1;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, 6);
+      else ctx.rect(bx, by, bw, bh);
+      ctx.fill(); ctx.stroke();
+      ctx.restore();
+
+      let ly = by + PY + ROW / 2;
+      for (const c of curves) {
         ctx.save();
-        ctx.strokeStyle = s.colour; ctx.lineWidth = 2.2;
-        if (s.dash) ctx.setLineDash(s.dash);
-        ctx.beginPath(); ctx.moveTo(w - 160, ly); ctx.lineTo(w - 140, ly); ctx.stroke();
+        ctx.strokeStyle = c.s.colour; ctx.lineWidth = 2.2;
+        if (c.s.dash) ctx.setLineDash(c.s.dash);
+        ctx.beginPath(); ctx.moveTo(bx + PX, ly); ctx.lineTo(bx + PX + SW, ly); ctx.stroke();
         ctx.restore();
-        ctx.fillStyle = MUTED; ctx.fillText(s.label, w - 134, ly);
-        ly += 18;
+        ctx.fillStyle = MUTED; ctx.fillText(c.s.label, bx + PX + SW + GAP, ly);
+        ly += ROW;
       }
     },
 
