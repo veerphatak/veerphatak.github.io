@@ -36,19 +36,18 @@
     <a href="index.html#projects" class="back">← Back to projects</a>
 
     <h1 class="project-title">Formula Student: Race Engineering</h1>
-    <p class="project-hook">Three seasons with Southampton University Formula Student in the race engineering and chassis groups, developing the simulation and data analysis used to inform setup decisions.</p>
+    <p class="project-hook">Three seasons with Southampton University Formula Student, in race engineering and chassis. I built the lap time and tyre models the team used to choose setup, and analysed logged data in MoTeC i2.</p>
 
     <div class="meta">
       <span class="tag">MATLAB</span>
       <span class="tag">MoTeC i2</span>
-      <span class="tag">MoTeC i2</span>
-      <span class="tag">Lap-Time Simulation</span>
+      <span class="tag">Lap Time Simulation</span>
       <span class="tag">Tyre Modelling</span>
       <span class="tag">Race Engineering</span>
     </div>
 
     <div class="notice">
-      <strong>A note on what is shown here.</strong> The team's data, code and reports are the property of Southampton University Formula Student and are not reproduced on this page. What follows describes my work and the methods used. The simulation presented below was written from scratch for this site, uses a synthetic track and generic vehicle parameters, and is labelled accordingly.
+      <strong>A note on what is shown here.</strong> The team's data, code and reports belong to Southampton University Formula Student and are not reproduced on this page. What follows describes my work and the methods I used. The simulation further down was written from scratch for this site on a synthetic track with generic vehicle parameters, and is labelled as such.
     </div>
 
     <div class="stats">
@@ -57,74 +56,77 @@
       <div class="stat"><div class="num">3</div><div class="label">Seasons in the team</div></div>
     </div>
 
-    <h2>The role of race engineering</h2>
-    <p>A student team operates with limited track time, limited tyres and a limited budget, and every physical test consumes all three. The function of the race engineering group is to ensure that when the car runs, it runs the setup most likely to be quick, and that the reasoning behind that setup can be explained rather than assumed.</p>
-    <p>In practice this reduces to two questions asked continually: what effect does changing a given setup parameter have on lap time, and how much confidence can be placed in the data indicating that effect.</p>
+    <h2>The job</h2>
+    <p>A student team gets very little track time, and has limited tyres and a limited budget. Every run spends all three. My job in race engineering was to make sure that when the car ran, it ran a setup we could justify, and that we already knew what we were trying to learn from the session.</p>
 
     <h2>Simulation</h2>
-    <p>I developed lap-time and tyre load and degradation models in MATLAB and Excel to address the first question. The purpose of these tools was not to produce a single predicted lap time, but to rank changes: to identify which setup parameters affected lap time sufficiently to justify spending track time on them, and which did not.</p>
-    <p>Running sensitivity studies across those parameters meant the team arrived at a test session with a shortlist that had already been filtered analytically, rather than using running to establish that a change was insignificant. Wasted test cycles are among the most expensive things a student team can do.</p>
+    <p>I built lap time and tyre load and degradation models in MATLAB and Excel, and used them to rank setup changes by how much lap time each one was worth. Sensitivity studies were run before a test rather than after it, so we arrived with a shortlist that had already been filtered instead of a list of guesses.</p>
+    <p>That mattered because the expensive failure for a student team is spending a session establishing that a change did nothing.</p>
 
     <h2>Data analysis and correlation</h2>
-    <p>I used MoTeC i2 to analyse race and qualifying laps, comparing logged channel data against the simulation output and against the driver's assessment of the car. These three sources disagree more often than might be expected, and the disagreements are generally where the useful information lies. A model that matches the logged data while contradicting the driver is usually missing a physical effect.</p>
-    <p>This cycle of prediction, measurement and reconciliation was the most valuable aspect of the role, and is the closest equivalent in student motorsport to the work of a professional performance or strategy group.</p>
+    <p>I analysed race and qualifying laps in MoTeC i2, comparing logged channel data against the simulation output and against the driver's description of the car. The three sources disagreed regularly. A model that matched the logged data while contradicting the driver was usually missing a physical effect, and tracking down which one was where most of the work sat.</p>
+    <p>Predicting, measuring and then reconciling the two is the part of the role I would want to carry into a professional performance or strategy group.</p>
 
     <h2>Chassis</h2>
-    <p>Alongside the race engineering work I researched the integration of front roll hoops into the chassis for future vehicles, and presented the technical and feasibility findings to the department and to team management. Presenting to those responsible for acting on a design recommendation requires a different set of skills from carrying out the analysis.</p>
+    <p>Alongside the race engineering work I researched integrating the front roll hoop into the chassis for future cars, and presented the technical and feasibility findings to the department and to team management.</p>
 
     <h2>Results</h2>
-    <p>During my time with the team, SUFST finished <strong>2nd in the FSUK Simulator Championship and lap time challenge in 2025</strong>, and <strong>10th overall at FSUK 2025</strong>. The simulator result is the outcome most directly connected to the setup and simulation work.</p>
+    <p>During my time with the team SUFST finished <strong>2nd in the FSUK Simulator Championship and lap time challenge in 2025</strong>, and <strong>10th overall at FSUK 2025</strong>. The simulator result is the one most directly connected to the setup and simulation work.</p>
 
     <h2>A representative lap time model</h2>
-    <p>As the team's model is not mine to publish, I wrote an equivalent model from scratch for this site: a quasi-steady lap time simulation with tyre degradation, using a synthetic track and generic vehicle parameters. It demonstrates the method I used within the team, and the figures below are its actual output.</p>
+    <p>The team's model is not mine to publish, so I wrote an equivalent one from scratch for this site. It is a quasi-steady lap time simulation with tyre degradation, on a synthetic track with generic vehicle parameters. The method is the one I used in the team, and the figures below are its output.</p>
 
     <h3>Method</h3>
-    <p>The solver makes three passes over a discretised lap. It first establishes the cornering limit at every point. That limit must be solved rather than assumed, because available grip depends on downforce, downforce depends on speed, and speed is the quantity being determined:</p>
+    <p>The solver makes three passes over a discretised lap. It first finds the cornering limit at every point. That has to be solved rather than assumed, because grip depends on downforce, downforce depends on speed, and speed is the quantity being solved for:</p>
 
-    <pre><code>def corner_limit_speed(car, radius, mu):
-    """Speed at which the car is exactly on the lateral grip limit."""
-    k = mu * 0.5 * car.rho * car.cl_a / car.mass       # aero grip term
-    bracket = 1.0 / radius - k
-    v2 = np.where(bracket &gt; 0, mu * 9.81 / bracket, np.inf)
-    return np.minimum(np.sqrt(v2), car.v_max)</code></pre>
+    <pre><code>function v = cornerLimitSpeed(car, radius, mu)
+% Speed at which the car is exactly on the lateral grip limit.
+k       = mu * 0.5 * car.rho * car.cl_a / car.mass;   % aero grip term
+bracket = 1.0 ./ radius - k;
+v2      = inf(size(radius));
+ok      = bracket &gt; 0;
+v2(ok)  = mu * 9.81 ./ bracket(ok);
+v       = min(sqrt(v2), car.v_max);
+end</code></pre>
 
-    <p>Where that bracket falls to zero or below, the car is no longer grip limited through the corner, as downforce is being generated faster than the corner requires it, and the limiting factor becomes power or gearing. A forward pass then applies acceleration and a backward pass applies braking, with both sharing tyre capacity with cornering through a friction ellipse. Lap time is the integral of ds/v.</p>
+    <p>Where that bracket falls to zero or below, the car is generating downforce faster than the corner demands it and is no longer grip limited there, so power and gearing set the speed instead. A forward pass then applies acceleration and a backward pass applies braking, both sharing tyre capacity with cornering through a friction ellipse. Lap time is the integral of ds/v.</p>
 
     <figure>
-      <img src="media/figures/lapsim-speed-trace.png" alt="Speed trace around a simulated lap, showing the car on the grip limit through shaded corner sections and accelerating along the straights." loading="lazy">
-      <figcaption>Simulated speed around the lap. Shaded bands indicate corners, where the car sits on the lateral grip limit shown dashed. Between them it accelerates until limited by power, drag or the following braking point.</figcaption>
+      <img src="media/figures/lapsim-speed-trace.png" alt="Simulated speed around a lap, with corners shown as shaded bands." loading="lazy">
+      <figcaption>Simulated speed around the lap, 30.87 s. The shaded bands are corners, where the car sits on the lateral grip limit. Between them it accelerates until drag, power or the next braking point takes over.</figcaption>
     </figure>
 
     <h3>Tyre degradation</h3>
-    <p>Available grip falls as the tyres do work, so the model reduces peak friction through a stint, at a rate that increases when the car loads the tyres more heavily.</p>
+    <p>Grip falls as the tyres do work, so the model reduces peak friction through a stint, and reduces it faster when the car loads the tyres harder.</p>
 
     <figure>
-      <img src="media/figures/lapsim-degradation.png" alt="Lap time rising over twelve laps for three different tyre degradation rates." loading="lazy">
-      <figcaption>Lap time across a twelve lap stint at three degradation rates. The deficit to the fresh-tyre lap increases steadily, which is what makes stint length a strategic decision.</figcaption>
+      <img src="media/figures/lapsim-degradation.png" alt="Lap time rising across a twelve lap stint at four different downforce levels." loading="lazy">
+      <figcaption>Lap time across a twelve lap stint at four downforce levels. The high downforce car starts quickest and finishes slowest, because it is working the tyres hardest. That crossover is what makes stint length a strategic decision.</figcaption>
     </figure>
 
     <h3>Setup sensitivity</h3>
-    <p>Running the model across a range of downforce levels demonstrates the principal trade-off. Downforce increases cornering speed but also increases drag, and the drag penalty grows with the square of the downforce generated, as the majority of it is induced. Downforce additionally increases the work done by the tyres, which raises the degradation rate across a stint.</p>
+    <p>Sweeping downforce shows the main trade-off. More downforce raises cornering speed and raises drag, and since most of the added drag is induced it grows with the square of the downforce. More downforce also works the tyres harder, which raises the degradation rate across a stint.</p>
 
     <figure>
-      <img src="media/figures/lapsim-sensitivity.png" alt="Left: lap time against downforce level for a single lap and for a twelve lap average, with different optimum points. Right: lap time increasing linearly with vehicle mass." loading="lazy">
-      <figcaption>Left: the quickest single lap occurs at approximately C_L A = 4.75, while the best twelve lap average occurs at approximately 3.25. The configuration that produces the fastest single lap is therefore not the configuration that produces the best race pace. Right: mass sensitivity for this circuit is 0.131 s per 10 kg.</figcaption>
+      <img src="media/figures/lapsim-sensitivity.png" alt="Left: lap time against downforce for a single lap and for a twelve lap average, with different optima. Right: lap time against vehicle mass." loading="lazy">
+      <figcaption>Left: the quickest single lap comes at C<sub>L</sub>A = 4.75, the best twelve lap average at 3.25. The qualifying car and the race car are not the same car. Right: mass sensitivity on this circuit is 0.130 s per 10 kg.</figcaption>
     </figure>
 
-    <p>This divergence is the reason a model of this type is worth developing. A figure such as 0.131 seconds per 10 kg converts a general preference for a lighter car into a quantified target, and the separation between the single-lap and race optima is a decision that cannot reliably be made by feel.</p>
+    <p>Those two results are why the model was worth building. A figure of 0.130 s per 10 kg turns a general preference for a lighter car into a target a design decision can be held against, and the gap between the qualifying and race optima is not something a team settles reliably by feel.</p>
 
     <p>
       <a class="dl" href="code/lap_time_simulation.m" target="_blank" rel="noopener">Download the simulation code (MATLAB)</a>
     </p>
-    <p class="muted-note">Around 230 lines of documented MATLAB, using only base MATLAB with no toolboxes. Running <code>lap_time_simulation</code> reproduces all three figures above exactly as shown. If you would rather change the numbers than read them, the <a href="f1-model.html">Formula 1 model</a> runs the same class of solver interactively in the browser.</p>
+    <p class="muted-note">Around 230 lines of documented MATLAB, base MATLAB only with no toolboxes. Running <code>lap_time_simulation</code> reproduces all three figures above exactly as shown. To change the numbers rather than read them, the <a href="f1-model.html">Formula 1 model</a> runs the same class of solver interactively in the browser.</p>
 
     <h2>Relevant skills</h2>
     <ul>
-      <li>Developing simulation tools intended to support a specific decision.</li>
-      <li>Working with logged vehicle data and reconciling it against both models and driver feedback.</li>
-      <li>Operating within a multidisciplinary team to fixed competition deadlines.</li>
-      <li>Presenting technical findings to those responsible for acting on them.</li>
+      <li>Building simulation tools aimed at a specific decision rather than a general answer.</li>
+      <li>Working with logged vehicle data and reconciling it against models and driver feedback.</li>
+      <li>Working inside a multidisciplinary team to fixed competition deadlines.</li>
+      <li>Presenting technical findings to the people who have to act on them.</li>
     </ul>
+
   </article>
 
   <footer>
