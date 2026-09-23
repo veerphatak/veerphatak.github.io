@@ -39,8 +39,8 @@
     <p class="project-hook">Three seasons with Southampton University Formula Student in the race engineering and chassis groups, developing the simulation and data analysis used to inform setup decisions.</p>
 
     <div class="meta">
-      <span class="tag">Python</span>
       <span class="tag">MATLAB</span>
+      <span class="tag">MoTeC i2</span>
       <span class="tag">MoTeC i2</span>
       <span class="tag">Lap-Time Simulation</span>
       <span class="tag">Tyre Modelling</span>
@@ -62,7 +62,7 @@
     <p>In practice this reduces to two questions asked continually: what effect does changing a given setup parameter have on lap time, and how much confidence can be placed in the data indicating that effect.</p>
 
     <h2>Simulation</h2>
-    <p>I developed lap-time and tyre load and degradation models in Python, MATLAB and Excel to address the first question. The purpose of these tools was not to produce a single predicted lap time, but to rank changes: to identify which setup parameters affected lap time sufficiently to justify spending track time on them, and which did not.</p>
+    <p>I developed lap-time and tyre load and degradation models in MATLAB and Excel to address the first question. The purpose of these tools was not to produce a single predicted lap time, but to rank changes: to identify which setup parameters affected lap time sufficiently to justify spending track time on them, and which did not.</p>
     <p>Running sensitivity studies across those parameters meant the team arrived at a test session with a shortlist that had already been filtered analytically, rather than using running to establish that a change was insignificant. Wasted test cycles are among the most expensive things a student team can do.</p>
 
     <h2>Data analysis and correlation</h2>
@@ -114,9 +114,9 @@
     <p>This divergence is the reason a model of this type is worth developing. A figure such as 0.131 seconds per 10 kg converts a general preference for a lighter car into a quantified target, and the separation between the single-lap and race optima is a decision that cannot reliably be made by feel.</p>
 
     <p>
-      <a class="dl" href="code/lap_time_simulation.py" target="_blank" rel="noopener">Download the simulation code (Python)</a>
+      <a class="dl" href="code/lap_time_simulation.m" target="_blank" rel="noopener">Download the simulation code (MATLAB)</a>
     </p>
-    <p class="muted-note">Approximately 250 lines of documented Python, requiring only NumPy and Matplotlib. Running it reproduces all three figures above.</p>
+    <p class="muted-note">Around 230 lines of documented MATLAB, using only base MATLAB with no toolboxes. Running <code>lap_time_simulation</code> reproduces all three figures above exactly as shown. If you would rather change the numbers than read them, the <a href="f1-model.html">Formula 1 model</a> runs the same class of solver interactively in the browser.</p>
 
     <h2>Relevant skills</h2>
     <ul>
