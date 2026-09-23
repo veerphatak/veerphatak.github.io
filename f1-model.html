@@ -183,7 +183,9 @@
     <p>A model built from public data lands within a few seconds of what a team with far more information actually did. The flat region in the left-hand plot shows why: any first stop between about lap 16 and lap 22 costs almost nothing, so the exact lap was never the decisive call. Track position and traffic matter more than the theoretical pace left on the table, and this model represents neither.</p>
 
     <h2>Interactive strategy calculator</h2>
-    <p>The same calculation, running in the browser. Setting the tyre behaviour and pit loss causes it to evaluate every legal one and two stop strategy, identify the quickest, and plot the resulting pit window. The initial values are those fitted to the 2025 Bahrain race data.</p>
+    <p>The same calculation, running in the browser. Setting the tyre behaviour and pit loss causes it to evaluate every legal one and two stop strategy, identify the quickest, and plot the resulting pit window.</p>
+
+    <p class="muted-note">A note on the starting values. Pit loss, fuel effect and the soft compound's base pace are taken straight from the Bahrain fit. The compound <em>ordering</em> is not: as set out above, the regression could not separate degradation between compounds and returned the hard degrading faster than the soft, which is physically wrong. Rather than ship a default that is known to be backwards, the sliders open on a physically ordered set consistent with the fit's magnitudes, with the soft degrading fastest and the hard slowest, and the compound pace gaps widened to the roughly half a second per step that a real Bahrain weekend shows. The raw fitted numbers are the ones quoted in the section above, and every value here is a slider, so the fit output can be dialled back in.</p>
 
     <div class="sim">
       <div class="sim-grid">
@@ -201,15 +203,15 @@
             <output id="fuelEffectVal"></output>
           </label>
           <label>Soft degradation, <span class="muted">s per lap</span>
-            <input type="range" id="degS" min="0" max="0.4" step="0.005" value="0.112">
+            <input type="range" id="degS" min="0" max="0.4" step="0.005" value="0.135">
             <output id="degSVal"></output>
           </label>
           <label>Medium degradation, <span class="muted">s per lap</span>
-            <input type="range" id="degM" min="0" max="0.4" step="0.005" value="0.104">
+            <input type="range" id="degM" min="0" max="0.4" step="0.005" value="0.105">
             <output id="degMVal"></output>
           </label>
           <label>Hard degradation, <span class="muted">s per lap</span>
-            <input type="range" id="degH" min="0" max="0.4" step="0.005" value="0.117">
+            <input type="range" id="degH" min="0" max="0.4" step="0.005" value="0.080">
             <output id="degHVal"></output>
           </label>
           <label>Soft base pace, <span class="muted">s</span>
@@ -217,11 +219,11 @@
             <output id="baseSVal"></output>
           </label>
           <label>Medium base pace, <span class="muted">s</span>
-            <input type="range" id="baseM" min="94" max="104" step="0.05" value="99.02">
+            <input type="range" id="baseM" min="94" max="104" step="0.05" value="99.35">
             <output id="baseMVal"></output>
           </label>
           <label>Hard base pace, <span class="muted">s</span>
-            <input type="range" id="baseH" min="94" max="104" step="0.05" value="99.02">
+            <input type="range" id="baseH" min="94" max="104" step="0.05" value="99.60">
             <output id="baseHVal"></output>
           </label>
         </div>
@@ -395,7 +397,7 @@
       <li>There are no other cars. No track position, no traffic, no undercut and no dirty air, and in a real race those frequently matter more than the pace left on the table. This is one car against the clock under uncertainty, which is a useful question but not the whole one.</li>
       <li>Safety car laps are not slowed in absolute terms. The effect is common to every strategy, so only the change in pit loss is modelled. That keeps the comparison honest but means the absolute race times are not realistic.</li>
       <li>Tyre warm-up is ignored, so an out-lap is costed the same as any other lap. In reality the first lap on a new set is slower, which slightly favours stopping less often.</li>
-      <li>The compound pace and degradation means come from a fit to a single race, and that fit puts the hard compound degrading faster than the soft, which is physically the wrong way round. It is a real artefact of the data rather than something to hide.</li>
+      <li>The compound behaviour is only partly measured. The fit to a single race resolved base pace but could not separate degradation between compounds, returning the hard degrading faster than the soft. The defaults here therefore use a physically ordered set rather than that result, which means the compound ordering is an assumption in this model and not a finding from the data.</li>
       <li>Tyre life is treated as a fixed number of laps rather than something driven by energy through the tyre, so driving style, fuel load and track temperature do not shift it.</li>
     </ul>
 
