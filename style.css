@@ -185,6 +185,82 @@ a:hover { text-decoration: underline; }
 .sim-readouts .lbl { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
 .sim canvas { width: 100%; height: 320px; display: block; }
 
+/* Monte Carlo panel: grouped controls and a compound selector */
+.sim-controls .sim-group {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  font-weight: 600;
+  margin: 1.1rem 0 0.6rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--border);
+}
+.sim-controls .sim-group:first-child { margin-top: 0; }
+.sim-controls .sim-group .muted { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.sim-controls select {
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.4rem 0.5rem;
+  background: #0b1016;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+.sim-controls select:focus { outline: none; border-color: var(--accent); }
+
+/* Monte Carlo results table */
+.mc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin-bottom: 0.9rem;
+}
+.mc-table th, .mc-table td {
+  text-align: right;
+  padding: 0.45rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.mc-table thead th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.mc-table tbody th {
+  text-align: left;
+  color: var(--text);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.mc-table tbody td { font-family: Consolas, monospace; color: var(--text); }
+.mc-table .plan {
+  display: block;
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
+}
+.mc-table .key {
+  display: inline-block;
+  width: 14px; height: 3px;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  border-radius: 2px;
+}
+.mc-table .key.one { background: #58a6ff; }
+.mc-table .key.two { background: #3fb950; }
+.mc-table .key.three { background: #d29922; }
+.mc-status { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; }
+@media (max-width: 560px) {
+  .mc-table { font-size: 0.74rem; }
+  .mc-table th, .mc-table td { padding: 0.35rem 0.3rem; }
+}
+
 /* ---- Notice box ---- */
 .notice {
   border: 1px solid var(--border);
@@ -290,3 +366,12 @@ footer { border-top: 1px solid var(--border); margin-top: 4rem; }
 .footer-inner { max-width: var(--maxw); margin: 0 auto; padding: 2rem 1.5rem; color: var(--muted); font-size: 0.85rem; text-align: center; }
 .footer-inner a { color: var(--muted); }
 .footer-inner a:hover { color: var(--accent); }
+.footer-note {
+  max-width: var(--maxw);
+  margin: -1.4rem auto 0;
+  padding: 0 1.5rem 1.6rem;
+  color: var(--muted);
+  opacity: 0.7;
+  font-size: 0.72rem;
+  text-align: center;
+}

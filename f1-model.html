@@ -21,6 +21,9 @@
   <meta name="twitter:image" content="https://veerphatak.github.io/media/og-image.png">
   <link rel="stylesheet" href="style.css">
   <script src="assets/sim.js" defer></script>
+  <script src="assets/montecarlo.js" defer></script>
+  <script data-goatcounter="https://veerphatak.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
   <nav class="nav">
@@ -236,6 +239,166 @@
 
     <p class="muted-note">Worth trying: push the pit loss above about 30 seconds and the one stop becomes optimal. Drop the hard compound degradation rate and the shape of the best strategy changes completely.</p>
 
+    <h2>Part three: strategy under uncertainty</h2>
+
+    <p>Everything above assumes the race runs to plan. Real races do not. A pit stop varies by more than a second and occasionally goes badly wrong, one set of tyres is not quite the last set, and roughly two races in five throw a safety car that rearranges the order for reasons nobody predicted. A strategy that is quickest on paper is not automatically the one that wins most often.</p>
+
+    <p>So the useful question is not "which strategy is fastest". It is <strong>"which strategy wins most often, and what does it cost me when it goes wrong"</strong>. That is a distribution, not a number, and the way to get one is to run the race a few thousand times. The one, two and three stop strategies below are each optimised on the mean parameters first, then raced against each other through identical sampled races.</p>
+
+    <h3>What varies, and why it is modelled that way</h3>
+
+    <p><strong>Tyre life and the cliff.</strong> Degradation is not linear to the end of a stint. Each compound has a usable life, and beyond it the loss grows quadratically as the tyre goes off. This matters more than any other choice here: with purely linear degradation a long stint is only linearly slower, and the one stop looks far safer than it really is. The cliff is what makes an over-extended stint genuinely expensive.</p>
+
+    <p><strong>Two separate sources of tyre variation.</strong> A correlated, per-race term covers track and car condition on the day. It moves the absolute lap time but affects every strategy equally, so it mostly cancels in a head-to-head. An independent per-set term covers the fact that no two sets are identical. That one does not cancel, and it is why stopping more often is not free even when the pit loss is small: a three stop strategy takes on four sets, and so four independent draws.</p>
+
+    <p><strong>Pit loss is skewed, not symmetric.</strong> A good stop cannot save five seconds, but a cross-threaded wheel nut can cost fifteen. The distribution is a normal core plus an occasional slow stop and a rare disaster, because a symmetric normal would quietly understate the risk of stopping more often.</p>
+
+    <p><strong>Safety car hazard is not uniform.</strong> The opening laps carry several times the rate of the rest of the race, since that is when the field is closest together and the tyres and brakes are coldest. A large part of the strategic option value sits in those first two laps.</p>
+
+    <h3>The mechanic that actually decides it</h3>
+
+    <p>The interesting effect is not that a safety car slows everyone down, because it slows the whole field equally and cancels out of a comparison. It is that <strong>a stop taken under a safety car costs a little under half of a green flag stop</strong>, and under a virtual safety car around seventy per cent of one. A strategy still holding a stop when the caution appears collects that discount. A strategy that has already stopped collects nothing.</p>
+
+    <p>That makes part of a strategy's value an option value, and a fixed plan cannot capture it. So the simulation pits reactively: if a caution period arrives, the current stint is mature enough, and a stop remains, it takes the stop there instead of at the planned lap. Every strategy faces the identical sampled race, the same interruptions and the same drawn pit losses, so the comparison is decided by the strategies rather than by the random number stream.</p>
+
+    <div class="sim">
+      <div class="sim-grid">
+        <div class="sim-controls">
+          <p class="sim-group">Pit stop</p>
+          <label>Mean pit loss, <span class="muted">s</span>
+            <input type="range" id="mcPitMean" min="14" max="36" step="0.5" value="26">
+            <output id="mcPitMeanVal"></output>
+          </label>
+          <label>Normal spread, <span class="muted">standard deviation, s</span>
+            <input type="range" id="mcPitSd" min="0" max="3" step="0.05" value="0.6">
+            <output id="mcPitSdVal"></output>
+          </label>
+          <label>Slow or botched stop, <span class="muted">% of stops</span>
+            <input type="range" id="mcSlow" min="0" max="30" step="0.5" value="9">
+            <output id="mcSlowVal"></output>
+          </label>
+
+          <p class="sim-group">Race interruptions</p>
+          <label>Safety car, <span class="muted">% per lap, laps 1 to 2</span>
+            <input type="range" id="mcScL1" min="0" max="20" step="0.25" value="6">
+            <output id="mcScL1Val"></output>
+          </label>
+          <label>Safety car, <span class="muted">% per lap, rest of race</span>
+            <input type="range" id="mcSc" min="0" max="4" step="0.05" value="0.55">
+            <output id="mcScVal"></output>
+          </label>
+          <label>Virtual safety car, <span class="muted">% per lap</span>
+            <input type="range" id="mcVsc" min="0" max="5" step="0.05" value="0.9">
+            <output id="mcVscVal"></output>
+          </label>
+          <label>Red flag, <span class="muted">% per race</span>
+            <input type="range" id="mcRf" min="0" max="20" step="0.5" value="5">
+            <output id="mcRfVal"></output>
+          </label>
+
+          <p class="sim-group">Tyre life</p>
+          <label>Soft usable life, <span class="muted">laps</span>
+            <input type="range" id="lifeS" min="8" max="40" step="1" value="19">
+            <output id="lifeSVal"></output>
+          </label>
+          <label>Medium usable life, <span class="muted">laps</span>
+            <input type="range" id="lifeM" min="10" max="50" step="1" value="27">
+            <output id="lifeMVal"></output>
+          </label>
+          <label>Hard usable life, <span class="muted">laps</span>
+            <input type="range" id="lifeH" min="12" max="60" step="1" value="36">
+            <output id="lifeHVal"></output>
+          </label>
+          <label>Cliff severity, <span class="muted">s per lap, per lap over life squared</span>
+            <input type="range" id="mcCliff" min="0" max="0.05" step="0.001" value="0.015">
+            <output id="mcCliffVal"></output>
+          </label>
+
+          <p class="sim-group">Tyre variation <span class="muted">(means are set in the calculator above)</span></p>
+          <label>Track and car condition, <span class="muted">per race, s per lap</span>
+            <input type="range" id="mcRaceSd" min="0" max="0.5" step="0.01" value="0.12">
+            <output id="mcRaceSdVal"></output>
+          </label>
+          <label>Soft set to set pace, <span class="muted">s per lap</span>
+            <input type="range" id="sdBaseS" min="0" max="0.3" step="0.005" value="0.055">
+            <output id="sdBaseSVal"></output>
+          </label>
+          <label>Medium set to set pace, <span class="muted">s per lap</span>
+            <input type="range" id="sdBaseM" min="0" max="0.3" step="0.005" value="0.045">
+            <output id="sdBaseMVal"></output>
+          </label>
+          <label>Hard set to set pace, <span class="muted">s per lap</span>
+            <input type="range" id="sdBaseH" min="0" max="0.3" step="0.005" value="0.040">
+            <output id="sdBaseHVal"></output>
+          </label>
+          <label>Soft degradation spread, <span class="muted">s per lap squared</span>
+            <input type="range" id="sdDegS" min="0" max="0.06" step="0.001" value="0.018">
+            <output id="sdDegSVal"></output>
+          </label>
+          <label>Medium degradation spread, <span class="muted">s per lap squared</span>
+            <input type="range" id="sdDegM" min="0" max="0.06" step="0.001" value="0.014">
+            <output id="sdDegMVal"></output>
+          </label>
+          <label>Hard degradation spread, <span class="muted">s per lap squared</span>
+            <input type="range" id="sdDegH" min="0" max="0.06" step="0.001" value="0.012">
+            <output id="sdDegHVal"></output>
+          </label>
+
+          <p class="sim-group">Simulation</p>
+          <label>Races simulated
+            <select id="mcRuns">
+              <option value="1000">1,000</option>
+              <option value="5000" selected>5,000</option>
+              <option value="20000">20,000</option>
+            </select>
+          </label>
+          <button id="mcRun" class="btn">Run again</button>
+        </div>
+
+        <div class="sim-output">
+          <div class="sim-readouts">
+            <div><span class="big" id="mcWinner">–</span><span class="lbl">Wins most often</span></div>
+            <div><span class="big" id="mcWinProb">–</span><span class="lbl">Of races simulated</span></div>
+            <div><span class="big" id="mcMedianTime">–</span><span class="lbl">Quickest median race</span></div>
+          </div>
+
+          <table class="mc-table">
+            <thead>
+              <tr><th>Strategy</th><th>Wins</th><th>Median</th><th>5th to 95th</th><th>Bad day (99th)</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row"><span class="key one"></span>One stop<span class="plan" id="mc_one_plan">–</span></th>
+                <td id="mc_one_win">–</td><td id="mc_one_med">–</td><td id="mc_one_spread">–</td><td id="mc_one_worst">–</td>
+              </tr>
+              <tr>
+                <th scope="row"><span class="key two"></span>Two stops<span class="plan" id="mc_two_plan">–</span></th>
+                <td id="mc_two_win">–</td><td id="mc_two_med">–</td><td id="mc_two_spread">–</td><td id="mc_two_worst">–</td>
+              </tr>
+              <tr>
+                <th scope="row"><span class="key three"></span>Three stops<span class="plan" id="mc_three_plan">–</span></th>
+                <td id="mc_three_win">–</td><td id="mc_three_med">–</td><td id="mc_three_spread">–</td><td id="mc_three_worst">–</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <canvas id="mcChart"></canvas>
+          <p class="mc-status" id="mcStatus">Running...</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="muted-note">Worth trying: set both safety car rates to zero and the ranking collapses back to raw pace, which is what the deterministic calculator already told you. Put the early race safety car rate back up and the strategy still holding a stop starts winning races it has no right to win on pace. Drop the cliff severity to zero and the one stop becomes far too attractive, which is exactly the error a linear degradation model makes. Widen the slow stop percentage and watch the three stop tail stretch, since it is exposed to that risk three times.</p>
+
+    <h3>What this model does not do</h3>
+    <ul>
+      <li>There are no other cars. No track position, no traffic, no undercut and no dirty air, and in a real race those frequently matter more than the pace left on the table. This is one car against the clock under uncertainty, which is a useful question but not the whole one.</li>
+      <li>Safety car laps are not slowed in absolute terms. The effect is common to every strategy, so only the change in pit loss is modelled. That keeps the comparison honest but means the absolute race times are not realistic.</li>
+      <li>Tyre warm-up is ignored, so an out-lap is costed the same as any other lap. In reality the first lap on a new set is slower, which slightly favours stopping less often.</li>
+      <li>The compound pace and degradation means come from a fit to a single race, and that fit puts the hard compound degrading faster than the soft, which is physically the wrong way round. It is a real artefact of the data rather than something to hide.</li>
+      <li>Tyre life is treated as a fixed number of laps rather than something driven by energy through the tyre, so driving style, fuel load and track temperature do not shift it.</li>
+    </ul>
+
     <h2>Relevant skills</h2>
     <ul>
       <li>Developing a physical model and validating it against measured data, including quantifying and reporting its limitations.</li>
@@ -252,6 +415,7 @@
 
   <footer>
     <div class="footer-inner">Veer Phatak · Southampton, UK · <a href="mailto:veerphatak@gmail.com">veerphatak@gmail.com</a> · <a href="https://www.linkedin.com/in/veer-phatak-683665238" target="_blank" rel="noopener">LinkedIn</a></div>
+    <div class="footer-note">This site uses cookieless, privacy-friendly analytics. No cookies are set and no personal data is collected.</div>
   </footer>
 </body>
 </html>
