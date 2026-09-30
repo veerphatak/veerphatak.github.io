@@ -20,16 +20,46 @@
   <meta name="twitter:description" content="Engineering portfolio of Veer Phatak. Aerodynamics, race strategy and design projects, with interactive lap time and race strategy models you can run in the browser.">
   <meta name="twitter:image" content="https://veerphatak.github.io/media/og-image.png">
   <link rel="stylesheet" href="style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Veer Phatak",
+    "url": "https://veerphatak.github.io/",
+    "email": "mailto:veerphatak@gmail.com",
+    "jobTitle": "MEng Aeronautics and Astronautics Student",
+    "description": "Final-year MEng Aeronautics and Astronautics student specialising in aerodynamics, seeking graduate engineering roles starting in 2027.",
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "University of Southampton",
+      "url": "https://www.southampton.ac.uk/"
+    },
+    "address": { "@type": "PostalAddress", "addressCountry": "GB", "addressRegion": "England" },
+    "sameAs": ["https://www.linkedin.com/in/veer-phatak-683665238"],
+    "knowsAbout": [
+      "Aerodynamics", "Computational Fluid Dynamics", "Wind tunnel testing",
+      "Race strategy", "Lap time simulation", "Structural analysis",
+      "Finite element analysis", "CAD", "Python", "MATLAB"
+    ],
+    "seeks": {
+      "@type": "Demand",
+      "name": "Graduate engineering roles starting in 2027"
+    }
+  }
+  </script>
   <script data-goatcounter="https://veerphatak.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
+  <a class="skip-link" href="#work">Skip to content</a>
   <nav class="nav">
     <div class="nav-inner">
       <a href="index.html" class="brand">Veer Phatak</a>
       <div class="nav-links">
+        <a href="#work">Work</a>
         <a href="#about">About</a>
-        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">All projects</a>
         <a href="#contact">Contact</a>
       </div>
     </div>
@@ -39,9 +69,9 @@
     <h1>Veer <span class="accent">Phatak</span></h1>
     <p class="tagline">Final-year MEng Aeronautics &amp; Astronautics student at the University of Southampton, specialising in aerodynamics, race strategy and engineering design.</p>
     <div class="hero-actions">
-      <a class="btn primary" href="docs/Veer%20Phatak%20CV.pdf" target="_blank" rel="noopener">Download CV (PDF)</a>
-      <a class="btn" href="f1-model.html">Try the lap time simulator</a>
-      <a class="btn" href="#projects">View projects</a>
+      <a class="btn primary" href="f1-model.html">Try the lap time simulator</a>
+      <a class="btn" href="#work">View work</a>
+      <a class="btn" href="docs/Veer%20Phatak%20CV.pdf" target="_blank" rel="noopener">Download CV (PDF)</a>
     </div>
     <div class="facts">
       <span><b>71.7%</b> first-class Year 3 average</span>
@@ -50,41 +80,87 @@
     </div>
   </header>
 
+  <main id="work">
+  <section class="wrap wide">
+    <p class="section-title">Featured work</p>
+    <div class="cards featured">
+
+      <a class="card" href="f1-model.html">
+        <div class="card-media">
+          <span class="badge">Interactive</span><img src="media/thumbs/f1-model.jpg" alt="Bahrain circuit map coloured by speed, model against measured" width="800" height="450"></div>
+        <div class="card-body">
+          <h3>Predicting an F1 Lap, and Checking It Against the Real One</h3>
+          <p>A physics lap time model and a tyre degradation model validated against 2025 Bahrain Grand Prix telemetry. The model predicts the pole lap to within 0.7%, and evaluates 14,532 race strategies against the one that won the race. Run it yourself in the browser.</p>
+          <p class="card-tags">Python · JavaScript · Telemetry · 2026</p>
+          <span class="arrow">View project →</span>
+        </div>
+      </a>
+
+      <a class="card" href="motogp.html">
+        <div class="card-media"><img src="media/thumbs/motogp.jpg" alt="A MotoGP motorcycle at full lean through a corner" width="800" height="450"></div>
+        <div class="card-body">
+          <h3>Cornering Aerodynamics of a MotoGP-Style Motorcycle</h3>
+          <p>Final-year group design project combining CFD with wind tunnel testing. I am the team leader, the aerodynamic design lead, and the lead for CAD development and manufacture of the test model.</p>
+          <p class="card-tags">CFD · Wind tunnel · CAD · 2026-27</p>
+          <span class="arrow">View project →</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
   <section class="wrap wide" id="about">
-    <div class="intro-grid">
-      <div>
-        <p class="section-title">About</p>
-        <div class="card plain-card">
-          <p>I am in the final year of a four-year integrated MEng in Aeronautics and Astronautics at the University of Southampton, specialising in aerodynamics, and I graduate in July 2027. I completed my third year with a 71.7% first-class average.</p>
-          <p>My work combines design with quantitative analysis. I am most interested in problems that begin with physical hardware, such as a wing, a test rig or an enclosure, and end in a result that can be justified numerically. That has included designing and building a laboratory flume and the measurement system used to analyse it, developing lap-time and tyre degradation models used to inform race team setup decisions, and designing components that had to be manufactured and used in the field.</p>
-          <p>I am seeking graduate roles in motorsport aerodynamics and race strategy.</p>
-        </div>
+    <p class="section-title">About</p>
+    <div class="about-grid">
+      <div class="about-block">
+        <p>I am in the final year of a four-year integrated MEng in Aeronautics and Astronautics at the University of Southampton, specialising in aerodynamics, and I graduate in July 2027. I completed my third year with a 71.7% first-class average.</p>
+        <p>My work combines design with quantitative analysis. I am most interested in problems that begin with physical hardware, such as a wing, a test rig or an enclosure, and end in a result that can be justified numerically. That has included designing and building a laboratory flume and the measurement system used to analyse it, developing lap-time and tyre degradation models used to inform race team setup decisions, and designing components that had to be manufactured and used in the field.</p>
+        <p>I am seeking graduate engineering roles starting in 2027.</p>
       </div>
-      <div>
-        <p class="section-title">Skills</p>
-        <div class="card plain-card">
-          <p><strong>Aerodynamics &amp; CFD:</strong> ANSYS Fluent, XFLR5, XFOIL, OpenVSP/VSPAERO, panel methods, wind tunnel testing and correlation</p>
-          <p><strong>Programming &amp; data:</strong> Python (NumPy, pandas, OpenCV, Matplotlib), MATLAB, Excel, Git; Kalman filtering, uncertainty analysis, automation</p>
-          <p><strong>Design &amp; manufacture:</strong> SolidWorks, design for manufacture including injection moulding, 3D-printed prototyping, Arduino instrumentation</p>
-          <p><strong>Structures &amp; FEA:</strong> ANSYS Mechanical, mesh convergence studies, stress and displacement interpretation</p>
-          <p><strong>Motorsport:</strong> MoTeC i2, lap-time simulation, tyre load and degradation modelling, setup evaluation</p>
-        </div>
+      <aside class="glance">
+        <h3>At a glance</h3>
+        <dl>
+          <dt>Degree</dt><dd>MEng Aeronautics &amp; Astronautics (Aerodynamics), University of Southampton</dd>
+          <dt>Graduating</dt><dd>July 2027</dd>
+          <dt>Year 3 average</dt><dd>71.7%, first class</dd>
+          <dt>Seeking</dt><dd>Graduate engineering roles, starting 2027</dd>
+          <dt>Based</dt><dd>Southampton and Maidenhead, UK</dd>
+          <dt>Core tools</dt><dd>Python, MATLAB, ANSYS Fluent, ANSYS Mechanical, SolidWorks, XFOIL/XFLR5, MoTeC i2</dd>
+        </dl>
+        <a class="btn" href="docs/Veer%20Phatak%20CV.pdf" target="_blank" rel="noopener">Download CV (PDF)</a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="wrap wide" id="skills">
+    <p class="section-title">Skills</p>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <h3>Aerodynamics &amp; CFD</h3>
+        <p>ANSYS Fluent, XFLR5, XFOIL, OpenVSP/VSPAERO, panel methods, wind tunnel testing and correlation</p>
+      </div>
+      <div class="skill-group">
+        <h3>Programming &amp; data</h3>
+        <p>Python (NumPy, pandas, OpenCV, Matplotlib), MATLAB, Excel, Git; Kalman filtering, uncertainty analysis, automation</p>
+      </div>
+      <div class="skill-group">
+        <h3>Design &amp; manufacture</h3>
+        <p>SolidWorks, design for manufacture including injection moulding, 3D-printed prototyping, Arduino instrumentation</p>
+      </div>
+      <div class="skill-group">
+        <h3>Structures &amp; FEA</h3>
+        <p>ANSYS Mechanical, mesh convergence studies, stress and displacement interpretation</p>
+      </div>
+      <div class="skill-group">
+        <h3>Motorsport</h3>
+        <p>MoTeC i2, lap-time simulation, tyre load and degradation modelling, setup evaluation</p>
       </div>
     </div>
   </section>
 
-  <main class="wrap wide" id="projects">
-    <p class="section-title">Projects</p>
+  <section class="wrap wide" id="projects">
+    <p class="section-title">All projects</p>
     <div class="cards">
-
-      <a class="card" href="motogp.html">
-        <div class="card-media"><img src="media/thumbs/motogp.jpg" alt="A MotoGP motorcycle at full lean through a corner" loading="lazy" width="800" height="450"></div>
-        <div class="card-body">
-          <h3>Cornering Aerodynamics of a MotoGP-Style Motorcycle</h3>
-          <p>Final-year group design project using CFD and wind tunnel testing. I am the team leader, the aerodynamic design lead, and the lead for CAD development and manufacture of the test model.</p>
-          <span class="arrow">View project →</span>
-        </div>
-      </a>
 
       <a class="card" href="f1-model.html">
         <div class="card-media">
@@ -92,6 +168,17 @@
         <div class="card-body">
           <h3>Predicting an F1 Lap, and Checking It Against the Real One</h3>
           <p>A physics lap time model and a tyre degradation model validated against 2025 Bahrain Grand Prix telemetry. The model predicts the pole lap to within 0.7%, and evaluates 14,532 race strategies against the one that won the race.</p>
+          <p class="card-tags">Python · JavaScript · Telemetry · 2026</p>
+          <span class="arrow">View project →</span>
+        </div>
+      </a>
+
+      <a class="card" href="motogp.html">
+        <div class="card-media"><img src="media/thumbs/motogp.jpg" alt="A MotoGP motorcycle at full lean through a corner" loading="lazy" width="800" height="450"></div>
+        <div class="card-body">
+          <h3>Cornering Aerodynamics of a MotoGP-Style Motorcycle</h3>
+          <p>Final-year group design project using CFD and wind tunnel testing. I am the team leader, the aerodynamic design lead, and the lead for CAD development and manufacture of the test model.</p>
+          <p class="card-tags">CFD · Wind tunnel · CAD · 2026-27</p>
           <span class="arrow">View project →</span>
         </div>
       </a>
@@ -102,6 +189,7 @@
         <div class="card-body">
           <h3>Tracking Plastics in Moving Water</h3>
           <p>Individual Master's research project, graded 75%. A Python and OpenCV measurement system converting high-speed footage of plastic particles in a flume into validated trajectory and velocity data.</p>
+          <p class="card-tags">Python · OpenCV · Test rig · 2025-26</p>
           <span class="arrow">View project →</span>
         </div>
       </a>
@@ -111,6 +199,7 @@
         <div class="card-body">
           <h3>Formula Student: Race Engineering</h3>
           <p>Three seasons with Southampton University Formula Student. Lap-time and tyre degradation simulation, and MoTeC lap analysis used to inform setup and strategy decisions. 2nd in the FSUK Simulator Championship.</p>
+          <p class="card-tags">MoTeC i2 · Simulation · MATLAB · 2023-</p>
           <span class="arrow">View project →</span>
         </div>
       </a>
@@ -120,6 +209,7 @@
         <div class="card-body">
           <h3>R&amp;D Engineering Internship, TREND Networks</h3>
           <p>Seven weeks in the R&amp;D team at TREND Networks, designing test and measurement equipment. Three design projects, one of which was released for manufacture after ten iterations, alongside responsibility for all office 3D printing.</p>
+          <p class="card-tags">SolidWorks · Design for manufacture · 2026</p>
           <span class="arrow">View project →</span>
         </div>
       </a>
@@ -129,6 +219,7 @@
         <div class="card-body">
           <h3>Fixed-Wing UAV Wing Design</h3>
           <p>Second-year group project, ranked 1st in the cohort. Aerodynamics and stability lead, and designer of the wing structure. Predicted a 23.1 m/s speed range and measured 19.8 m/s in flight, the largest of any team in the year group.</p>
+          <p class="card-tags">Structures · XFLR5 · Flight test · 2024-25</p>
           <span class="arrow">View project →</span>
         </div>
       </a>
@@ -139,11 +230,13 @@
         <div class="card-body">
           <h3>Coursework &amp; Papers</h3>
           <p>Selected technical reports, available to download: Karman-Trefftz aerofoil analysis by conformal mapping and panel method, minimum-length supersonic nozzle design by the method of characteristics, wind tunnel testing of a NACA 0020, and a wing box FEA convergence study.</p>
+          <p class="card-tags">Reports · Panel method · FEA · PDF</p>
           <span class="arrow">View coursework →</span>
         </div>
       </a>
 
     </div>
+  </section>
   </main>
 
   <section class="contact" id="contact">

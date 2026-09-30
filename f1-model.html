@@ -26,21 +26,26 @@
           async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   <nav class="nav">
     <div class="nav-inner">
       <a href="index.html" class="brand">Veer Phatak</a>
       <div class="nav-links">
-        <a href="index.html#projects">Projects</a>
+        <a href="index.html#work">Work</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#projects">All projects</a>
         <a href="index.html#contact">Contact</a>
       </div>
     </div>
   </nav>
 
-  <article class="wrap project">
+  <article class="wrap project" id="main">
     <a href="index.html#projects" class="back">← Back to projects</a>
 
     <h1 class="project-title">Predicting a Formula 1 Lap, and Checking It Against the Real One</h1>
     <p class="project-hook">A physics lap time model and a tyre degradation model, both developed from first principles and validated against telemetry from the 2025 Bahrain Grand Prix. The lap model predicts the pole lap to within 0.7%, and the strategy model places the winning strategy 3.8 seconds from its calculated optimum.</p>
+
+    <p class="availability"><strong>Seeking graduate engineering roles.</strong> <span class="sep">|</span> Graduating July 2027 <span class="sep">|</span> <a href="mailto:veerphatak@gmail.com">Get in touch</a></p>
 
     <div class="meta">
       <span class="tag">Python</span>
@@ -413,6 +418,11 @@
       <a class="dl" href="https://github.com/veerphatak/veerphatak.github.io/tree/main/code/f1-lapsim" target="_blank" rel="noopener">View the code on GitHub</a>
     </p>
     <p class="muted-note">The lap model and the stint and strategy model, each implemented twice. The Python versions use FastF1 to pull the session data and reproduce every figure on this page. The MATLAB versions (<code>f1_lap_model.m</code>, <code>f1_stint_model.m</code>) carry the same solver and the same regression, reading the extracted circuit geometry and cleaned lap set from <code>data/</code> so they run without a FastF1 install. Session download stays in Python because FastF1 has no MATLAB equivalent. The interactive version above is a JavaScript port of the same solver, since neither Python nor MATLAB runs in a browser.</p>
+    <nav class="pagenav" aria-label="Project navigation">
+      <a class="prev" href="coursework.html"><span class="dir">&larr; Previous project</span><span class="ttl">Coursework &amp; Papers</span></a>
+      <a class="next" href="motogp.html"><span class="dir">Next project &rarr;</span><span class="ttl">Cornering Aerodynamics of a MotoGP-Style Motorcycle</span></a>
+    </nav>
+
   </article>
 
   <footer>

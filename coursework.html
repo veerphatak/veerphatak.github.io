@@ -24,21 +24,26 @@
           async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   <nav class="nav">
     <div class="nav-inner">
       <a href="index.html" class="brand">Veer Phatak</a>
       <div class="nav-links">
-        <a href="index.html#projects">Projects</a>
+        <a href="index.html#work">Work</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#projects">All projects</a>
         <a href="index.html#contact">Contact</a>
       </div>
     </div>
   </nav>
 
-  <article class="wrap project">
+  <article class="wrap project" id="main">
     <a href="index.html#projects" class="back">← Back to projects</a>
 
     <h1 class="project-title">Coursework &amp; Papers</h1>
     <p class="project-hook">Selected technical coursework from my MEng at the University of Southampton, with the full reports available to download. Each summary sets out the method applied and the results obtained.</p>
+
+    <p class="availability"><strong>Seeking graduate engineering roles.</strong> <span class="sep">|</span> Graduating July 2027 <span class="sep">|</span> <a href="mailto:veerphatak@gmail.com">Get in touch</a></p>
 
     <div class="notice">
       These are my own submitted reports, provided to demonstrate method and technical reporting. Students taking these modules should note that parameters are assigned individually, so the numerical results here do not transfer.
@@ -103,6 +108,11 @@
     <p>The principal engineering content is in the meshing rather than the final stress value. I carried out a convergence study from approximately <strong>24,000 to 1.9 million elements</strong>, tracking peak stress against solve time and memory usage. Peak stress varied by well under one percent across that range while computational cost increased by orders of magnitude, which is the justification for convergence testing: beyond a certain refinement the additional precision has no engineering value, and the appropriate decision is to stop refining and state why.</p>
 
     <p class="muted-note">Report available on request. It is written on the university's assignment template, so it is not reproduced here.</p>
+    <nav class="pagenav" aria-label="Project navigation">
+      <a class="prev" href="uav.html"><span class="dir">&larr; Previous project</span><span class="ttl">Fixed-Wing UAV Wing Design</span></a>
+      <a class="next" href="f1-model.html"><span class="dir">Next project &rarr;</span><span class="ttl">Predicting an F1 Lap, and Checking It Against the Real One</span></a>
+    </nav>
+
   </article>
 
   <footer>
