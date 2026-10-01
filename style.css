@@ -135,6 +135,12 @@ a:hover { text-decoration: underline; }
   margin: 1.5rem 0;
 }
 .sim-grid { display: grid; grid-template-columns: 260px 1fr; gap: 1.5rem; }
+/* A grid item defaults to min-width:auto, so a track can be forced wider than
+   its share by its own contents. The chart canvas carries an intrinsic width
+   (its backing-store size, which is the CSS width times the device pixel
+   ratio), so without this the 1fr track can be pushed past the panel edge and
+   the chart overflows its box on a high-DPI screen. */
+.sim-grid > * { min-width: 0; }
 @media (max-width: 780px) { .sim-grid { grid-template-columns: 1fr; } }
 
 .sim-controls label {
@@ -188,7 +194,10 @@ a:hover { text-decoration: underline; }
   font-family: Consolas, monospace;
 }
 .sim-readouts .lbl { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
-.sim canvas { width: 100%; height: 320px; display: block; }
+/* max-width keeps the canvas inside its column even if the backing store is
+   larger than the box; the explicit display:block stops an inline canvas from
+   reporting a zero clientWidth before layout settles. */
+.sim canvas { width: 100%; max-width: 100%; height: 320px; display: block; }
 
 /* Monte Carlo panel: grouped controls and a compound selector */
 .sim-controls .sim-group {
@@ -250,6 +259,11 @@ a:hover { text-decoration: underline; }
   font-size: 0.72rem;
   color: var(--muted);
   margin-top: 0.1rem;
+  /* The parent th sets white-space: nowrap to keep "Three stops" on one line.
+     The stint plan underneath inherited it, so a three stop plan forced the
+     first column about 240px wide, pushed the table's min-content width past
+     the panel, and the last column rendered outside the panel border. */
+  white-space: normal;
 }
 .mc-table .key {
   display: inline-block;
@@ -265,6 +279,15 @@ a:hover { text-decoration: underline; }
 @media (max-width: 560px) {
   .mc-table { font-size: 0.74rem; }
   .mc-table th, .mc-table td { padding: 0.35rem 0.3rem; }
+  /* Five columns of numbers cannot be squeezed into a phone without making
+     them unreadable, and the nowrap headers give the table a min-content width
+     of about 383px. Below this breakpoint it scrolls sideways inside its own
+     box instead of pushing the whole page wider than the viewport. */
+  .mc-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* ---- Notice box ---- */

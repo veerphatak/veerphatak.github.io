@@ -9,17 +9,57 @@
   "use strict";
 
   const NAVY = "#58a6ff", RED = "#ff6b5a", MUTED = "#8b949e", GRID = "#233041";
+  const PANEL = "#161b22";   /* matches --bg-soft, so the legend reads as opaque */
   const RHO = 1.20, G = 9.81;
 
-  /* ---------- small canvas helper ---------- */
+  /* ---------- small canvas helper ----------
+     A canvas measured before layout has settled reports a width of zero. The
+     old version wrote that straight into cv.width, which produces a canvas
+     with no pixels in it: the simulation still runs and the readouts still
+     fill in, but the chart area stays blank. Every fallback below exists to
+     make sure a zero never reaches the backing store.
+
+     The device pixel ratio is capped at 2. Beyond that the backing store grows
+     faster than the extra sharpness is worth, and on a 3x display a wide chart
+     can hit the browser's maximum canvas area and fail to paint at all. */
   function setupCanvas(cv) {
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const rect = cv.getBoundingClientRect();
-    cv.width = rect.width * dpr;
-    cv.height = rect.height * dpr;
+
+    let w = rect.width;
+    if (!(w > 0) && cv.parentElement) w = cv.parentElement.clientWidth;
+    if (!(w > 0)) w = 600;
+
+    let h = rect.height;
+    if (!(h > 0)) h = 320;
+
+    const bw = Math.max(1, Math.round(w * dpr));
+    const bh = Math.max(1, Math.round(h * dpr));
+    // Assigning width/height clears the canvas, so only do it when it changed.
+    if (cv.width !== bw) cv.width = bw;
+    if (cv.height !== bh) cv.height = bh;
+
     const ctx = cv.getContext("2d");
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    return { ctx, w: rect.width, h: rect.height };
+    ctx.clearRect(0, 0, w, h);
+    return { ctx, w, h };
+  }
+
+  /* Re-draw whenever the canvas box actually changes size. This covers the
+     cases a one-off render at DOMContentLoaded misses: web fonts landing late,
+     the panel being scrolled into view, a zoom change, and a browser that
+     reports zero width on the first pass. */
+  function onResize(cv, render) {
+    if (typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", render);
+      return;
+    }
+    let last = -1;
+    const ro = new ResizeObserver(() => {
+      const w = cv.getBoundingClientRect().width;
+      if (w > 0 && Math.abs(w - last) > 0.5) { last = w; render(); }
+    });
+    ro.observe(cv);
   }
 
   function axes(ctx, w, h, pad, xr, yr, xlabel, ylabel) {
@@ -59,6 +99,43 @@
       i ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y);
     }
     ctx.stroke(); ctx.restore();
+  }
+
+  /* Legend on an opaque panel, sized from the measured text and clamped into
+     the plot area. The previous version wrote the labels straight onto the
+     chart at a hard-coded offset, so a curve running through that corner went
+     straight over the text, and on a narrow panel the labels started off the
+     left-hand edge. Matches the Monte Carlo chart's legend. */
+  function legend(ctx, w, pad, items) {
+    ctx.save();
+    ctx.font = "12px system-ui, sans-serif";
+    ctx.textAlign = "left"; ctx.textBaseline = "middle";
+
+    const SW = 22, GAP = 8, ROW = 18, PX = 10, PY = 7;
+    let tw = 0;
+    for (const it of items) tw = Math.max(tw, ctx.measureText(it.label).width);
+    const bw = PX * 2 + SW + GAP + tw;
+    const bh = PY * 2 + ROW * items.length;
+    const bx = Math.max(pad.l + 4, w - pad.r - bw - 4);
+    const by = pad.t + 4;
+
+    ctx.fillStyle = PANEL; ctx.strokeStyle = GRID; ctx.lineWidth = 1;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, 6);
+    else ctx.rect(bx, by, bw, bh);
+    ctx.fill(); ctx.stroke();
+
+    let ly = by + PY + ROW / 2;
+    for (const it of items) {
+      ctx.save();
+      ctx.strokeStyle = it.colour; ctx.lineWidth = 2.2;
+      if (it.dash) ctx.setLineDash(it.dash);
+      ctx.beginPath(); ctx.moveTo(bx + PX, ly); ctx.lineTo(bx + PX + SW, ly); ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = MUTED; ctx.fillText(it.label, bx + PX + SW + GAP, ly);
+      ly += ROW;
+    }
+    ctx.restore();
   }
 
   /* =================================================================
@@ -169,12 +246,10 @@
       line(ctx, d, real, xr, yr, pad, w, h, NAVY, 2);
       line(ctx, d, Array.from(speed, v => v * 3.6), xr, yr, pad, w, h, RED, 1.8, [6, 4]);
 
-      // legend
-      ctx.font = "12px system-ui, sans-serif"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
-      ctx.fillStyle = NAVY; ctx.fillRect(w - 190, pad.t + 8, 14, 3);
-      ctx.fillText("Measured (real pole lap)", w - 170, pad.t + 9);
-      ctx.fillStyle = RED; ctx.fillRect(w - 190, pad.t + 26, 14, 3);
-      ctx.fillText("Your car", w - 170, pad.t + 27);
+      legend(ctx, w, pad, [
+        { label: "Measured (real pole lap)", colour: NAVY },
+        { label: "Your car", colour: RED, dash: [6, 4] },
+      ]);
     },
 
     init(data) {
@@ -200,7 +275,7 @@
         set("mass", f.mass); set("power", Math.round(f.power / 1000)); set("brakeG", f.brakeG);
         this.render();
       });
-      window.addEventListener("resize", () => this.render());
+      onResize(document.getElementById("lapChart"), () => this.render());
       this.render();
     }
   };
@@ -287,11 +362,10 @@
       draw(window1, MUTED);
       draw(window2, "#3fb950");
 
-      ctx.font = "12px system-ui, sans-serif"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
-      ctx.fillStyle = MUTED; ctx.fillRect(w - 150, pad.t + 8, 14, 3);
-      ctx.fillText("One stop", w - 130, pad.t + 9);
-      ctx.fillStyle = "#3fb950"; ctx.fillRect(w - 150, pad.t + 26, 14, 3);
-      ctx.fillText("Two stops", w - 130, pad.t + 27);
+      legend(ctx, w, pad, [
+        { label: "One stop", colour: MUTED },
+        { label: "Two stops", colour: "#3fb950" },
+      ]);
     },
 
     init() {
@@ -305,7 +379,7 @@
           });
           document.getElementById(id + "Val").textContent = el.value;
         });
-      window.addEventListener("resize", () => this.render());
+      onResize(document.getElementById("stratChart"), () => this.render());
       this.render();
     }
   };
