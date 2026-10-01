@@ -68,15 +68,55 @@
     return (STEPS.find(s => m <= s) || 10) * p;
   }
 
-  /* ---------- canvas helpers ---------- */
+  /* ---------- canvas helpers ----------
+     clientWidth reports 0 for an element that has not been laid out yet, and
+     the old version wrote that straight into cv.width. The result is a canvas
+     with no pixels: the 5,000 races still run and the table still fills in,
+     but the chart area stays blank, which looks like the simulation failed
+     when it did not. Every fallback below stops a zero reaching the backing
+     store. getBoundingClientRect is used instead of clientWidth because it
+     reports fractional widths, which matters inside a CSS grid track.
+
+     The device pixel ratio is capped at 2: past that the backing store grows
+     faster than the visible sharpness, and a wide chart on a 3x display can
+     exceed the browser's maximum canvas area and silently fail to paint. */
   function setupCanvas(cv) {
-    const dpr = window.devicePixelRatio || 1;
-    const w = cv.clientWidth, h = cv.clientHeight || 320;
-    cv.width = w * dpr; cv.height = h * dpr;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = cv.getBoundingClientRect();
+
+    let w = rect.width;
+    if (!(w > 0)) w = cv.clientWidth;
+    if (!(w > 0) && cv.parentElement) w = cv.parentElement.clientWidth;
+    if (!(w > 0)) w = 600;
+
+    let h = rect.height;
+    if (!(h > 0)) h = cv.clientHeight;
+    if (!(h > 0)) h = 320;
+
+    const bw = Math.max(1, Math.round(w * dpr));
+    const bh = Math.max(1, Math.round(h * dpr));
+    if (cv.width !== bw) cv.width = bw;
+    if (cv.height !== bh) cv.height = bh;
+
     const ctx = cv.getContext("2d");
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, w, h);
     return { ctx, w, h };
+  }
+
+  /* Re-draw when the canvas box changes size: late web fonts, a zoom change,
+     or a first pass that measured zero. */
+  function onResize(cv, render) {
+    if (typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", render);
+      return;
+    }
+    let last = -1;
+    const ro = new ResizeObserver(() => {
+      const w = cv.getBoundingClientRect().width;
+      if (w > 0 && Math.abs(w - last) > 0.5) { last = w; render(); }
+    });
+    ro.observe(cv);
   }
 
   function axes(ctx, w, h, pad, xr, yr, xlabel, ylabel) {
@@ -447,7 +487,10 @@
       for (const c of curves) tw = Math.max(tw, ctx.measureText(c.s.label).width);
       const bw = PX * 2 + SW + GAP + tw;
       const bh = PY * 2 + ROW * curves.length;
-      const bx = w - pad.r - bw - 4;
+      // Clamp into the plot area: on a narrow panel the measured text can be
+      // wider than the space to the right of pad.l, which pushed the legend
+      // off the left edge of the canvas.
+      const bx = Math.max(pad.l + 4, w - pad.r - bw - 4);
       const by = pad.t + 4;
 
       ctx.save();
@@ -499,7 +542,9 @@
       if (runs) runs.addEventListener("change", () => this.render());
       const btn = document.getElementById("mcRun");
       if (btn) btn.addEventListener("click", () => this.render());
-      window.addEventListener("resize", queue);
+      // Debounced: a render here re-runs the whole race set, so resizing
+      // should not fire one per pixel.
+      onResize(document.getElementById("mcChart"), queue);
 
       this.render();
     }
