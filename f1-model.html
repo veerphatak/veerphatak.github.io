@@ -54,7 +54,7 @@
     <a href="index.html#projects" class="back">← Back to projects</a>
 
     <h1 class="project-title">Predicting a Formula 1 Lap, and Checking It Against the Real One</h1>
-    <p class="project-hook">A physics lap time model and a tyre degradation model, both developed from first principles and validated against telemetry from the 2025 Bahrain Grand Prix. The lap model predicts the pole lap to within 0.7%, and the strategy model places the winning strategy 3.8 seconds from its calculated optimum.</p>
+    <p class="project-hook">A physics lap time model and a tyre degradation model, both developed from first principles and validated against telemetry from the 2025 Bahrain Grand Prix. The lap model predicts the pole lap to within about 1%, holds that accuracy on sections of track it was not fitted to, and the strategy model places the winning strategy 3.8 seconds from its calculated optimum.</p>
 
     <p class="availability"><strong>Seeking graduate engineering roles.</strong> <span class="sep">|</span> Graduating July 2027 <span class="sep">|</span> <a href="mailto:veerphatak@gmail.com">Get in touch</a></p>
 
@@ -72,8 +72,9 @@
       <strong>Data.</strong> Official F1 timing and car telemetry, accessed through the open-source <a href="https://github.com/theOehrly/Fast-F1" target="_blank" rel="noopener">FastF1</a> library and used here for non-commercial analysis. The data belongs to Formula 1 and none of it is redistributed: the scripts download what they need into a local cache that is deliberately excluded from this repository.
     </div>
 
-    <div class="stats">
-      <div class="stat"><div class="num">0.72%</div><div class="label">Lap time error against the real pole lap</div></div>
+    <div class="stats four">
+      <div class="stat"><div class="num">0.72%</div><div class="label">Lap time error against the real pole lap, 0.3% to 2.5% depending on the fitting subset</div></div>
+      <div class="stat"><div class="num">1.0&times;</div><div class="label">Held-out speed error against fitted, so the lap is predicted rather than memorised</div></div>
       <div class="stat"><div class="num">0.58 s</div><div class="label">Race pace model RMSE over 979 laps</div></div>
       <div class="stat"><div class="num">14,532</div><div class="label">Race strategies evaluated</div></div>
     </div>
@@ -154,8 +155,45 @@
       <figcaption>The model (dashed) against Piastri's pole lap (solid), with the driver's real throttle, brake and DRS inputs below. Predicted lap time 89.197 s against an actual 89.841 s.</figcaption>
     </figure>
 
+    <h3>Checking that this is a prediction and not a fit</h3>
+    <p>Three parameters are fitted to the measured speed trace, and lap time is the integral of distance over speed. Fit the speed, and a close lap time is not independent evidence of anything. The obvious objection to the number above is that it is circular, and the objection deserves a test rather than a reassurance.</p>
+    <p>So the model is fitted on part of the lap and then asked about the part it has not seen. If it were memorising this particular lap, its error on unseen track would be clearly worse than on the track it was fitted to.</p>
+
+    <div class="tablewrap">
+    <table class="spec data">
+      <thead>
+        <tr><th>Fitted on</th><th>Predicted</th><th>Lap time error</th><th>Speed error, fitted</th><th>Speed error, unseen</th><th>Ratio</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>First 50%</td><td>Last 50%</td><td>-0.30%</td><td>18.1 km/h</td><td>17.8 km/h</td><td>0.98</td></tr>
+        <tr><td>First 66%</td><td>Last 34%</td><td>-0.77%</td><td>19.2 km/h</td><td>15.2 km/h</td><td>0.79</td></tr>
+        <tr><td>First 75%</td><td>Last 25%</td><td>-1.35%</td><td>18.9 km/h</td><td>14.9 km/h</td><td>0.79</td></tr>
+        <tr><td>Last 66%</td><td>First 34%</td><td>-0.81%</td><td>18.5 km/h</td><td>16.6 km/h</td><td>0.90</td></tr>
+        <tr><td>Alternating 100 m blocks</td><td>The gaps between them</td><td>-2.46%</td><td>17.5 km/h</td><td>18.7 km/h</td><td>1.06</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Every ratio sits at or below about 1.0, so the model is no worse on track it never saw than on track it was fitted to. That is the result that makes the lap time worth quoting: the geometry and the physics are carrying the prediction, not the fit.</p>
+    <p>The same table sets the honest precision. Re-fitting on different parts of the lap moves the predicted lap time between <strong>0.30% and 2.46%</strong>. The headline 0.72% is one draw from that range, not a repeatable accuracy figure, and <strong>within about 1%</strong> is the claim this method actually supports.</p>
+    <p class="muted-note">The table above, and the grip sweep in the limitations below it, are both produced by <a href="https://github.com/veerphatak/veerphatak.github.io/blob/main/code/f1-lapsim/f1_validate_outofsample.py" target="_blank" rel="noopener">f1_validate_outofsample.py</a>, which runs the five splits and the sweep and prints exactly the numbers shown here.</p>
+
     <h3>Accuracy and limitations</h3>
     <p>Predicted lap time falls within 0.65 seconds of the measured lap. Speed trace RMSE is approximately 18 km/h, and corner-by-corner errors reach roughly 14 km/h in either direction.</p>
+
+    <div class="limits">
+      <h3>The lap time is well determined. The split between grip and downforce is not.</h3>
+      <p>Grip and downforce both set the cornering limit, and the speed trace cannot separate them. Holding the fit at different assumed grip levels and refitting the aerodynamics each time gives almost the same quality of fit across a wide range:</p>
+      <ul>
+        <li>&mu; = 1.30 with C<sub>L</sub>A = 10.8, speed RMSE <strong>18.1 km/h</strong></li>
+        <li>&mu; = 1.48 with C<sub>L</sub>A = 9.0, speed RMSE <strong>17.9 km/h</strong></li>
+        <li>&mu; = 1.60 with C<sub>L</sub>A = 8.0, speed RMSE <strong>17.9 km/h</strong></li>
+        <li>&mu; = 1.80 with C<sub>L</sub>A = 6.6, speed RMSE <strong>18.3 km/h</strong></li>
+      </ul>
+      <p>Downforce changes by a factor of 1.6 across that list while the fit quality changes by half a km/h, which is nothing. The two parameters trade along a ridge, and the data does not say where on it the real car sits. There is a genuine optimum near &mu; = 1.5, so the model is not degenerate, but the precision is in the pair rather than in either number.</p>
+      <p>This is why the fitted values are not presented as measurements of the 2025 car. The sliders above open at one point on that ridge because the solver has to start somewhere. Moving grip and downforce in opposite directions will produce a lap that fits about as well, which is the limitation made visible rather than described.</p>
+      <p>Separating them needs something the speed trace does not contain: a second configuration of the same car, a straight-line aerodynamic measurement, or tyre data. That is a data problem, not a solver problem, and no amount of further fitting will fix it.</p>
+    </div>
     <p>The errors are systematic, and they point straight at what a quasi-steady model leaves out. It carries too much speed through the slowest corners because it assumes grip is available the instant it is asked for, when in reality the car needs time to transfer load and settle and the driver eases it to the apex. It is slightly slow through some of the faster sections, where the real car gets aerodynamic behaviour that a point mass with one downforce coefficient cannot reproduce. There is no tyre temperature in it, no suspension, and nothing representing how a driver manages a lap.</p>
 
     <figure>

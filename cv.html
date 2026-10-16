@@ -117,7 +117,8 @@
         <h3><a href="f1-model.html">Formula 1 Lap Time and Race Strategy Model</a></h3>
         <p class="cv-when">Personal project &middot; 2026 &middot; Published and runnable in the browser</p>
         <ul>
-          <li>Built a quasi-steady lap time model in Python on circuit geometry derived from car position telemetry, predicting the 2025 Bahrain pole lap to <strong>within 0.72%</strong>, 89.20 s against 89.84 s measured, with an 18 km/h speed trace RMSE.</li>
+          <li>Built a quasi-steady lap time model in Python on circuit geometry derived from car position telemetry, predicting the 2025 Bahrain pole lap to <strong>within about 1%</strong>, 89.20 s against 89.84 s measured, with an 18 km/h speed trace RMSE.</li>
+          <li>Validated it out of sample by fitting on part of the lap and predicting the rest: across five different splits the speed error on unseen track matched or beat the error on the fitted track, confirming the result is a prediction rather than a curve fit.</li>
           <li>Fitted tyre degradation, fuel burn and driver baseline effects simultaneously by least squares across <strong>979 green-flag racing laps</strong>, reducing model error from 0.82 s to 0.58 s.</li>
           <li>Evaluated <strong>14,532 legal race strategies</strong> against pit loss measured from the race itself, placing the winning strategy 3.8 s from the calculated optimum and identifying the pit window.</li>
           <li>Extended it to a Monte Carlo treatment of strategy under uncertainty, covering correlated and independent tyre variation, skewed pit loss, non-uniform safety car hazard and reactive pitting under caution.</li>
