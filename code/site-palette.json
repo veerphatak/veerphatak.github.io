@@ -1,0 +1,33 @@
+{
+  "_comment": "Single source of truth for figure colours. Read by Python (site_palette.py) and MATLAB (sitePalette.m). These values mirror the CSS custom properties in style.css, so a figure dropped into a page sits on the same surface as the page itself instead of punching a white rectangle into it. If style.css changes, change this file and re-run the figure scripts.",
+
+  "page":    "#0C0F14",
+  "surface": "#141A23",
+  "sunken":  "#090C11",
+  "border":  "#242C38",
+
+  "text":  "#E8ECF2",
+  "body":  "#C3CCD9",
+  "muted": "#949FB0",
+
+  "accents": {
+    "site":       "#5BA8FF",
+    "f1":         "#FF6B4A",
+    "motogp":     "#F2A93B",
+    "flume":      "#2FD4C4",
+    "fs":         "#5BD18A",
+    "uav":        "#8FA6FF",
+    "internship": "#C98BFF",
+    "coursework": "#E7E0CF"
+  },
+
+  "_series_comment": "Categorical slots in fixed order, never cycled. Assign slot 1 first, then 2, and so on. Adjacent pairs are separated in hue and lightness so they survive colour-vision deficiency.",
+  "series": ["#5BA8FF", "#FF6B4A", "#2FD4C4", "#F2A93B", "#C98BFF", "#5BD18A"],
+
+  "_reference_comment": "Measured or ground-truth data uses the neutral; the thing being argued for uses the page accent. One series is the point, the other is context.",
+  "reference": "#C3CCD9",
+
+  "good": "#4ADE80",
+  "warn": "#F2A93B",
+  "bad":  "#FF6B4A"
+}
