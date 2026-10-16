@@ -31,6 +31,7 @@
       <div class="nav-links">
         <a href="index.html#work">Work</a>
         <a href="index.html#about">About</a>
+        <a href="cv.html">CV</a>
         <a href="index.html#projects">All projects</a>
         <a href="index.html#contact">Contact</a>
         <span class="nav-divider" aria-hidden="true"></span>
@@ -118,6 +119,18 @@
     <h2>Project management</h2>
     <p>I produced the Gantt charts and resource plans used to run the project. The work split into research, design, manufacture, integration and testing, with the critical path tracked and buffer time placed ahead of the high-risk tasks. We finished ahead of schedule, which left time to check the analysis properly before submitting it.</p>
 
+    <div class="limits">
+      <h2>Limitations, and where the models were wrong</h2>
+      <p>Both models missed, in opposite directions, and the structural one missed by more.</p>
+      <ul>
+        <li><strong>The structural model was not conservative, it was inaccurate.</strong> 18.7 mm predicted tip deflection against 13.8 mm measured, and 1.57&deg; predicted twist against 0.42&deg;. Being wrong in the safe direction is still being wrong by 26% in bending and by a factor of nearly four in torsion. The torsion error is the telling one: it suggests the cross members were being treated as close to non-structural, when in practice they closed the box section and carried shear. A model that under-credits the feature you added in order to justify adding it is not evidence for that feature.</li>
+        <li><strong>The aerodynamic model was optimistic by 3.3 m/s.</strong> 23.1 m/s predicted against 19.8 m/s measured, roughly 14% out. The likeliest contributors are the Fowler flap lift multiplier of 1.87, which comes from idealised two-dimensional data, and the parasitic drag of a real assembled airframe with film covering, hinge lines, control horns and a fuselage, measured against a clean analysis case.</li>
+        <li><strong>XFOIL and XFLR5 are weakest exactly where the answer was decided.</strong> Both are potential-flow methods with a coupled boundary layer. Near maximum lift coefficient with a slotted flap deployed to 45&deg;, the flow is separated and strongly three-dimensional. That is the condition that sets minimum speed, and it is the condition those tools predict least well. No CFD or wind tunnel cross-check was run against them.</li>
+        <li><strong>One flight, no uncertainty bound.</strong> The 19.8 m/s figure comes from a single flight test on a single day. There is no repeat, so there is no spread, and the comparison against prediction carries no error bar on either side of it.</li>
+      </ul>
+      <p>The project ranked 1st and the wing had the largest speed range in the year group. It is also true that it did so while both of my models were out by more than the margin separating the top teams, and reconciling those two errors afterwards taught me more than the ranking did.</p>
+    </div>
+
     <h2>Relevant skills</h2>
     <ul>
       <li>Structural design for stiffness per unit mass, validated against physical test.</li>
@@ -136,6 +149,7 @@
   <footer>
     <div class="footer-inner">Veer Phatak · Southampton, UK · <a href="mailto:veerphatak@gmail.com">veerphatak@gmail.com</a> · <a href="https://www.linkedin.com/in/veer-phatak-683665238" target="_blank" rel="noopener">LinkedIn</a></div>
     <div class="footer-note">This site uses cookieless, privacy-friendly analytics. No cookies are set and no personal data is collected.</div>
+    <div class="footer-updated">Site last updated 16 October 2026 &middot; Hand-coded HTML, CSS and JavaScript, no framework &middot; <a href="about-this-site.html">how this site was built</a></div>
   </footer>
 </body>
 </html>

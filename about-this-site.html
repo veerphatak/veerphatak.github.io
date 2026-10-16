@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="How this portfolio was built: hand-written HTML, CSS and JavaScript, no framework, no build step, no dependencies, deployed on GitHub Pages.">
+  <title>How This Site Was Built | Veer Phatak</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://veerphatak.github.io/about-this-site.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Veer Phatak">
+  <meta property="og:title" content="How This Site Was Built | Veer Phatak">
+  <meta property="og:description" content="Hand-written HTML, CSS and JavaScript. No framework, no build step, no dependencies. Including the part where a Python solver was ported to run in the browser.">
+  <meta property="og:url" content="https://veerphatak.github.io/about-this-site.html">
+  <meta property="og:image" content="https://veerphatak.github.io/media/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How This Site Was Built | Veer Phatak">
+  <meta name="twitter:description" content="Hand-written HTML, CSS and JavaScript. No framework, no build step, no dependencies.">
+  <meta name="twitter:image" content="https://veerphatak.github.io/media/og-image.png">
+  <link rel="stylesheet" href="style.css">
+  <script data-goatcounter="https://veerphatak.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="brand">Veer Phatak</a>
+      <div class="nav-links">
+        <a href="index.html#work">Work</a>
+        <a href="index.html#about">About</a>
+        <a href="cv.html">CV</a>
+        <a href="index.html#projects">All projects</a>
+        <a href="index.html#contact">Contact</a>
+        <span class="nav-divider" aria-hidden="true"></span>
+        <a class="nav-icon" href="mailto:veerphatak@gmail.com" aria-label="Email Veer Phatak" title="veerphatak@gmail.com">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z"/><path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z"/></svg>
+          <span class="nav-icon-label">Email</span>
+        </a>
+        <a class="nav-icon" href="https://www.linkedin.com/in/veer-phatak-683665238" target="_blank" rel="noopener" aria-label="Veer Phatak on LinkedIn" title="LinkedIn">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286ZM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125Zm1.782 13.019H3.555V9h3.564v11.452ZM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003Z"/></svg>
+          <span class="nav-icon-label">LinkedIn</span>
+        </a>
+
+      </div>
+    </div>
+  </nav>
+
+  <article class="wrap project" id="main">
+    <a href="index.html#projects" class="back">&larr; Back to projects</a>
+
+    <h1 class="project-title">How This Site Was Built</h1>
+    <p class="project-hook">Every page here is hand-written HTML, CSS and JavaScript. No framework, no build step, no package manager, no dependencies to install. This page explains why that was the right choice and what it cost.</p>
+
+    <p class="availability"><strong>Seeking graduate engineering roles.</strong> <span class="sep">|</span> Graduating July 2027 <span class="sep">|</span> <a href="mailto:veerphatak@gmail.com">Get in touch</a></p>
+
+    <div class="meta">
+      <span class="tag">HTML</span>
+      <span class="tag">CSS</span>
+      <span class="tag">JavaScript</span>
+      <span class="tag">Git</span>
+      <span class="tag">GitHub Pages</span>
+      <span class="tag">Accessibility</span>
+      <span class="tag">SEO</span>
+    </div>
+
+    <div class="stats four">
+      <div class="stat"><div class="num">0</div><div class="label">Dependencies, build steps and package managers</div></div>
+      <div class="stat"><div class="num">43 KB</div><div class="label">HTML, CSS and icon for the homepage, before images</div></div>
+      <div class="stat"><div class="num">3,900</div><div class="label">Lines of HTML, CSS and JavaScript written by hand</div></div>
+      <div class="stat"><div class="num">10</div><div class="label">Content pages plus a 404, all static, one repository</div></div>
+    </div>
+
+    <h2>Why no framework</h2>
+    <p>The default answer for a portfolio in 2026 is a site builder or a React template. I went the other way deliberately, for three reasons.</p>
+    <p><strong>A portfolio about engineering should be engineered.</strong> It would be a strange thing to publish pages arguing that you should understand your own tools, built on a stack I could not explain. If someone asks me why the navigation is sticky, what the Kalman filter in the flume tracker is weighting, or why the lap solver needs three passes, I should be able to answer all three. Hand-writing the site keeps that true.</p>
+    <p><strong>A static site is the correct engineering answer to this problem.</strong> The requirement is a set of documents with some interactive figures, read mostly once by each visitor, updated by one person a few times a month. That requirement does not need a runtime, a bundler, a hydration step or a dependency tree. Reaching for those anyway would be solving a problem I do not have, which is the same instinct as adding suspension sliders to a point-mass lap model.</p>
+    <p><strong>It has to still work in two years.</strong> A static page with no dependencies has nothing to rot. There is no lockfile, no deprecated transitive dependency, and no build that stops working because a tool went to a new major version. The cost of that is paid up front in typing, which is a cost I would rather pay once.</p>
+
+    <h2>The stack</h2>
+    <table class="spec">
+      <tr><th>Markup and styling</th><td>Hand-written HTML5 and CSS. One shared stylesheet across every page, built on CSS custom properties and CSS Grid. No preprocessor, no utility framework, no CSS-in-JS.</td></tr>
+      <tr><th>Interactivity</th><td>Plain JavaScript in two files, <code>sim.js</code> and <code>montecarlo.js</code>, loaded directly by the page with <code>defer</code>. No bundler and no transpilation, so what the browser runs is the file in the repository, line for line.</td></tr>
+      <tr><th>Charts and figures</th><td>Static plots generated in Python with Matplotlib, committed as PNG. Interactive plots drawn to a <code>&lt;canvas&gt;</code> by my own code. No charting library.</td></tr>
+      <tr><th>Fonts</th><td>The system font stack. No webfont request, so no layout shift waiting on one and no third-party font host.</td></tr>
+      <tr><th>Hosting and deployment</th><td>GitHub Pages, served from the <code>main</code> branch of a public repository. Deployment is <code>git push</code>. There is no CI pipeline, because there is nothing to build.</td></tr>
+      <tr><th>Analytics</th><td>GoatCounter, loaded asynchronously. Cookieless, no personal data, no cross-site identifier, and the only third-party request on the site.</td></tr>
+    </table>
+
+    <h2>What I actually had to get right</h2>
+    <p>Writing the markup is the easy part. Four things took real attention.</p>
+
+    <h3>Porting a physics solver from Python to JavaScript</h3>
+    <p>The lap time model was written and validated in Python, and the <a href="f1-model.html">interactive version</a> re-solves it in the browser whenever a slider moves. That meant reimplementing the solver in a second language and getting the same answer out of it, which is a more demanding problem than it first looks: the two implementations have to agree to the point where any difference is floating-point noise rather than a difference in the physics.</p>
+    <p>The discipline that made it tractable was keeping the numerics separate from the drawing code, so the solver could be checked against the Python output on fixed inputs before any of it was wired to an interface. A result that changes when you redraw it is not a model.</p>
+
+    <h3>Accessibility, on purpose rather than by accident</h3>
+    <p>Every page has a skip link, a single <code>h1</code> and a heading order that does not jump levels, text alternatives on every image, visible focus styles via <code>:focus-visible</code>, and semantic landmarks rather than a page of unlabelled <code>div</code> elements. Interactive figures carry text alternatives describing the result, so the content survives if the canvas does not render. Animation is suppressed under <code>prefers-reduced-motion</code>.</p>
+    <p>The part most often skipped is colour. Figures are not encoded by colour alone, and the one status colour on the site ships with an icon and a text label beside it.</p>
+
+    <h3>Making it findable and shareable</h3>
+    <p>Each page carries its own meta description, canonical URL, Open Graph and Twitter card tags, so a link pasted into LinkedIn or an email renders as a card rather than a bare URL. The homepage includes JSON-LD <code>Person</code> structured data. There is a <code>sitemap.xml</code>, a <code>robots.txt</code> and a styled 404 page that routes back into the site rather than dead-ending.</p>
+
+    <h3>Keeping it fast without trying very hard</h3>
+    <p>The homepage is about 43 KB of HTML, CSS and icon before images. Images carry explicit <code>width</code> and <code>height</code> so nothing reflows as they arrive, everything below the fold is <code>loading="lazy"</code>, and video is <code>preload="metadata"</code> so a page with four clips on it does not pull megabytes nobody asked for. None of that is clever. It is just the default behaviour you get when there is no framework between you and the browser.</p>
+
+    <h2>Learning the workflow</h2>
+    <p>I had no web development background when this started, and no Git background either. Publishing is now three commands, and understanding what they do mattered more than memorising them: a commit is a snapshot with a message explaining why, and a push makes the snapshot the published one. The same discipline that applies to a model also applies here, which is that a change you cannot describe is a change you should not have made.</p>
+
+    <div class="limits">
+      <h2>Limitations, and what I would do differently</h2>
+      <ul>
+        <li><strong>There are no automated tests.</strong> The JavaScript solver was checked against the Python output by hand on fixed inputs, which caught the errors that mattered, but there is nothing stopping a future edit silently changing a result. A small test file asserting a handful of known lap times is the obvious next step and does not exist yet.</li>
+        <li><strong>Shared markup is duplicated.</strong> The navigation and footer are copied into all eleven pages, so a change to either is an eleven-file edit. That is the honest cost of having no build step: I traded a template system for repetition, and every page footer on this site is evidence of the trade. At thirty pages it would be the wrong call. At eleven it is still cheaper than a toolchain.</li>
+        <li><strong>Dark mode only.</strong> The site does not respond to <code>prefers-color-scheme</code>, so a visitor who prefers a light interface does not get one. That is a gap rather than a decision.</li>
+        <li><strong>The navigation wraps on narrow screens.</strong> It stays usable and readable down to small phone widths, but below roughly 720 px the links reflow onto a second row instead of collapsing into a menu. It works. It is not elegant.</li>
+        <li><strong>No cross-browser test matrix.</strong> Developed and checked in Chrome and Firefox on Windows, and on mobile Safari. I have not tested it systematically across versions, so I would not claim more than that.</li>
+      </ul>
+    </div>
+
+    <h2>Relevant skills</h2>
+    <ul>
+      <li>Taking a project from nothing to deployed and publicly accessible, including the hosting and the release process.</li>
+      <li>Reimplementing a validated numerical model in a second language and verifying the two agree.</li>
+      <li>Version control with Git, and a deployment workflow I maintain myself.</li>
+      <li>Building to accessibility and performance requirements rather than treating them as polish.</li>
+      <li>Choosing the simplest tool that meets the requirement, and being able to say what that choice cost.</li>
+    </ul>
+
+    <p>
+      <a class="dl" href="https://github.com/veerphatak/veerphatak.github.io" target="_blank" rel="noopener">Browse the source of this site on GitHub</a>
+    </p>
+    <p class="muted-note">The whole site, every page and every stylesheet, plus the Python and MATLAB behind the models. The FastF1 telemetry cache is deliberately excluded, so no Formula 1 data is redistributed here.</p>
+
+    <nav class="pagenav" aria-label="Project navigation">
+      <a class="prev" href="coursework.html"><span class="dir">&larr; Previous project</span><span class="ttl">Coursework &amp; Papers</span></a>
+      <a class="next" href="f1-model.html"><span class="dir">Next project &rarr;</span><span class="ttl">Predicting an F1 Lap, and Checking It Against the Real One</span></a>
+    </nav>
+
+  </article>
+
+  <footer>
+    <div class="footer-inner">Veer Phatak · Southampton, UK · <a href="mailto:veerphatak@gmail.com">veerphatak@gmail.com</a> · <a href="https://www.linkedin.com/in/veer-phatak-683665238" target="_blank" rel="noopener">LinkedIn</a></div>
+    <div class="footer-note">This site uses cookieless, privacy-friendly analytics. No cookies are set and no personal data is collected.</div>
+    <div class="footer-updated">Site last updated 16 October 2026 &middot; Hand-coded HTML, CSS and JavaScript, no framework &middot; <a href="about-this-site.html">how this site was built</a></div>
+  </footer>
+</body>
+</html>

@@ -31,6 +31,7 @@
       <div class="nav-links">
         <a href="index.html#work">Work</a>
         <a href="index.html#about">About</a>
+        <a href="cv.html">CV</a>
         <a href="index.html#projects">All projects</a>
         <a href="index.html#contact">Contact</a>
         <span class="nav-divider" aria-hidden="true"></span>
@@ -78,6 +79,56 @@
     <h2>Designing for a product rather than a brief</h2>
     <p>At university a design is finished when it meets the written specification. In a product team it is judged by whoever ends up using the equipment, often outdoors, in bad conditions and in a hurry. That changed what I treated as a finished design, and it is the main thing I took from the placement.</p>
 
+    <figure>
+      <svg class="iterviz" viewBox="0 0 760 250" role="img"
+           aria-label="Design iterations per project. Battery compartment, ten iterations, the tenth approved and released for manufacture. Instrument enclosure, three iterations. Fibre spool, three iterations. Sixteen in total across seven weeks.">
+        <title>Design iterations per project</title>
+        <desc>A unit chart. Each tick is one printed, assembled and reviewed version. The battery compartment took ten, the instrument enclosure three, and the fibre spool three, giving sixteen versions in seven weeks. The tenth battery compartment iteration is marked as approved and released for manufacture.</desc>
+
+        <!-- row 1: battery compartment -->
+        <text x="0" y="46" fill="var(--text)" font-size="15" font-weight="600">Battery compartment</text>
+        <text x="0" y="66" fill="var(--muted)" font-size="13">10 iterations</text>
+        <g fill="var(--accent)">
+          <rect x="240" y="34" width="10" height="28" rx="4"/>
+          <rect x="274" y="34" width="10" height="28" rx="4"/>
+          <rect x="308" y="34" width="10" height="28" rx="4"/>
+          <rect x="342" y="34" width="10" height="28" rx="4"/>
+          <rect x="376" y="34" width="10" height="28" rx="4"/>
+          <rect x="410" y="34" width="10" height="28" rx="4"/>
+          <rect x="444" y="34" width="10" height="28" rx="4"/>
+          <rect x="478" y="34" width="10" height="28" rx="4"/>
+          <rect x="512" y="34" width="10" height="28" rx="4"/>
+        </g>
+        <rect x="546" y="34" width="10" height="28" rx="4" fill="#0ca30c"/>
+        <g transform="translate(570 42)">
+          <path d="M1 5.2 L4.2 8.4 L10 1.4" fill="none" stroke="#0ca30c" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="18" y="8" fill="var(--text)" font-size="13">Approved, released for manufacture</text>
+        </g>
+
+        <!-- row 2: instrument enclosure -->
+        <text x="0" y="131" fill="var(--text)" font-size="15" font-weight="600">Instrument enclosure</text>
+        <text x="0" y="151" fill="var(--muted)" font-size="13">3 iterations</text>
+        <g fill="var(--accent)">
+          <rect x="240" y="119" width="10" height="28" rx="4"/>
+          <rect x="274" y="119" width="10" height="28" rx="4"/>
+          <rect x="308" y="119" width="10" height="28" rx="4"/>
+        </g>
+        <text x="350" y="138" fill="var(--muted)" font-size="13">Concept to a design the team signed off</text>
+
+        <!-- row 3: fibre spool -->
+        <text x="0" y="216" fill="var(--text)" font-size="15" font-weight="600">Fibre spool</text>
+        <text x="0" y="236" fill="var(--muted)" font-size="13">3 iterations</text>
+        <g fill="var(--accent)">
+          <rect x="240" y="204" width="10" height="28" rx="4"/>
+          <rect x="274" y="204" width="10" height="28" rx="4"/>
+          <rect x="308" y="204" width="10" height="28" rx="4"/>
+        </g>
+        <text x="350" y="223" fill="var(--muted)" font-size="13">Winding and routing, to maximise stored length</text>
+      </svg>
+      <figcaption>Design iterations per project: ten on the battery compartment, three on the instrument enclosure, three on the fibre spool, sixteen in seven weeks. Each tick is one version that was modelled, printed, assembled against the real hardware and reviewed. The counts are the point rather than the dates, so this is not a timeline: I have not reconstructed which week each version fell in.</figcaption>
+    </figure>
+
     <h2>How the work ran</h2>
     <p>Every project followed the same loop. Model the change in SolidWorks, slice and print it the same day, assemble it against the real hardware, take it to whichever engineers had a stake in it, and use what came back to define the next version. Owning the office printing is what made that loop short enough to be useful: a version printed in the morning could be reviewed in the afternoon and superseded by the following day.</p>
     <p>Across the three projects that came to <strong>sixteen versions in seven weeks</strong>. Each one existed because something specific had gone wrong in the version before it: a clearance that did not hold once the part was physical, a feature that was awkward to use, or a wall section that would not mould cleanly.</p>
@@ -102,6 +153,16 @@
     <p>Designing around hardware I do not control is the same problem as a wind tunnel model that has to mount in an existing working section, and I am using that directly as CAD and manufacturing lead on my <a href="motogp.html">final-year wind tunnel model</a>.</p>
     <p>Printing every version also taught me that a part is not verified until it exists. That is the same argument as checking a structural prediction against a loaded wing on the <a href="uav.html">UAV project</a>, or checking a lap time model against telemetry on the <a href="f1-model.html">F1 model</a>.</p>
 
+    <div class="limits">
+      <h2>What this page cannot show, and what I did not do</h2>
+      <ul>
+        <li><strong>Confidentiality sets the ceiling.</strong> TREND has asked that specific products are not identified publicly, so there are no CAD screenshots or product photographs on this page. That is a genuine limit on it as evidence, and saying so is better than describing the work vaguely and hoping it reads as more than it is. Full detail, including the CAD, is available on request.</li>
+        <li><strong>Designed for injection moulding, verified only in FDM.</strong> Every iteration was printed on a desktop printer, which checks fit, clearance, usability and assembly. It does not check mouldability. Draft angles, wall sections and gate positions were designed with moulding in mind, and none of that was proven in tooling while I was there.</li>
+        <li><strong>No structural or environmental testing.</strong> This equipment gets used outdoors and handled roughly. I assessed durability by judgement and by handling printed parts, not by drop testing, ingress testing or temperature cycling.</li>
+        <li><strong>Seven weeks is not an outcome.</strong> The battery compartment was approved and released for manufacture, which is the point at which I left. I was not there for tooling, first-article inspection, or anything the field eventually had to say about it. I own the design iterations and the approval. I do not own the long-term result.</li>
+      </ul>
+    </div>
+
     <h2>Relevant skills</h2>
     <ul>
       <li>Designing to fixed external constraints, including existing hardware, a sealed envelope and regulatory requirements.</li>
@@ -119,6 +180,7 @@
   <footer>
     <div class="footer-inner">Veer Phatak · Southampton, UK · <a href="mailto:veerphatak@gmail.com">veerphatak@gmail.com</a> · <a href="https://www.linkedin.com/in/veer-phatak-683665238" target="_blank" rel="noopener">LinkedIn</a></div>
     <div class="footer-note">This site uses cookieless, privacy-friendly analytics. No cookies are set and no personal data is collected.</div>
+    <div class="footer-updated">Site last updated 16 October 2026 &middot; Hand-coded HTML, CSS and JavaScript, no framework &middot; <a href="about-this-site.html">how this site was built</a></div>
   </footer>
 </body>
 </html>

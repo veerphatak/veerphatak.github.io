@@ -31,6 +31,7 @@
       <div class="nav-links">
         <a href="index.html#work">Work</a>
         <a href="index.html#about">About</a>
+        <a href="cv.html">CV</a>
         <a href="index.html#projects">All projects</a>
         <a href="index.html#contact">Contact</a>
         <span class="nav-divider" aria-hidden="true"></span>
@@ -62,6 +63,12 @@
       <span class="tag">Manufacture</span>
       <span class="tag">Team Leadership</span>
       <span class="tag">In Progress</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="num">3</div><div class="label">Lead roles held: team, aerodynamic design, CAD and manufacture</div></div>
+      <div class="stat"><div class="num">6</div><div class="label">Force and moment components resolved under lean</div></div>
+      <div class="stat"><div class="num">2027</div><div class="label">Wind tunnel testing and CFD correlation, spring</div></div>
     </div>
 
     <div class="notice">
@@ -98,6 +105,19 @@
     <p>CFD gives full-field information and lets us sweep conditions for machine time rather than tunnel time. The tunnel gives real measurements on a real model, with the uncertainty that comes with them. Where the two disagree, something is wrong in the geometry, the mesh, the rig or the assumptions, and working out which is a large part of the job.</p>
     <p>I am running the CAD and the manufacture as well as the aerodynamics. Geometry that meshes cleanly is not always geometry you can build, mount at lean and instrument, and holding both roles keeps that in view early rather than late.</p>
 
+    <div class="limits">
+      <h2>Known limitations, and what we are designing around</h2>
+      <p>Results are not in yet, so the honest thing to publish now is the list of ways this measurement can mislead us. Each of these is a decision the test programme has to take deliberately rather than discover late.</p>
+      <ul>
+        <li><strong>Static lean is not cornering.</strong> Holding the model at a fixed lean angle captures the asymmetric flow field but not roll rate, so any transient aerodynamic effect during turn-in and exit sits outside what this rig can measure. The results will describe a sequence of steady states through the corner, not the corner itself.</li>
+        <li><strong>The rig is in the flow.</strong> Anything stiff enough to hold a model at lean sits in the working section and sheds its own wake. Separating the support's contribution from the machine's is a first-order problem here, not a correction applied at the end, and it sets the floor on how accurate the side force and yaw moment numbers can be.</li>
+        <li><strong>Reynolds number mismatch.</strong> A scale model in a low-speed tunnel does not match full-scale Reynolds number. Separation and reattachment locations are the quantities most sensitive to that, and they are also the ones driving the force coefficients the project exists to measure.</li>
+        <li><strong>No rider.</strong> A real rider hangs off the inside of the machine and is a large, moving part of the frontal area. Any representation of the rider on the model is a fixed approximation of something that is neither fixed nor rigid.</li>
+        <li><strong>CFD and the tunnel can agree and both be wrong.</strong> If the CFD is adjusted until it matches the tunnel, agreement stops being evidence of anything. The correlation plan has to fix the CFD setup before the tunnel data arrives, or the comparison proves nothing.</li>
+      </ul>
+      <p>The preceding group built the cornering rig and then developed the aerodynamics in a straight line. Closing that gap is the point of this project, and the limitations above are a large part of why the gap was left in the first place.</p>
+    </div>
+
     <h2>Relevant skills</h2>
     <ul>
       <li>Leading a technical team on an open-ended problem with no predetermined outcome.</li>
@@ -114,6 +134,7 @@
   <footer>
     <div class="footer-inner">Veer Phatak · Southampton, UK · <a href="mailto:veerphatak@gmail.com">veerphatak@gmail.com</a> · <a href="https://www.linkedin.com/in/veer-phatak-683665238" target="_blank" rel="noopener">LinkedIn</a></div>
     <div class="footer-note">This site uses cookieless, privacy-friendly analytics. No cookies are set and no personal data is collected.</div>
+    <div class="footer-updated">Site last updated 16 October 2026 &middot; Hand-coded HTML, CSS and JavaScript, no framework &middot; <a href="about-this-site.html">how this site was built</a></div>
   </footer>
 </body>
 </html>
