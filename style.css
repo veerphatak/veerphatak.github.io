@@ -698,3 +698,30 @@ button:focus-visible, select:focus-visible, input:focus-visible {
 .cv-inline-list { list-style: none; margin-left: 0; }
 .cv-inline-list li { padding-left: 1rem; position: relative; }
 .cv-inline-list li::before { content: "·"; position: absolute; left: 0; color: var(--accent); }
+
+/* ---- Data table (multi-column), distinct from the two-column .spec ---- */
+.tablewrap {
+  overflow-x: auto;
+  margin: 1.5rem 0 2rem;
+  -webkit-overflow-scrolling: touch;
+}
+.spec.data { margin: 0; min-width: 660px; font-size: 0.88rem; }
+.spec.data thead th {
+  width: auto;
+  white-space: nowrap;
+  color: var(--muted);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+.spec.data td { white-space: nowrap; }
+.spec.data tbody tr:last-child td { border-bottom: none; }
+/* The two-column .spec stacks on narrow screens. A data table must not: it
+   scrolls horizontally inside .tablewrap instead, so rows stay readable. */
+@media (max-width: 560px) {
+  .spec.data th, .spec.data td {
+    display: table-cell;
+    width: auto;
+    padding: 0.55rem 0.7rem;
+    border-bottom: 1px solid var(--border);
+  }
+}
