@@ -31,6 +31,7 @@
       <div class="nav-links">
         <a href="index.html#work">Work</a>
         <a href="index.html#about">About</a>
+        <a href="cv.html">CV</a>
         <a href="index.html#projects">All projects</a>
         <a href="index.html#contact">Contact</a>
         <span class="nav-divider" aria-hidden="true"></span>
@@ -216,6 +217,18 @@ kf.measurementNoiseCov = np.diag([1.2, 1.2]).astype(np.float32)</code></pre>
       <figcaption>Reynolds number distribution across conditions. Expressing every run in dimensionless terms allows the flow regimes to be compared directly and relates the results to established fluid dynamics.</figcaption>
     </figure>
 
+    <div class="limits">
+      <h2>Limitations</h2>
+      <ul>
+        <li><strong>The measurement is two-dimensional.</strong> A single camera and a plane homography give positions projected onto one plane. Motion normal to that plane is not recovered, it is read as foreshortening, so these are plane-projected velocities rather than true three-dimensional speeds. For a tumbling rod, which does not stay in a plane, this is the dominant uncertainty.</li>
+        <li><strong>The smoothing is deliberately heavy, and that is a trade.</strong> Measurement noise is set well above process noise, which kills single-frame jitter and will also attenuate genuine high-frequency motion. Rapid changes in a rod's orientation are exactly the signal most likely to be flattened, so the orientation results should be read as trends rather than instantaneous truth.</li>
+        <li><strong>98.4% coverage means the gaps are not random.</strong> The missing frames are not scattered evenly. They cluster where detection is hardest: glare, occlusion by bubbles, and the moment a particle passes a wall joint. Those are also the frames where the motion is most interesting, so the coverage figure flatters the dataset slightly.</li>
+        <li><strong>1.5 mm on a 10 mm particle.</strong> Positional accuracy is roughly 15% of the smallest particle diameter. That is enough to compare particle types and quantify run-to-run spread. It is not enough to resolve the fine structure of an individual trajectory.</li>
+        <li><strong>Laboratory Reynolds numbers are far below river scale.</strong> The flume reproduces turbulent, river-like flow in character, not in magnitude. The relative comparison between spheres, rods and discs is the transferable result. The absolute velocities are not.</li>
+      </ul>
+      <p>If I ran it again, a second synchronised camera would come before anything else. Every limitation above except the Reynolds mismatch gets smaller with stereo reconstruction, and the rod results would improve most.</p>
+    </div>
+
     <h2>Relevant skills</h2>
     <ul>
       <li>Developing a complete data pipeline from noisy experimental input to validated output.</li>
@@ -233,6 +246,7 @@ kf.measurementNoiseCov = np.diag([1.2, 1.2]).astype(np.float32)</code></pre>
   <footer>
     <div class="footer-inner">Veer Phatak · Southampton, UK · <a href="mailto:veerphatak@gmail.com">veerphatak@gmail.com</a> · <a href="https://www.linkedin.com/in/veer-phatak-683665238" target="_blank" rel="noopener">LinkedIn</a></div>
     <div class="footer-note">This site uses cookieless, privacy-friendly analytics. No cookies are set and no personal data is collected.</div>
+    <div class="footer-updated">Site last updated 16 October 2026 &middot; Hand-coded HTML, CSS and JavaScript, no framework &middot; <a href="about-this-site.html">how this site was built</a></div>
   </footer>
 </body>
 </html>

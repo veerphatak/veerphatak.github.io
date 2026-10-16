@@ -39,7 +39,8 @@
     "knowsAbout": [
       "Aerodynamics", "Computational Fluid Dynamics", "Wind tunnel testing",
       "Race strategy", "Lap time simulation", "Structural analysis",
-      "Finite element analysis", "CAD", "Python", "MATLAB"
+      "Finite element analysis", "CAD", "Python", "MATLAB",
+      "JavaScript", "HTML", "CSS", "Git", "Monte Carlo simulation"
     ],
     "seeks": {
       "@type": "Demand",
@@ -59,6 +60,7 @@
         <a href="#work">Work</a>
         <a href="#about">About</a>
         <a href="#skills">Skills</a>
+        <a href="cv.html">CV</a>
         <a href="#projects">All projects</a>
         <a href="#contact">Contact</a>
         <span class="nav-divider" aria-hidden="true"></span>
@@ -81,7 +83,7 @@
     <div class="hero-actions">
       <a class="btn primary" href="f1-model.html">Try the lap time simulator</a>
       <a class="btn" href="#work">View work</a>
-      <a class="btn" href="docs/Veer%20Phatak%20CV.pdf" target="_blank" rel="noopener">Download CV (PDF)</a>
+      <a class="btn" href="cv.html">Read the CV</a>
     </div>
     <div class="facts">
       <span><b>71.7%</b> first-class Year 3 average</span>
@@ -106,13 +108,14 @@
         </div>
       </a>
 
-      <a class="card" href="motogp.html">
-        <div class="card-media"><img src="media/thumbs/motogp.jpg" alt="A MotoGP motorcycle at full lean through a corner" width="800" height="450"></div>
+      <a class="card" href="flume.html">
+        <div class="card-media">
+          <span class="badge ghost">Video &amp; code</span><img src="media/thumbs/flume.jpg" alt="Streamwise velocity comparison between flume and water tunnel" width="800" height="450"></div>
         <div class="card-body">
-          <h3>Cornering Aerodynamics of a MotoGP-Style Motorcycle</h3>
-          <p>Final-year group design project combining CFD with wind tunnel testing. I am the team leader, the aerodynamic design lead, and the lead for CAD development and manufacture of the test model.</p>
-          <p class="card-tags">CFD · Wind tunnel · CAD · 2026-27</p>
-          <span class="arrow">View project →</span>
+          <h3>Tracking Plastics in Moving Water</h3>
+          <p>Individual Master's research project, graded 75%. A Python and OpenCV measurement system turning high-speed footage of plastic particles into validated trajectory data, at 98.4% detection coverage and 1.5 mm positional accuracy across 58 runs. Roughly 9,400 lines of published code.</p>
+          <p class="card-tags">Python &middot; OpenCV &middot; Test rig &middot; 2025-26</p>
+          <span class="arrow">View project &rarr;</span>
         </div>
       </a>
 
@@ -245,6 +248,17 @@
         </div>
       </a>
 
+      <a class="card" href="about-this-site.html">
+        <div class="card-media">
+          <span class="badge ghost">Full stack</span><img src="media/thumbs/about-this-site.svg" alt="A browser window containing a few lines of hand-written markup, with nothing in the dependency column beside it" loading="lazy" width="800" height="450"></div>
+        <div class="card-body">
+          <h3>How This Site Was Built</h3>
+          <p>This portfolio, hand-written in HTML, CSS and JavaScript with no framework, no build step and no dependencies, deployed on GitHub Pages. Includes porting the Python lap solver to run in the browser, and an honest account of what the no-framework choice cost.</p>
+          <p class="card-tags">HTML &middot; CSS &middot; JavaScript &middot; Git &middot; 2026</p>
+          <span class="arrow">View write-up &rarr;</span>
+        </div>
+      </a>
+
     </div>
   </section>
   </main>
@@ -261,6 +275,7 @@
   <footer>
     <div class="footer-inner">Veer Phatak · Southampton, UK · <a href="mailto:veerphatak@gmail.com">veerphatak@gmail.com</a> · <a href="https://www.linkedin.com/in/veer-phatak-683665238" target="_blank" rel="noopener">LinkedIn</a></div>
     <div class="footer-note">This site uses cookieless, privacy-friendly analytics. No cookies are set and no personal data is collected.</div>
+    <div class="footer-updated">Site last updated 16 October 2026 &middot; Hand-coded HTML, CSS and JavaScript, no framework &middot; <a href="about-this-site.html">how this site was built</a></div>
   </footer>
 </body>
 </html>

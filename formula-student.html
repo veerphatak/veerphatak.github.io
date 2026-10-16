@@ -31,6 +31,7 @@
       <div class="nav-links">
         <a href="index.html#work">Work</a>
         <a href="index.html#about">About</a>
+        <a href="cv.html">CV</a>
         <a href="index.html#projects">All projects</a>
         <a href="index.html#contact">Contact</a>
         <span class="nav-divider" aria-hidden="true"></span>
@@ -136,6 +137,17 @@ end</code></pre>
     </p>
     <p class="muted-note">Around 230 lines of documented MATLAB, base MATLAB only with no toolboxes. Running <code>lap_time_simulation</code> reproduces all three figures above exactly as shown. To change the numbers rather than read them, the <a href="f1-model.html">Formula 1 model</a> runs the same class of solver interactively in the browser.</p>
 
+    <div class="limits">
+      <h2>Limitations of the model shown here</h2>
+      <ul>
+        <li><strong>It is a point mass.</strong> No axles, no suspension, no weight distribution, no lateral load transfer. Roll stiffness distribution, anti-roll bar settings, camber and tyre pressure are therefore all undefined for it. Adding sliders for them would produce authoritative-looking numbers that mean nothing, so they are not there.</li>
+        <li><strong>The track and the car are synthetic.</strong> Generic parameters on a circuit I invented. The 0.130 s per 10 kg figure is this model's output on this track, not a measured property of any real car. The method transfers. The numbers do not.</li>
+        <li><strong>Degradation is a fitted decay, not a tyre model.</strong> Grip falls with work done, and falls faster as load rises. That reproduces the qualifying-versus-race crossover correctly in shape, but there is no thermal state, no wear mechanism and no compound physics behind it.</li>
+        <li><strong>Unvalidated, by necessity.</strong> The team's logged data is not mine to publish, so this recreation has never been checked against a real lap. The team's model was correlated in MoTeC against logged channels; this one has not been. For validation against measured telemetry, see <a href="f1-model.html">the F1 model</a>, where the data is public and the comparison can be shown in full.</li>
+      </ul>
+      <p><strong>And on the results.</strong> 2nd in the Simulator Championship and 10th overall at FSUK are team results, delivered by students across every department of the team. My simulation and data work fed the setup decisions behind them. It did not produce them on its own, and anyone reading those placings as a solo achievement is reading them wrong.</p>
+    </div>
+
     <h2>Relevant skills</h2>
     <ul>
       <li>Building simulation tools aimed at a specific decision rather than a general answer.</li>
@@ -154,6 +166,7 @@ end</code></pre>
   <footer>
     <div class="footer-inner">Veer Phatak · Southampton, UK · <a href="mailto:veerphatak@gmail.com">veerphatak@gmail.com</a> · <a href="https://www.linkedin.com/in/veer-phatak-683665238" target="_blank" rel="noopener">LinkedIn</a></div>
     <div class="footer-note">This site uses cookieless, privacy-friendly analytics. No cookies are set and no personal data is collected.</div>
+    <div class="footer-updated">Site last updated 16 October 2026 &middot; Hand-coded HTML, CSS and JavaScript, no framework &middot; <a href="about-this-site.html">how this site was built</a></div>
   </footer>
 </body>
 </html>

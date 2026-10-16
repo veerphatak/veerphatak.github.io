@@ -593,3 +593,108 @@ button:focus-visible, select:focus-visible, input:focus-visible {
   .nav-inner .brand { font-size: 0.95rem; }
   .nav-links a:not(.nav-icon) { margin-left: 0.75rem; font-size: 0.8rem; }
 }
+
+/* ================================================================
+   Additions, October 2026
+   Limitations callout, dated footer, build page, CV page,
+   iteration diagram.
+   ================================================================ */
+
+/* ---- Limitations / honesty callout ---- */
+.limits {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--muted);
+  border-radius: 10px;
+  background: var(--bg-soft);
+  padding: 1.25rem 1.4rem;
+  margin: 2rem 0;
+}
+.limits h2, .limits h3 {
+  font-size: 1.05rem;
+  margin: 0 0 0.6rem;
+  color: var(--text);
+  letter-spacing: 0;
+}
+.limits p { margin-bottom: 0.7rem; }
+.limits p:last-child, .limits ul:last-child { margin-bottom: 0; }
+.limits ul { margin: 0 0 0.7rem 1.1rem; }
+.limits li { margin-bottom: 0.4rem; }
+.limits li:last-child { margin-bottom: 0; }
+
+/* ---- Dated footer line ---- */
+.footer-updated {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 1.5rem 2rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+/* ---- Build page: spec table and perf tiles ---- */
+.spec {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0 2rem;
+  font-size: 0.92rem;
+}
+.spec th, .spec td {
+  text-align: left;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.spec th {
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+  width: 11rem;
+}
+.spec tr:last-child th, .spec tr:last-child td { border-bottom: none; }
+@media (max-width: 560px) {
+  .spec th, .spec td { display: block; width: auto; border-bottom: none; padding: 0.3rem 0; }
+  .spec td { padding-bottom: 0.9rem; border-bottom: 1px solid var(--border); }
+}
+
+.stats.four { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 760px) { .stats.four { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 400px) { .stats.four { grid-template-columns: 1fr; } }
+
+/* ---- Iteration diagram (inline SVG) ---- */
+.iterviz { width: 100%; height: auto; display: block; }
+.iterviz text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+/* ---- CV page ---- */
+.cv-head { border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 0.5rem; }
+.cv-contact { color: var(--muted); font-size: 0.92rem; margin-top: 0.6rem; }
+.cv-contact a { color: var(--accent); }
+.cv-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.25rem; }
+
+.cv-section { margin-top: 2.75rem; }
+.cv-section > h2 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+.cv-entry { margin-bottom: 1.75rem; }
+.cv-entry:last-child { margin-bottom: 0; }
+.cv-entry h3 { font-size: 1.05rem; margin-bottom: 0.15rem; }
+.cv-entry h3 a { color: var(--text); }
+.cv-entry h3 a:hover { color: var(--accent); text-decoration: none; }
+.cv-when { color: var(--muted); font-size: 0.85rem; margin-bottom: 0.6rem; }
+.cv-entry ul { margin: 0 0 0 1.1rem; }
+.cv-entry li { margin-bottom: 0.4rem; }
+.cv-skills dl { display: grid; grid-template-columns: minmax(0, 13rem) minmax(0, 1fr); gap: 0.6rem 1.5rem; }
+.cv-skills dt { color: var(--muted); font-size: 0.9rem; }
+.cv-skills dd { font-size: 0.93rem; }
+@media (max-width: 620px) {
+  .cv-skills dl { grid-template-columns: 1fr; gap: 0.15rem; }
+  .cv-skills dd { margin-bottom: 0.8rem; }
+}
+.cv-inline-list { list-style: none; margin-left: 0; }
+.cv-inline-list li { padding-left: 1rem; position: relative; }
+.cv-inline-list li::before { content: "·"; position: absolute; left: 0; color: var(--accent); }
