@@ -8,8 +8,33 @@
 (() => {
   "use strict";
 
-  const NAVY = "#58a6ff", RED = "#ff6b5a", MUTED = "#8b949e", GRID = "#233041";
-  const PANEL = "#161b22";   /* matches --bg-soft, so the legend reads as opaque */
+  /* Colours are read from the stylesheet at runtime rather than hardcoded
+     here. Two reasons. The canvas sits inside the page, so if the palette
+     moves and these do not, the chart silently stops matching the thing it
+     is embedded in, which is exactly how this site ended up with figures in
+     a palette that appeared nowhere on the pages carrying them. And each
+     project page sets its own --accent, so reading the token means the
+     simulator picks up the right accent without being told which page it is
+     on. Fallbacks cover the case where the stylesheet has not parsed yet. */
+  const css = (name, fallback) => {
+    try {
+      const v = getComputedStyle(document.documentElement)
+                  .getPropertyValue(name).trim();
+      return v || fallback;
+    } catch (e) { return fallback; }
+  };
+
+  const REF   = css("--body",    "#C3CCD9");  /* measured data: the neutral  */
+  const ACC   = css("--accent",  "#5BA8FF");  /* the model: the page accent  */
+  const MUTED = css("--muted",   "#949FB0");
+  const GRID  = css("--border",  "#242C38");
+  const PANEL = css("--bg-sunken", "#090C11");
+  const GOOD  = css("--good",    "#4ADE80");
+  const WARN  = css("--warn",    "#F2A93B");
+
+  /* Kept for readability at the call sites below. */
+  const NAVY = REF, RED = ACC;
+
   const RHO = 1.20, G = 9.81;
 
   /* ---------- small canvas helper ----------
@@ -220,7 +245,7 @@
       document.getElementById("lapTime").textContent = lapTime.toFixed(3) + " s";
       const dEl = document.getElementById("lapDelta");
       dEl.textContent = (delta >= 0 ? "+" : "") + delta.toFixed(3) + " s vs real";
-      dEl.style.color = Math.abs(delta) < 1 ? "#3fb950" : (delta > 0 ? "#ff6b5a" : NAVY);
+      dEl.style.color = Math.abs(delta) < 1 ? GOOD : (delta > 0 ? ACC : REF);
       document.getElementById("lapRmse").textContent = rmse.toFixed(1) + " km/h";
       document.getElementById("lapVmax").textContent = Math.round(vmax) + " km/h";
       document.getElementById("lapVmin").textContent = Math.round(vmin) + " km/h";
@@ -233,7 +258,7 @@
       axes(ctx, w, h, pad, xr, yr, "Distance around lap (m)", "Speed (km/h)");
 
       // corner shading
-      ctx.save(); ctx.fillStyle = "rgba(139,148,158,0.07)";
+      ctx.save(); ctx.fillStyle = "rgba(148,159,176,0.08)";
       for (let i = 0; i < this.data.radius.length; i++) {
         const r = this.data.radius[i];
         if (r !== null && r < 250) {
@@ -360,11 +385,11 @@
         line(ctx, xs, ys, xr, yr, pad, w, h, colour, 2.2);
       };
       draw(window1, MUTED);
-      draw(window2, "#3fb950");
+      draw(window2, GOOD);
 
       legend(ctx, w, pad, [
         { label: "One stop", colour: MUTED },
-        { label: "Two stops", colour: "#3fb950" },
+        { label: "Two stops", colour: GOOD },
       ]);
     },
 

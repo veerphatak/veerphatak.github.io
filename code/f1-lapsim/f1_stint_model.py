@@ -47,6 +47,12 @@ import matplotlib.pyplot as plt
 
 import fastf1
 
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from site_palette import (P, accent, series, use_site_style, cmap_accent,
+                          cmap_diverging, shades)
+use_site_style()
+
 warnings.filterwarnings("ignore")
 logging.getLogger("fastf1").setLevel(logging.ERROR)
 
@@ -56,7 +62,7 @@ fastf1.Cache.enable_cache(str(HERE / "cache"))
 
 YEAR, EVENT = 2025, "Bahrain"
 COMPOUNDS = ["SOFT", "MEDIUM", "HARD"]
-COLOURS = {"SOFT": "#c0392b", "MEDIUM": "#d4ac0d", "HARD": "#5d6d7e"}
+COLOURS = {"SOFT": accent("f1"), "MEDIUM": P["warn"], "HARD": P["reference"]}
 
 
 # ----------------------------------------------------------------------
@@ -268,12 +274,12 @@ def main():
     # and steep walls mean it is.
     ax = axes[0]
     ref = table.iloc[0]["time"]
-    for stops, colour, label in [(1, "#5d6d7e", "1 stop"), (2, "#2e7d32", "2 stops")]:
+    for stops, colour, label in [(1, P["reference"], "1 stop"), (2, accent("site"), "2 stops")]:
         sub = table[table["stops"] == stops].copy()
         sub["first_stop"] = sub["stints"].apply(lambda s: s[0])
         curve = sub.groupby("first_stop")["time"].min()
         ax.plot(curve.index, curve.values - ref, color=colour, lw=2.2, label=label)
-    ax.axvline(int(actual_splits[0]), color="#c0392b", ls="--", lw=1.6,
+    ax.axvline(int(actual_splits[0]), color=accent("f1"), ls="--", lw=1.6,
                label=f"{win} stopped on lap {int(actual_splits[0])}")
     ax.set_xlabel("Lap of the first pit stop")
     ax.set_ylabel("Best achievable race time, lost vs optimum (s)")
@@ -285,7 +291,7 @@ def main():
     two = table[table["stops"] == 2]["time"].min()
     bars = ax.bar(["Best 1 stop", "Best 2 stop", f"{win} actual"],
                   [one - two, 0, actual_pred - two],
-                  color=["#5d6d7e", "#2e7d32", "#c0392b"])
+                  color=[P["reference"], accent("site"), accent("f1")])
     ax.bar_label(bars, fmt="%+.1f s", fontsize=9)
     ax.set_ylabel("Predicted time lost vs best 2 stop (s)")
     ax.set_title("Was the winning strategy the right one?")

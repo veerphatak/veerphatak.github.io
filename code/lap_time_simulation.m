@@ -194,8 +194,9 @@ end
 % Outputs
 % ---------------------------------------------------------------------------
 function figSpeedTrace(distance, radius, speed, lapTime)
-f = figure('Color','w','Position',[100 100 1000 420]);
-ax = axes(f); hold(ax,'on'); grid(ax,'on'); box(ax,'on');
+P = sitePalette();
+f = figure('Color',P.surface,'Position',[100 100 1000 420],'InvertHardcopy','off');
+ax = axes(f); hold(ax,'on'); grid(ax,'on');
 
 % shade the corners so the trace can be read against the track
 inCorner = isfinite(radius);
@@ -204,10 +205,11 @@ starts = find(edges == 1); stops = find(edges == -1) - 1;
 yl = [0 max(speed)*1.12];
 for i = 1:numel(starts)
     x = [distance(starts(i)) distance(stops(i)) distance(stops(i)) distance(starts(i))];
-    patch(ax, x, [yl(1) yl(1) yl(2) yl(2)], [0.90 0.92 0.96], ...
+    patch(ax, x, [yl(1) yl(1) yl(2) yl(2)], P.border, ...
           'EdgeColor','none','HandleVisibility','off');
 end
-plot(ax, distance, speed, 'LineWidth', 1.8, 'Color', [0.11 0.31 0.55]);
+plot(ax, distance, speed, 'LineWidth', 1.8, 'Color', P.accent.fs);
+siteAxes(ax, P);
 ylim(ax, yl); xlim(ax, [0 distance(end)]);
 xlabel(ax,'Distance around the lap (m)'); ylabel(ax,'Speed (m/s)');
 title(ax, sprintf('Speed trace, lap time %.2f s (shaded bands are corners)', lapTime));
@@ -232,21 +234,23 @@ for i = 1:numel(masses)
 end
 p = polyfit(masses, mTimes, 1);
 
-f = figure('Color','w','Position',[100 100 1100 420]);
+P = sitePalette();
+f = figure('Color',P.surface,'Position',[100 100 1100 420],'InvertHardcopy','off');
 t = tiledlayout(f,1,2,'Padding','compact','TileSpacing','compact');
 
 ax1 = nexttile(t); hold(ax1,'on'); grid(ax1,'on'); box(ax1,'on');
-plot(ax1, clAs, quick, '-o','LineWidth',1.6,'MarkerSize',4,'Color',[0.11 0.31 0.55],'DisplayName','Single lap');
-plot(ax1, clAs, race,  '-s','LineWidth',1.6,'MarkerSize',4,'Color',[0.78 0.20 0.16],'DisplayName','12 lap average');
+plot(ax1, clAs, quick, '-o','LineWidth',1.6,'MarkerSize',4,'Color',P.accent.fs,'DisplayName','Single lap');
+plot(ax1, clAs, race,  '-s','LineWidth',1.6,'MarkerSize',4,'Color',P.accent.f1,'DisplayName','12 lap average');
 [~,iq] = min(quick); [~,ir] = min(race);
-plot(ax1, clAs(iq), quick(iq), 'o','MarkerSize',9,'LineWidth',1.6,'Color',[0.11 0.31 0.55],'HandleVisibility','off');
-plot(ax1, clAs(ir), race(ir),  's','MarkerSize',9,'LineWidth',1.6,'Color',[0.78 0.20 0.16],'HandleVisibility','off');
+plot(ax1, clAs(iq), quick(iq), 'o','MarkerSize',9,'LineWidth',1.6,'Color',P.accent.fs,'HandleVisibility','off');
+plot(ax1, clAs(ir), race(ir),  's','MarkerSize',9,'LineWidth',1.6,'Color',P.accent.f1,'HandleVisibility','off');
 xlabel(ax1,'Downforce level, C_LA'); ylabel(ax1,'Lap time (s)');
 title(ax1, sprintf('Downforce: quick lap optimum %.2f, race optimum %.2f', clAs(iq), clAs(ir)));
 legend(ax1,'Location','north');
 
 ax2 = nexttile(t); hold(ax2,'on'); grid(ax2,'on'); box(ax2,'on');
-plot(ax2, masses, mTimes, '-o','LineWidth',1.6,'MarkerSize',4,'Color',[0.20 0.40 0.30]);
+plot(ax2, masses, mTimes, '-o','LineWidth',1.6,'MarkerSize',4,'Color',P.accent.fs);
+siteAxes(ax1, P); siteAxes(ax2, P);
 xlabel(ax2,'Vehicle mass (kg)'); ylabel(ax2,'Lap time (s)');
 title(ax2, sprintf('Mass sensitivity: %.3f s per 10 kg', p(1)*10));
 
@@ -256,9 +260,11 @@ end
 
 function figDegradation(car, radius, ds)
 levels = [2.5 2.9 3.5 4.2];
-f = figure('Color','w','Position',[100 100 900 430]);
-ax = axes(f); hold(ax,'on'); grid(ax,'on'); box(ax,'on');
-cmap = [0.20 0.45 0.70; 0.11 0.31 0.55; 0.85 0.45 0.10; 0.78 0.20 0.16];
+P = sitePalette();
+f = figure('Color',P.surface,'Position',[100 100 900 430],'InvertHardcopy','off');
+ax = axes(f); hold(ax,'on'); grid(ax,'on');
+% Ordered sweep: one hue stepped by lightness, not four unrelated hues.
+cmap = siteShades(P.accent.fs, numel(levels));
 for i = 1:numel(levels)
     c = car; c.cl_a = levels(i); c.cd_a = dragFor(levels(i));
     t = stint(c, radius, 12, 0.012, ds);
@@ -268,6 +274,7 @@ end
 xlabel(ax,'Lap number'); ylabel(ax,'Lap time (s)');
 title(ax,'Tyre degradation through a 12 lap stint');
 legend(ax,'Location','northwest');
+siteAxes(ax, P);
 exportgraphics(f, fullfile(outDir(),'lapsim-degradation.png'), 'Resolution', 150);
 close(f);
 end

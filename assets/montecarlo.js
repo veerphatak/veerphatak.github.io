@@ -44,12 +44,22 @@
      own labelled stat tile. (The palette validator needs Node, which
      was not available here, so secondary encoding is relied on rather
      than an unverified Delta E claim.) */
-  const BLUE  = "#58a6ff",
-        AMBER = "#d29922",
-        GREEN = "#3fb950",
-        MUTED = "#8b949e",
-        GRID  = "#233041",
-        PANEL = "#161b22";   /* matches --bg-soft, so the legend reads as opaque */
+  /* Read from the stylesheet so the chart follows the page it sits in, and
+     picks up this page's --accent without being told which page it is on. */
+  const css = (name, fallback) => {
+    try {
+      const v = getComputedStyle(document.documentElement)
+                  .getPropertyValue(name).trim();
+      return v || fallback;
+    } catch (e) { return fallback; }
+  };
+
+  const BLUE  = css("--body",      "#C3CCD9"),
+        AMBER = css("--warn",      "#F2A93B"),
+        GREEN = css("--accent",    "#5BA8FF"),
+        MUTED = css("--muted",     "#949FB0"),
+        GRID  = css("--border",    "#242C38"),
+        PANEL = css("--bg-sunken", "#090C11");
 
   const SERIES = [
     { key: "one",   label: "One stop",    colour: BLUE,  dash: [6, 4] },

@@ -55,6 +55,12 @@ from scipy.optimize import minimize
 
 import fastf1
 
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from site_palette import (P, accent, series, use_site_style, cmap_accent,
+                          cmap_diverging, shades)
+use_site_style()
+
 warnings.filterwarnings("ignore")
 logging.getLogger("fastf1").setLevel(logging.ERROR)
 
@@ -246,21 +252,24 @@ def main():
     fig, axes = plt.subplots(2, 1, figsize=(12, 6.4), sharex=True,
                              gridspec_kw={"height_ratios": [2.2, 1]})
     ax = axes[0]
-    ax.plot(d, v_real * 3.6, lw=2.0, color="#14314b", label=f"Measured ({lap['Driver']} pole lap)")
-    ax.plot(d, v_model * 3.6, lw=1.6, color="#c0392b", ls="--", label="Physics model")
-    ax.fill_between(d, 0, 340, where=(R < 250), color="#cfd8dc", alpha=0.45, label="Corner")
+    ax.plot(d, v_real * 3.6, lw=2.0, color=P["reference"], label=f"Measured ({lap['Driver']} pole lap)")
+    ax.plot(d, v_model * 3.6, lw=1.6, color=accent("f1"), ls="--", label="Physics model")
+    ax.fill_between(d, 0, 340, where=(R < 250), color=P["border"], alpha=0.85, label="Corner")
+    # Apex speeds sit on a fixed baseline rather than hanging off each minimum.
+    # Offsetting from the point itself puts them straight through the trace at
+    # the fast corners, where the two curves are closest together.
     for i in corners:
-        ax.annotate(f"{v_real[i]*3.6:.0f}", (d[i], v_real[i]*3.6), textcoords="offset points",
-                    xytext=(0, -14), ha="center", fontsize=7, color="#14314b")
+        ax.annotate(f"{v_real[i]*3.6:.0f}", (d[i], 16), ha="center", va="center",
+                    fontsize=7.5, color=P["muted"])
     ax.set_ylabel("Speed (km/h)"); ax.set_ylim(0, 340)
     ax.set_title(f"{YEAR} {ses.event['EventName']}: model against measured pole lap "
                  f"({real_time:.3f} s actual, {model_time:.3f} s predicted)")
     ax.legend(loc="lower right", fontsize=9); ax.grid(alpha=0.3)
 
     ax2 = axes[1]
-    ax2.plot(d, tel["Throttle"], color="#2e7d32", lw=1.2, label="Throttle (%)")
-    ax2.plot(d, tel["Brake"] * 100, color="#c0392b", lw=1.2, label="Brake (on/off)")
-    ax2.fill_between(d, 0, 100, where=(drs > 0), color="#58a6ff", alpha=0.25, label="DRS open")
+    ax2.plot(d, tel["Throttle"], color=series(5), lw=1.2, label="Throttle (%)")
+    ax2.plot(d, tel["Brake"] * 100, color=accent("f1"), lw=1.2, label="Brake (on/off)")
+    ax2.fill_between(d, 0, 100, where=(drs > 0), color=accent("site"), alpha=0.28, label="DRS open")
     ax2.set_xlabel("Distance around lap (m)"); ax2.set_ylabel("Driver inputs")
     ax2.set_xlim(d[0], d[-1]); ax2.legend(loc="lower right", fontsize=8, ncol=3); ax2.grid(alpha=0.3)
     fig.tight_layout(); fig.savefig(FIGS / "f1-speed-trace.png", dpi=150); plt.close(fig)
@@ -269,14 +278,14 @@ def main():
     fig, axes = plt.subplots(1, 2, figsize=(12, 4.4))
     ax = axes[0]
     xs = np.arange(len(corners))
-    ax.bar(xs - 0.2, [v_real[i]*3.6 for i in corners], 0.4, color="#14314b", label="Measured")
-    ax.bar(xs + 0.2, [v_model[i]*3.6 for i in corners], 0.4, color="#c0392b", label="Model")
+    ax.bar(xs - 0.2, [v_real[i]*3.6 for i in corners], 0.4, color=P["reference"], label="Measured")
+    ax.bar(xs + 0.2, [v_model[i]*3.6 for i in corners], 0.4, color=accent("f1"), label="Model")
     ax.set_xticks(xs); ax.set_xticklabels([f"T{i+1}" for i in xs], fontsize=8)
     ax.set_ylabel("Apex speed (km/h)"); ax.set_title("Minimum speed, corner by corner")
     ax.legend(fontsize=9); ax.grid(alpha=0.3, axis="y")
 
     ax = axes[1]
-    sc = ax.scatter(tel["Speed"], tel["nGear"], c=tel["Throttle"], cmap="viridis", s=8)
+    sc = ax.scatter(tel["Speed"], tel["nGear"], c=tel["Throttle"], cmap=cmap_accent("f1"), s=8)
     ax.set_xlabel("Speed (km/h)"); ax.set_ylabel("Gear")
     ax.set_title("Gear against speed, coloured by throttle")
     ax.set_yticks(range(1, 9)); ax.grid(alpha=0.3)
@@ -286,14 +295,14 @@ def main():
     # ---------------- Figure 3: circuit map ----------------
     fig, axes = plt.subplots(1, 2, figsize=(12, 5.2))
     ax = axes[0]
-    pts = ax.scatter(tel["X"], tel["Y"], c=v_real * 3.6, cmap="plasma", s=6)
+    pts = ax.scatter(tel["X"], tel["Y"], c=v_real * 3.6, cmap=cmap_accent("f1"), s=6)
     ax.set_aspect("equal"); ax.axis("off")
     ax.set_title("Circuit from position telemetry, coloured by measured speed")
     plt.colorbar(pts, ax=ax, label="Speed (km/h)", shrink=0.8)
 
     ax = axes[1]
     err = (v_model - v_real) * 3.6
-    pts = ax.scatter(tel["X"], tel["Y"], c=err, cmap="coolwarm", s=6,
+    pts = ax.scatter(tel["X"], tel["Y"], c=err, cmap=cmap_diverging(), s=6,
                      vmin=-40, vmax=40)
     ax.set_aspect("equal"); ax.axis("off")
     ax.set_title("Model error (red = model too fast)")
