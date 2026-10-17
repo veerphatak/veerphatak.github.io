@@ -246,7 +246,7 @@ plot(ax1, clAs(iq), quick(iq), 'o','MarkerSize',9,'LineWidth',1.6,'Color',P.acce
 plot(ax1, clAs(ir), race(ir),  's','MarkerSize',9,'LineWidth',1.6,'Color',P.accent.f1,'HandleVisibility','off');
 xlabel(ax1,'Downforce level, C_LA'); ylabel(ax1,'Lap time (s)');
 title(ax1, sprintf('Downforce: quick lap optimum %.2f, race optimum %.2f', clAs(iq), clAs(ir)));
-legend(ax1,'Location','north');
+legend(ax1,'Location','northoutside','Orientation','horizontal');
 
 ax2 = nexttile(t); hold(ax2,'on'); grid(ax2,'on'); box(ax2,'on');
 plot(ax2, masses, mTimes, '-o','LineWidth',1.6,'MarkerSize',4,'Color',P.accent.fs);
@@ -273,7 +273,7 @@ for i = 1:numel(levels)
 end
 xlabel(ax,'Lap number'); ylabel(ax,'Lap time (s)');
 title(ax,'Tyre degradation through a 12 lap stint');
-legend(ax,'Location','northwest');
+legend(ax,'Location','northoutside','Orientation','horizontal');
 siteAxes(ax, P);
 exportgraphics(f, fullfile(outDir(),'lapsim-degradation.png'), 'Resolution', 150);
 close(f);

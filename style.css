@@ -89,7 +89,7 @@
 [data-accent="fs"]         { --accent: #5BD18A; --accent-wash: rgba(91,209,138,0.10); }
 [data-accent="uav"]        { --accent: #8FA6FF; --accent-wash: rgba(143,166,255,0.10); }
 [data-accent="internship"] { --accent: #C98BFF; --accent-wash: rgba(201,139,255,0.10); }
-[data-accent="coursework"] { --accent: #E7E0CF; --accent-wash: rgba(231,224,207,0.10); }
+[data-accent="coursework"] { --accent: #F48FB1; --accent-wash: rgba(244,143,177,0.10); }
 
 html { scroll-behavior: smooth; }
 

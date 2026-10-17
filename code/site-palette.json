@@ -18,7 +18,7 @@
     "fs":         "#5BD18A",
     "uav":        "#8FA6FF",
     "internship": "#C98BFF",
-    "coursework": "#E7E0CF"
+    "coursework": "#F48FB1"
   },
 
   "_series_comment": "Categorical slots in fixed order, never cycled. Assign slot 1 first, then 2, and so on. Adjacent pairs are separated in hue and lightness so they survive colour-vision deficiency.",
