@@ -70,7 +70,8 @@
       <strong>A note on what is shown here.</strong> The team's data, code and reports belong to Southampton University Formula Student and are not reproduced on this page. What follows describes my work and the methods I used. The simulation further down was written from scratch for this site on a synthetic track with generic vehicle parameters, and is labelled as such.
     </div>
 
-    <div class="stats">
+    <div class="stats four">
+      <div class="stat"><div class="num">1st</div><div class="label">FSUK Simulator Championship 2026</div></div>
       <div class="stat"><div class="num">2nd</div><div class="label">FSUK Simulator Championship 2025</div></div>
       <div class="stat"><div class="num">10th</div><div class="label">Overall at FSUK 2025</div></div>
       <div class="stat"><div class="num">3</div><div class="label">Seasons in the team</div></div>
@@ -91,7 +92,7 @@
     <p>Alongside the race engineering work I researched integrating the front roll hoop into the chassis for future cars, and presented the technical and feasibility findings to the department and to team management.</p>
 
     <h2>Results</h2>
-    <p>During my time with the team SUFST finished <strong>2nd in the FSUK Simulator Championship and lap time challenge in 2025</strong>, and <strong>10th overall at FSUK 2025</strong>. The simulator result is the one most directly connected to the setup and simulation work.</p>
+    <p>During my time with the team SUFST finished <strong>1st overall in the FSUK Simulator Championship in 2026</strong>, having finished <strong>2nd in the Simulator Championship and lap time challenge in 2025</strong>, and <strong>10th overall at FSUK 2025</strong>. The simulator results are the ones most directly connected to the setup and simulation work.</p>
 
     <h2>A representative model</h2>
     <p>The team's model is not mine to publish, so I wrote an equivalent one from scratch for this site. It is a quasi-steady lap time simulation with tyre degradation, on a synthetic track with generic vehicle parameters. The method is the one I used in the team, and the figures below are its output.</p>
@@ -112,8 +113,8 @@ end</code></pre>
     <p>Where that bracket falls to zero or below, the car is generating downforce faster than the corner demands it and is no longer grip limited there, so power and gearing set the speed instead. A forward pass then applies acceleration and a backward pass applies braking, both sharing tyre capacity with cornering through a friction ellipse. Lap time is the integral of ds/v.</p>
 
     <figure>
-      <img src="media/figures/lapsim-speed-trace.png" alt="Simulated speed around a lap, with corners shown as shaded bands." loading="lazy">
-      <figcaption>Simulated speed around the lap, 30.87 s. The shaded bands are corners, where the car sits on the lateral grip limit. Between them it accelerates until drag, power or the next braking point takes over.</figcaption>
+      <img src="media/figures/lapsim-speed-trace.png" alt="Simulated speed around a lap, dipping at each corner and recovering on the straights." loading="lazy">
+      <figcaption>Simulated speed around the lap, 30.87 s. Each dip is a corner, where the car sits on the lateral grip limit. Between them it accelerates until drag, power or the next braking point takes over.</figcaption>
     </figure>
 
     <h3>Tyre degradation</h3>

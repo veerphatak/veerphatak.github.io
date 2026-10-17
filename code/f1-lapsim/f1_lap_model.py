@@ -254,7 +254,6 @@ def main():
     ax = axes[0]
     ax.plot(d, v_real * 3.6, lw=2.0, color=P["reference"], label=f"Measured ({lap['Driver']} pole lap)")
     ax.plot(d, v_model * 3.6, lw=1.6, color=accent("f1"), ls="--", label="Physics model")
-    ax.fill_between(d, 0, 340, where=(R < 250), color=P["border"], alpha=0.85, label="Corner")
     # Apex speeds sit on a fixed baseline rather than hanging off each minimum.
     # Offsetting from the point itself puts them straight through the trace at
     # the fast corners, where the two curves are closest together.
@@ -264,7 +263,7 @@ def main():
     ax.set_ylabel("Speed (km/h)"); ax.set_ylim(0, 340)
     ax.set_title(f"{YEAR} {ses.event['EventName']}: model against measured pole lap "
                  f"({real_time:.3f} s actual, {model_time:.3f} s predicted)")
-    legend_above(ax, ncol=3); ax.grid(alpha=0.3)
+    legend_above(ax, ncol=2); ax.grid(alpha=0.3)
 
     ax2 = axes[1]
     ax2.plot(d, tel["Throttle"], color=series(5), lw=1.2, label="Throttle (%)")
