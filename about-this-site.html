@@ -19,6 +19,8 @@
   <meta name="twitter:title" content="How This Site Was Built | Veer Phatak">
   <meta name="twitter:description" content="Hand-written HTML, CSS and JavaScript. No framework, no build step, no dependencies.">
   <meta name="twitter:image" content="https://veerphatak.github.io/media/og-image.png">
+  <link rel="preload" href="fonts/spacegrotesk-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
   <script data-goatcounter="https://veerphatak.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
@@ -68,8 +70,8 @@
 
     <div class="stats four">
       <div class="stat"><div class="num">0</div><div class="label">Dependencies, build steps and package managers</div></div>
-      <div class="stat"><div class="num">43 KB</div><div class="label">HTML, CSS and icon for the homepage, before images</div></div>
-      <div class="stat"><div class="num">3,900</div><div class="label">Lines of HTML, CSS and JavaScript written by hand</div></div>
+      <div class="stat"><div class="num">48 KB</div><div class="label">HTML, CSS and icon for the homepage, plus 73 KB of fonts</div></div>
+      <div class="stat"><div class="num">4,109</div><div class="label">Lines of HTML, CSS and JavaScript written by hand</div></div>
       <div class="stat"><div class="num">10</div><div class="label">Content pages plus a 404, all static, one repository</div></div>
     </div>
 
@@ -84,33 +86,33 @@
       <tr><th>Markup and styling</th><td>Hand-written HTML5 and CSS. One shared stylesheet across every page, built on CSS custom properties and CSS Grid. No preprocessor, no utility framework, no CSS-in-JS.</td></tr>
       <tr><th>Interactivity</th><td>Plain JavaScript in two files, <code>sim.js</code> and <code>montecarlo.js</code>, loaded directly by the page with <code>defer</code>. No bundler and no transpilation, so what the browser runs is the file in the repository, line for line.</td></tr>
       <tr><th>Charts and figures</th><td>Static plots generated in Python with Matplotlib, committed as PNG. Interactive plots drawn to a <code>&lt;canvas&gt;</code> by my own code. No charting library.</td></tr>
-      <tr><th>Fonts</th><td>The system font stack. No webfont request, so no layout shift waiting on one and no third-party font host.</td></tr>
+      <tr><th>Fonts</th><td>Two open-licence families, Space Grotesk for headings and Inter for body copy, subset to latin and served from this domain. About 73 KB across four files. No third-party font host, so no request leaves the site and nothing can be tracked by one. Both carry <code>font-display: swap</code> and the two most-used faces are preloaded, so text paints immediately in a fallback and never waits on a font.</td></tr>
       <tr><th>Hosting and deployment</th><td>GitHub Pages, served from the <code>main</code> branch of a public repository. Deployment is <code>git push</code>. There is no CI pipeline, because there is nothing to build.</td></tr>
       <tr><th>Analytics</th><td>GoatCounter, loaded asynchronously. Cookieless, no personal data, no cross-site identifier, and the only third-party request on the site.</td></tr>
     </table>
 
-    <h2>What I actually had to get right</h2>
+    <h2>What had to be right</h2>
     <p>Writing the markup is the easy part. Four things took real attention.</p>
 
-    <h3>Porting a physics solver from Python to JavaScript</h3>
+    <h3>Porting the solver to JavaScript</h3>
     <p>The lap time model was written and validated in Python, and the <a href="f1-model.html">interactive version</a> re-solves it in the browser whenever a slider moves. That meant reimplementing the solver in a second language and getting the same answer out of it, which is a more demanding problem than it first looks: the two implementations have to agree to the point where any difference is floating-point noise rather than a difference in the physics.</p>
     <p>The discipline that made it tractable was keeping the numerics separate from the drawing code, so the solver could be checked against the Python output on fixed inputs before any of it was wired to an interface. A result that changes when you redraw it is not a model.</p>
 
-    <h3>Accessibility, on purpose rather than by accident</h3>
+    <h3>Accessibility, on purpose</h3>
     <p>Every page has a skip link, a single <code>h1</code> and a heading order that does not jump levels, text alternatives on every image, visible focus styles via <code>:focus-visible</code>, and semantic landmarks rather than a page of unlabelled <code>div</code> elements. Interactive figures carry text alternatives describing the result, so the content survives if the canvas does not render. Animation is suppressed under <code>prefers-reduced-motion</code>.</p>
     <p>The part most often skipped is colour. Figures are not encoded by colour alone, and the one status colour on the site ships with an icon and a text label beside it.</p>
 
-    <h3>Making it findable and shareable</h3>
+    <h3>Findable and shareable</h3>
     <p>Each page carries its own meta description, canonical URL, Open Graph and Twitter card tags, so a link pasted into LinkedIn or an email renders as a card rather than a bare URL. The homepage includes JSON-LD <code>Person</code> structured data. There is a <code>sitemap.xml</code>, a <code>robots.txt</code> and a styled 404 page that routes back into the site rather than dead-ending.</p>
 
-    <h3>Keeping it fast without trying very hard</h3>
-    <p>The homepage is about 43 KB of HTML, CSS and icon before images. Images carry explicit <code>width</code> and <code>height</code> so nothing reflows as they arrive, everything below the fold is <code>loading="lazy"</code>, and video is <code>preload="metadata"</code> so a page with four clips on it does not pull megabytes nobody asked for. None of that is clever. It is just the default behaviour you get when there is no framework between you and the browser.</p>
+    <h3>Keeping it fast</h3>
+    <p>The homepage is about 48 KB of HTML, CSS and icon before images, plus 73 KB of fonts on a first visit and nothing thereafter. Images carry explicit <code>width</code> and <code>height</code> so nothing reflows as they arrive, everything below the fold is <code>loading="lazy"</code>, and video is <code>preload="metadata"</code> so a page with four clips on it does not pull megabytes nobody asked for. None of that is clever. It is just the default behaviour you get when there is no framework between you and the browser.</p>
 
     <h2>Learning the workflow</h2>
     <p>I had no web development background when this started, and no Git background either. Publishing is now three commands, and understanding what they do mattered more than memorising them: a commit is a snapshot with a message explaining why, and a push makes the snapshot the published one. The same discipline that applies to a model also applies here, which is that a change you cannot describe is a change you should not have made.</p>
 
     <div class="limits">
-      <h2>Limitations, and what I would do differently</h2>
+      <h2>Limitations</h2>
       <ul>
         <li><strong>There are no automated tests.</strong> The JavaScript solver was checked against the Python output by hand on fixed inputs, which caught the errors that mattered, but there is nothing stopping a future edit silently changing a result. A small test file asserting a handful of known lap times is the obvious next step and does not exist yet.</li>
         <li><strong>Shared markup is duplicated.</strong> The navigation and footer are copied into all eleven pages, so a change to either is an eleven-file edit. That is the honest cost of having no build step: I traded a template system for repetition, and every page footer on this site is evidence of the trade. At thirty pages it would be the wrong call. At eleven it is still cheaper than a toolchain.</li>
@@ -136,7 +138,7 @@
 
     <nav class="pagenav" aria-label="Project navigation">
       <a class="prev" href="coursework.html"><span class="dir">&larr; Previous project</span><span class="ttl">Coursework &amp; Papers</span></a>
-      <a class="next" href="f1-model.html"><span class="dir">Next project &rarr;</span><span class="ttl">Predicting an F1 Lap, and Checking It Against the Real One</span></a>
+      <a class="next" href="f1-model.html"><span class="dir">Next project &rarr;</span><span class="ttl">An F1 Lap, Predicted and Checked</span></a>
     </nav>
 
   </article>

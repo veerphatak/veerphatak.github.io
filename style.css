@@ -1,6 +1,49 @@
 /* ---- Shared theme for Veer Phatak portfolio ---- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* ---- Type -----------------------------------------------------------
+   Two families, self-hosted from this domain. No third-party font host,
+   so no request leaves the site and nothing can be tracked by one.
+
+   Space Grotesk sets headings: geometric, with cut terminals and
+   distinctive numerals, which suits a site mostly about measurements.
+   Inter sets body copy, because these pages run to three thousand words
+   and Inter is built for exactly that at small sizes.
+
+   font-display: swap means text paints immediately in the fallback and
+   swaps when the font lands. Text never waits on a font. The fallback
+   stacks below are chosen to be close in width, so the swap moves the
+   layout as little as possible.
+
+   Both are SIL Open Font License 1.1. Licences ship in fonts/.
+--------------------------------------------------------------------- */
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("fonts/spacegrotesk-500.woff2") format("woff2");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("fonts/spacegrotesk-700.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/inter-400.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/inter-600.woff2") format("woff2");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
+:root {
+  --font-head: "Space Grotesk", "Segoe UI", -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+}
+
 :root {
   /* ---- Surfaces ---------------------------------------------------- */
   --bg:         #0C0F14;   /* page */
@@ -51,10 +94,14 @@
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-body);
   background: var(--bg);
   color: var(--text);
-  line-height: 1.65;
+  line-height: 1.62;
+  /* Lining tabular figures: digits share a width, so numbers in the stat
+     tiles and tables line up in columns instead of drifting. */
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -75,7 +122,7 @@ a:hover { text-decoration: underline; }
   padding: 1rem 1.5rem;
   display: flex; align-items: center; justify-content: space-between;
 }
-.nav-inner .brand { font-weight: 700; color: var(--text); }
+.nav-inner .brand { font-family: var(--font-head); font-weight: 700; letter-spacing: -0.015em; color: var(--text); }
 .nav-inner .brand:hover { text-decoration: none; color: var(--accent); }
 .nav-links a { margin-left: 1.25rem; font-size: 0.95rem; color: var(--muted); }
 .nav-links a:hover { color: var(--text); text-decoration: none; }
@@ -86,7 +133,7 @@ a:hover { text-decoration: underline; }
 
 /* ---- Hero (landing) ---- */
 .hero { text-align: center; padding: 5rem 1.5rem 3rem; }
-.hero h1 { font-size: clamp(2.2rem, 6vw, 3.5rem); letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+.hero h1 { font-family: var(--font-head); font-weight: 700; font-size: clamp(2.2rem, 6vw, 3.4rem); line-height: 1.08; letter-spacing: -0.025em; margin-bottom: 0.75rem; }
 .hero .accent { color: var(--accent); }
 .hero p.tagline { font-size: clamp(1rem, 2.5vw, 1.25rem); color: var(--muted); max-width: 640px; margin: 0 auto; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-top: 2rem; }
@@ -129,7 +176,7 @@ a:hover { text-decoration: underline; }
 }
 .card:hover .card-media img { transform: scale(1.04); }
 .card-body { padding: 1.35rem 1.5rem 1.5rem; display: flex; flex-direction: column; flex: 1; }
-.card h3 { color: var(--text); font-size: 1.1rem; line-height: 1.35; margin-bottom: 0.5rem; }
+.card h3 { font-family: var(--font-head); font-weight: 700; color: var(--text); font-size: 1.08rem; line-height: 1.26; letter-spacing: -0.014em; margin-bottom: 0.5rem; }
 .card p { color: var(--muted); font-size: 0.92rem; }
 .card .arrow { color: var(--accent); font-size: 0.9rem; margin-top: auto; padding-top: 0.9rem; display: inline-block; }
 .card.soon { opacity: 0.6; }
@@ -150,16 +197,16 @@ a:hover { text-decoration: underline; }
 
 /* ---- Project page ---- */
 .back { font-size: 0.9rem; color: var(--muted); display: inline-block; margin-bottom: 1.5rem; }
-.project-title { font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: -0.02em; margin-bottom: 0.75rem; }
-.project-hook { font-size: 1.15rem; color: var(--muted); margin-bottom: 2rem; }
+.project-title { font-family: var(--font-head); font-weight: 700; font-size: clamp(1.8rem, 4vw, 2.5rem); line-height: 1.12; letter-spacing: -0.024em; margin-bottom: 0.75rem; }
+.project-hook { font-size: 1.12rem; line-height: 1.5; color: var(--muted); margin-bottom: 2rem; max-width: 60ch; }
 
 .meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
 .tag { font-size: 0.8rem; border: 1px solid var(--border); border-radius: var(--r-pill); padding: 0.3rem 0.8rem; color: var(--accent); }
 
-.project h2 { font-size: 1.4rem; margin: 2.5rem 0 0.75rem; letter-spacing: -0.01em; }
-.project h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--text); }
-.project p { margin-bottom: 1rem; color: var(--body); }
-.project ul { margin: 0 0 1rem 1.25rem; color: var(--body); }
+.project h2 { font-family: var(--font-head); font-weight: 700; font-size: 1.38rem; line-height: 1.2; margin: 2.6rem 0 0.75rem; letter-spacing: -0.016em; }
+.project h3 { font-family: var(--font-head); font-weight: 500; font-size: 1.08rem; line-height: 1.25; margin: 1.6rem 0 0.5rem; letter-spacing: -0.01em; color: var(--text); }
+.project p { margin-bottom: 1rem; color: var(--body); max-width: 68ch; }
+.project ul { margin: 0 0 1rem 1.25rem; color: var(--body); max-width: 66ch; }
 .project li { margin-bottom: 0.5rem; }
 .project strong { color: var(--text); }
 
@@ -194,7 +241,7 @@ a:hover { text-decoration: underline; }
   margin-left: auto;
   padding-left: 0.5rem;
   color: var(--accent);
-  font-family: Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.85rem;
   font-variant-numeric: tabular-nums;
 }
@@ -228,7 +275,7 @@ a:hover { text-decoration: underline; }
 .sim-readouts .wide { grid-column: span 2; }
 .sim-readouts .big {
   display: block; font-size: 1.15rem; font-weight: 700; color: var(--text);
-  font-family: Consolas, monospace;
+  font-family: var(--font-mono);
 }
 .sim-readouts .lbl { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
 /* max-width keeps the canvas inside its column even if the backing store is
@@ -289,7 +336,7 @@ a:hover { text-decoration: underline; }
   font-weight: 600;
   white-space: nowrap;
 }
-.mc-table tbody td { font-family: Consolas, monospace; color: var(--text); }
+.mc-table tbody td { font-family: var(--font-mono); color: var(--text); }
 .mc-table .plan {
   display: block;
   font-weight: 400;
@@ -377,7 +424,7 @@ pre {
   margin: 1.25rem 0;
 }
 pre code {
-  font-family: "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+  font-family: var(--font-mono);
   font-size: 0.85rem;
   line-height: 1.55;
   color: var(--body);
@@ -387,7 +434,7 @@ pre code {
 .video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 2rem 0; }
 .video-grid figure { margin: 0; }
 @media (max-width: 640px) { .video-grid { grid-template-columns: 1fr; } }
-code { font-family: "Cascadia Code", Consolas, monospace; font-size: 0.9em; color: var(--accent); }
+code { font-family: var(--font-mono); font-size: 0.88em; color: var(--accent); }
 .project p code { background: var(--accent-wash); padding: 0.1em 0.35em; border-radius: var(--r-sm); }
 
 .sub-meta { color: var(--accent); font-size: 0.9rem; margin: -0.5rem 0 1rem; }
@@ -404,7 +451,7 @@ figcaption { font-size: 0.85rem; color: var(--muted); margin-top: 0.6rem; text-a
 
 .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
 .stat { border: 1px solid var(--border); border-radius: var(--r-md); padding: 1.25rem; text-align: center; background: var(--bg-soft); }
-.stat .num { font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+.stat .num { font-family: var(--font-head); font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; color: var(--accent); }
 .stat .label { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
 @media (max-width: 560px) { .stats { grid-template-columns: 1fr; } }
 
@@ -699,7 +746,7 @@ button:focus-visible, select:focus-visible, input:focus-visible {
 
 /* ---- Iteration diagram (inline SVG) ---- */
 .iterviz { width: 100%; height: auto; display: block; }
-.iterviz text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+.iterviz text { font-family: var(--font-body); }
 
 /* ---- CV page ---- */
 .cv-head { border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 0.5rem; }

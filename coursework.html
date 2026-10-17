@@ -19,6 +19,8 @@
   <meta name="twitter:title" content="Coursework &amp; Papers | Veer Phatak">
   <meta name="twitter:description" content="Selected technical reports: Karman-Trefftz aerofoil analysis, method of characteristics nozzle design and wind tunnel testing of a NACA 0020.">
   <meta name="twitter:image" content="https://veerphatak.github.io/media/og-image.png">
+  <link rel="preload" href="fonts/spacegrotesk-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
   <script data-goatcounter="https://veerphatak.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
@@ -79,7 +81,7 @@
 
     <p>Converting the resulting geometric values to the nearest standard designation identified the <strong>NACA 3509</strong> as the closest equivalent section, which was then used as the benchmark for comparison. The two sections share a similar global thickness distribution but differ at the leading and trailing edges, which follows from the way the conformal mapping closes the trailing edge.</p>
 
-    <h3>Panel method and viscous comparison</h3>
+    <h3>Panel method and XFOIL</h3>
     <p>I implemented a doublet panel method in Python to estimate lift, and used it to carry out an order-of-accuracy study against panel count together with a comparison of cosine and uniform panel spacing. Cosine spacing concentrates panels where the geometry changes most rapidly, and converges more quickly for a given panel count.</p>
     <p>The two aerofoils were then compared in XFOIL across angle of attack, Reynolds number and transition criterion, examining boundary layer behaviour in addition to the force coefficients.</p>
 
@@ -92,7 +94,7 @@
 
     <hr class="rule">
 
-    <h2>Minimum-Length Supersonic Nozzle by the Method of Characteristics</h2>
+    <h2>Minimum-Length Supersonic Nozzle</h2>
     <p class="sub-meta">Aerothermodynamics (SESA3029)</p>
     <p>The method of characteristics solves supersonic flow by following the lines along which information propagates. This coursework applies it to design the shortest nozzle capable of accelerating a flow to a target Mach number without generating shocks.</p>
     <p>My assigned case was <strong>M_des = 2.3 in helium</strong>, giving γ = 1.667 rather than the more familiar 1.4, which alters the Prandtl-Meyer function and therefore every subsequent calculation.</p>
@@ -103,7 +105,7 @@
 
     <hr class="rule">
 
-    <h2>Wind Tunnel Testing of a NACA 0020 Aerofoil</h2>
+    <h2>Wind Tunnel Testing, NACA 0020</h2>
     <p class="sub-meta">Aerodynamics laboratories</p>
     <p>Three linked wind tunnel experiments on a symmetric NACA 0020 section, reported together: surface pressure distribution against angle of attack, boundary layer development towards the trailing edge, and lift and drag on a finite half-wing.</p>
     <p>The analysis centres on comparison. The measured results were assessed against thin aerofoil theory, against XFOIL and XFLR5, and against CFD, and a substantial part of the report explains the discrepancies between them: viscous effects not captured by inviscid theory, laminar to turbulent transition along the boundary layer, and the tip effects and induced drag that appear once the wing is finite rather than two-dimensional.</p>
@@ -113,14 +115,14 @@
 
     <hr class="rule">
 
-    <h2>Finite Element Analysis of a Wing Box</h2>
+    <h2>Wing Box FEA</h2>
     <p class="sub-meta">Digital Aerospace (SESA3042)</p>
     <p>Structural analysis of an aircraft wing box in ANSYS Mechanical, comprising spars, ribs, skin and stringers, loaded for both a positive-g and a negative-g manoeuvre, with the requirement that no component yields.</p>
     <p>The principal engineering content is in the meshing rather than the final stress value. I carried out a convergence study from approximately <strong>24,000 to 1.9 million elements</strong>, tracking peak stress against solve time and memory usage. Peak stress varied by well under one percent across that range while computational cost increased by orders of magnitude, which is the justification for convergence testing: beyond a certain refinement the additional precision has no engineering value, and the appropriate decision is to stop refining and state why.</p>
 
     <p class="muted-note">Report available on request. It is written on the university's assignment template, so it is not reproduced here.</p>
     <nav class="pagenav" aria-label="Project navigation">
-      <a class="prev" href="uav.html"><span class="dir">&larr; Previous project</span><span class="ttl">Fixed-Wing UAV Wing Design</span></a>
+      <a class="prev" href="uav.html"><span class="dir">&larr; Previous project</span><span class="ttl">UAV Wing Design</span></a>
       <a class="next" href="about-this-site.html"><span class="dir">Next project &rarr;</span><span class="ttl">How This Site Was Built</span></a>
     </nav>
 

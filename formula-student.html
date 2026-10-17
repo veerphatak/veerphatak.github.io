@@ -19,6 +19,8 @@
   <meta name="twitter:title" content="Formula Student: Race Engineering | Veer Phatak">
   <meta name="twitter:description" content="Three seasons of Southampton University Formula Student race engineering: lap time simulation, tyre degradation modelling and MoTeC lap analysis.">
   <meta name="twitter:image" content="https://veerphatak.github.io/media/og-image.png">
+  <link rel="preload" href="fonts/spacegrotesk-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
   <script data-goatcounter="https://veerphatak.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
@@ -91,7 +93,7 @@
     <h2>Results</h2>
     <p>During my time with the team SUFST finished <strong>2nd in the FSUK Simulator Championship and lap time challenge in 2025</strong>, and <strong>10th overall at FSUK 2025</strong>. The simulator result is the one most directly connected to the setup and simulation work.</p>
 
-    <h2>A representative lap time model</h2>
+    <h2>A representative model</h2>
     <p>The team's model is not mine to publish, so I wrote an equivalent one from scratch for this site. It is a quasi-steady lap time simulation with tyre degradation, on a synthetic track with generic vehicle parameters. The method is the one I used in the team, and the figures below are its output.</p>
 
     <h3>Method</h3>
@@ -138,7 +140,7 @@ end</code></pre>
     <p class="muted-note">Around 230 lines of documented MATLAB, base MATLAB only with no toolboxes. Running <code>lap_time_simulation</code> reproduces all three figures above exactly as shown. To change the numbers rather than read them, the <a href="f1-model.html">Formula 1 model</a> runs the same class of solver interactively in the browser.</p>
 
     <div class="limits">
-      <h2>Limitations of the model shown here</h2>
+      <h2>Limitations</h2>
       <ul>
         <li><strong>It is a point mass.</strong> No axles, no suspension, no weight distribution, no lateral load transfer. Roll stiffness distribution, anti-roll bar settings, camber and tyre pressure are therefore all undefined for it. Adding sliders for them would produce authoritative-looking numbers that mean nothing, so they are not there.</li>
         <li><strong>The track and the car are synthetic.</strong> Generic parameters on a circuit I invented. The 0.130 s per 10 kg figure is this model's output on this track, not a measured property of any real car. The method transfers. The numbers do not.</li>
@@ -157,7 +159,7 @@ end</code></pre>
     </ul>
     <nav class="pagenav" aria-label="Project navigation">
       <a class="prev" href="flume.html"><span class="dir">&larr; Previous project</span><span class="ttl">Tracking Plastics in Moving Water</span></a>
-      <a class="next" href="internship.html"><span class="dir">Next project &rarr;</span><span class="ttl">R&amp;D Engineering Internship, TREND Networks</span></a>
+      <a class="next" href="internship.html"><span class="dir">Next project &rarr;</span><span class="ttl">R&amp;D Internship, TREND Networks</span></a>
     </nav>
 
 
