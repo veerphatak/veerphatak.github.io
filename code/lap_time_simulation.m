@@ -198,21 +198,12 @@ P = sitePalette();
 f = figure('Color',P.surface,'Position',[100 100 1000 420],'InvertHardcopy','off');
 ax = axes(f); hold(ax,'on'); grid(ax,'on');
 
-% shade the corners so the trace can be read against the track
-inCorner = isfinite(radius);
-edges = diff([0; inCorner; 0]);
-starts = find(edges == 1); stops = find(edges == -1) - 1;
 yl = [0 max(speed)*1.12];
-for i = 1:numel(starts)
-    x = [distance(starts(i)) distance(stops(i)) distance(stops(i)) distance(starts(i))];
-    patch(ax, x, [yl(1) yl(1) yl(2) yl(2)], P.border, ...
-          'EdgeColor','none','HandleVisibility','off');
-end
 plot(ax, distance, speed, 'LineWidth', 1.8, 'Color', P.accent.fs);
 siteAxes(ax, P);
 ylim(ax, yl); xlim(ax, [0 distance(end)]);
 xlabel(ax,'Distance around the lap (m)'); ylabel(ax,'Speed (m/s)');
-title(ax, sprintf('Speed trace, lap time %.2f s (shaded bands are corners)', lapTime));
+title(ax, sprintf('Speed trace, lap time %.2f s', lapTime));
 exportgraphics(f, fullfile(outDir(),'lapsim-speed-trace.png'), 'Resolution', 150);
 close(f);
 end

@@ -54,7 +54,7 @@
     <a href="index.html#projects" class="back">&larr; Back to projects</a>
 
     <h1 class="project-title">How This Site Was Built</h1>
-    <p class="project-hook">Every page here is hand-written HTML, CSS and JavaScript. No framework, no build step, no package manager, no dependencies to install. This page explains why that was the right choice and what it cost.</p>
+    <p class="project-hook">Hand-written HTML, CSS and JavaScript, version-controlled with Git and deployed on GitHub Pages. No framework, no build step, no dependencies.</p>
 
     <p class="availability"><strong>Seeking graduate engineering roles.</strong> <span class="sep">|</span> Graduating July 2027 <span class="sep">|</span> <a href="mailto:veerphatak@gmail.com">Get in touch</a></p>
 
@@ -62,79 +62,56 @@
       <span class="tag">HTML</span>
       <span class="tag">CSS</span>
       <span class="tag">JavaScript</span>
+      <span class="tag">Python</span>
       <span class="tag">Git</span>
       <span class="tag">GitHub Pages</span>
       <span class="tag">Accessibility</span>
       <span class="tag">SEO</span>
     </div>
 
-    <div class="stats four">
-      <div class="stat"><div class="num">0</div><div class="label">Dependencies, build steps and package managers</div></div>
-      <div class="stat"><div class="num">48 KB</div><div class="label">HTML, CSS and icon for the homepage, plus 73 KB of fonts</div></div>
-      <div class="stat"><div class="num">4,109</div><div class="label">Lines of HTML, CSS and JavaScript written by hand</div></div>
-      <div class="stat"><div class="num">10</div><div class="label">Content pages plus a 404, all static, one repository</div></div>
-    </div>
-
-    <h2>Why no framework</h2>
-    <p>The default answer for a portfolio in 2026 is a site builder or a React template. I went the other way deliberately, for three reasons.</p>
-    <p><strong>A portfolio about engineering should be engineered.</strong> It would be a strange thing to publish pages arguing that you should understand your own tools, built on a stack I could not explain. If someone asks me why the navigation is sticky, what the Kalman filter in the flume tracker is weighting, or why the lap solver needs three passes, I should be able to answer all three. Hand-writing the site keeps that true.</p>
-    <p><strong>A static site is the correct engineering answer to this problem.</strong> The requirement is a set of documents with some interactive figures, read mostly once by each visitor, updated by one person a few times a month. That requirement does not need a runtime, a bundler, a hydration step or a dependency tree. Reaching for those anyway would be solving a problem I do not have, which is the same instinct as adding suspension sliders to a point-mass lap model.</p>
-    <p><strong>It has to still work in two years.</strong> A static page with no dependencies has nothing to rot. There is no lockfile, no deprecated transitive dependency, and no build that stops working because a tool went to a new major version. The cost of that is paid up front in typing, which is a cost I would rather pay once.</p>
-
-    <h2>The stack</h2>
+    <h2>Components</h2>
     <table class="spec">
-      <tr><th>Markup and styling</th><td>Hand-written HTML5 and CSS. One shared stylesheet across every page, built on CSS custom properties and CSS Grid. No preprocessor, no utility framework, no CSS-in-JS.</td></tr>
-      <tr><th>Interactivity</th><td>Plain JavaScript in two files, <code>sim.js</code> and <code>montecarlo.js</code>, loaded directly by the page with <code>defer</code>. No bundler and no transpilation, so what the browser runs is the file in the repository, line for line.</td></tr>
-      <tr><th>Charts and figures</th><td>Static plots generated in Python with Matplotlib, committed as PNG. Interactive plots drawn to a <code>&lt;canvas&gt;</code> by my own code. No charting library.</td></tr>
-      <tr><th>Fonts</th><td>Two open-licence families, Space Grotesk for headings and Inter for body copy, subset to latin and served from this domain. About 73 KB across four files. No third-party font host, so no request leaves the site and nothing can be tracked by one. Both carry <code>font-display: swap</code> and the two most-used faces are preloaded, so text paints immediately in a fallback and never waits on a font.</td></tr>
-      <tr><th>Hosting and deployment</th><td>GitHub Pages, served from the <code>main</code> branch of a public repository. Deployment is <code>git push</code>. There is no CI pipeline, because there is nothing to build.</td></tr>
-      <tr><th>Analytics</th><td>GoatCounter, loaded asynchronously. Cookieless, no personal data, no cross-site identifier, and the only third-party request on the site.</td></tr>
+      <tr><th>Markup and styling</th><td>HTML5 and CSS, written by hand. One shared stylesheet across every page, built on CSS custom properties and CSS Grid. No preprocessor and no utility framework.</td></tr>
+      <tr><th>Interactivity</th><td>Plain JavaScript in two files, <code>sim.js</code> and <code>montecarlo.js</code>, loaded with <code>defer</code>. No bundler, so the browser runs the file in the repository.</td></tr>
+      <tr><th>Charts and figures</th><td>Static figures generated in Python with Matplotlib and committed as PNG. Interactive charts drawn to a <code>&lt;canvas&gt;</code> in JavaScript. No charting library.</td></tr>
+      <tr><th>Typography</th><td>Space Grotesk and Inter, both open licence, subset and served from this domain rather than a third-party font host.</td></tr>
+      <tr><th>Version control</th><td>Git, with the full history and every script public in the repository.</td></tr>
+      <tr><th>Hosting and deployment</th><td>GitHub Pages, served from the <code>main</code> branch. Deployment is <code>git push</code>.</td></tr>
+      <tr><th>Analytics</th><td>GoatCounter. Cookieless, and the only third-party request on the site.</td></tr>
     </table>
 
-    <h2>What had to be right</h2>
-    <p>Writing the markup is the easy part. Four things took real attention.</p>
-
-    <h3>Porting the solver to JavaScript</h3>
-    <p>The lap time model was written and validated in Python, and the <a href="f1-model.html">interactive version</a> re-solves it in the browser whenever a slider moves. That meant reimplementing the solver in a second language and getting the same answer out of it, which is a more demanding problem than it first looks: the two implementations have to agree to the point where any difference is floating-point noise rather than a difference in the physics.</p>
-    <p>The discipline that made it tractable was keeping the numerics separate from the drawing code, so the solver could be checked against the Python output on fixed inputs before any of it was wired to an interface. A result that changes when you redraw it is not a model.</p>
-
-    <h3>Accessibility, on purpose</h3>
-    <p>Every page has a skip link, a single <code>h1</code> and a heading order that does not jump levels, text alternatives on every image, visible focus styles via <code>:focus-visible</code>, and semantic landmarks rather than a page of unlabelled <code>div</code> elements. Interactive figures carry text alternatives describing the result, so the content survives if the canvas does not render. Animation is suppressed under <code>prefers-reduced-motion</code>.</p>
-    <p>The part most often skipped is colour. Figures are not encoded by colour alone, and the one status colour on the site ships with an icon and a text label beside it.</p>
-
-    <h3>Findable and shareable</h3>
-    <p>Each page carries its own meta description, canonical URL, Open Graph and Twitter card tags, so a link pasted into LinkedIn or an email renders as a card rather than a bare URL. The homepage includes JSON-LD <code>Person</code> structured data. There is a <code>sitemap.xml</code>, a <code>robots.txt</code> and a styled 404 page that routes back into the site rather than dead-ending.</p>
-
-    <h3>Keeping it fast</h3>
-    <p>The homepage is about 48 KB of HTML, CSS and icon before images, plus 73 KB of fonts on a first visit and nothing thereafter. Images carry explicit <code>width</code> and <code>height</code> so nothing reflows as they arrive, everything below the fold is <code>loading="lazy"</code>, and video is <code>preload="metadata"</code> so a page with four clips on it does not pull megabytes nobody asked for. None of that is clever. It is just the default behaviour you get when there is no framework between you and the browser.</p>
-
-    <h2>Learning the workflow</h2>
-    <p>I had no web development background when this started, and no Git background either. Publishing is now three commands, and understanding what they do mattered more than memorising them: a commit is a snapshot with a message explaining why, and a push makes the snapshot the published one. The same discipline that applies to a model also applies here, which is that a change you cannot describe is a change you should not have made.</p>
+    <h2>What I built</h2>
+    <ul>
+      <li><strong>A physics solver running in the browser.</strong> The lap time model was written and validated in Python. I ported the solver to JavaScript so the page re-solves the lap whenever a slider moves, and checked both implementations against the same fixed inputs so the answers agree.</li>
+      <li><strong>Interactive charts from scratch.</strong> Speed traces, strategy curves and a Monte Carlo distribution, drawn to canvas and redrawn on every parameter change, including axis scaling, legends and device-pixel-ratio handling.</li>
+      <li><strong>A figure pipeline shared across two languages.</strong> One palette file read by both the Python and MATLAB plotting scripts, so every figure on the site matches the page it sits in and can be regenerated from source.</li>
+      <li><strong>Accessibility.</strong> Skip links, a single <code>h1</code> per page and a heading order that does not skip levels, text alternatives on every image and figure, visible focus styles, and animation suppressed under <code>prefers-reduced-motion</code>. Nothing is encoded by colour alone.</li>
+      <li><strong>Search and link previews.</strong> Per-page meta descriptions and canonical URLs, Open Graph and Twitter card tags so a shared link renders as a card, JSON-LD structured data, a sitemap, a robots file and a 404 page that routes back into the site.</li>
+      <li><strong>Performance.</strong> Explicit image dimensions so nothing reflows on load, lazy loading below the fold, metadata-only video preloading, and preloaded fonts with <code>font-display: swap</code>.</li>
+    </ul>
 
     <div class="limits">
       <h2>Limitations</h2>
       <ul>
-        <li><strong>There are no automated tests.</strong> The JavaScript solver was checked against the Python output by hand on fixed inputs, which caught the errors that mattered, but there is nothing stopping a future edit silently changing a result. A small test file asserting a handful of known lap times is the obvious next step and does not exist yet.</li>
-        <li><strong>Shared markup is duplicated.</strong> The navigation and footer are copied into all eleven pages, so a change to either is an eleven-file edit. That is the honest cost of having no build step: I traded a template system for repetition, and every page footer on this site is evidence of the trade. At thirty pages it would be the wrong call. At eleven it is still cheaper than a toolchain.</li>
-        <li><strong>Dark mode only.</strong> The site does not respond to <code>prefers-color-scheme</code>, so a visitor who prefers a light interface does not get one. That is a gap rather than a decision.</li>
-        <li><strong>The navigation wraps on narrow screens.</strong> It stays usable and readable down to small phone widths, but below roughly 720 px the links reflow onto a second row instead of collapsing into a menu. It works. It is not elegant.</li>
-        <li><strong>No cross-browser test matrix.</strong> Developed and checked in Chrome and Firefox on Windows, and on mobile Safari. I have not tested it systematically across versions, so I would not claim more than that.</li>
+        <li><strong>No automated tests.</strong> The JavaScript solver was checked against the Python output by hand. Nothing currently stops a future edit changing a result silently.</li>
+        <li><strong>Shared markup is duplicated.</strong> The navigation and footer are copied into every page, so changing either is a multi-file edit. That is the cost of having no build step, and at this number of pages it is still the cheaper trade.</li>
+        <li><strong>Dark mode only.</strong> The site does not respond to <code>prefers-color-scheme</code>.</li>
+        <li><strong>Not tested across a browser matrix.</strong> Developed and checked in Chrome and Firefox on Windows, and on mobile Safari.</li>
       </ul>
     </div>
 
     <h2>Relevant skills</h2>
     <ul>
-      <li>Taking a project from nothing to deployed and publicly accessible, including the hosting and the release process.</li>
+      <li>Taking a project from nothing to deployed and publicly accessible, including hosting and the release process.</li>
       <li>Reimplementing a validated numerical model in a second language and verifying the two agree.</li>
-      <li>Version control with Git, and a deployment workflow I maintain myself.</li>
+      <li>Version control with Git and a deployment workflow I maintain myself.</li>
       <li>Building to accessibility and performance requirements rather than treating them as polish.</li>
-      <li>Choosing the simplest tool that meets the requirement, and being able to say what that choice cost.</li>
     </ul>
 
     <p>
       <a class="dl" href="https://github.com/veerphatak/veerphatak.github.io" target="_blank" rel="noopener">Browse the source of this site on GitHub</a>
     </p>
-    <p class="muted-note">The whole site, every page and every stylesheet, plus the Python and MATLAB behind the models. The FastF1 telemetry cache is deliberately excluded, so no Formula 1 data is redistributed here.</p>
+    <p class="muted-note">Every page and stylesheet, plus the Python and MATLAB behind the models and figures.</p>
 
     <nav class="pagenav" aria-label="Project navigation">
       <a class="prev" href="coursework.html"><span class="dir">&larr; Previous project</span><span class="ttl">Coursework &amp; Papers</span></a>
