@@ -19,6 +19,8 @@
   <meta name="twitter:title" content="F1 Lap Time &amp; Race Strategy Model | Veer Phatak">
   <meta name="twitter:description" content="A physics lap time model and tyre degradation model validated against 2025 Bahrain Grand Prix telemetry. Runs interactively in the browser.">
   <meta name="twitter:image" content="https://veerphatak.github.io/media/og-image.png">
+  <link rel="preload" href="fonts/spacegrotesk-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
   <script src="assets/sim.js" defer></script>
   <script src="assets/montecarlo.js" defer></script>
@@ -53,7 +55,7 @@
   <article class="wrap project" id="main">
     <a href="index.html#projects" class="back">← Back to projects</a>
 
-    <h1 class="project-title">Predicting a Formula 1 Lap, and Checking It Against the Real One</h1>
+    <h1 class="project-title">An F1 Lap, Predicted and Checked</h1>
     <p class="project-hook">A physics lap time model and a tyre degradation model, both developed from first principles and validated against telemetry from the 2025 Bahrain Grand Prix. The lap model predicts the pole lap to within about 1%, holds that accuracy on sections of track it was not fitted to, and the strategy model places the winning strategy 3.8 seconds from its calculated optimum.</p>
 
     <p class="availability"><strong>Seeking graduate engineering roles.</strong> <span class="sep">|</span> Graduating July 2027 <span class="sep">|</span> <a href="mailto:veerphatak@gmail.com">Get in touch</a></p>
@@ -134,7 +136,7 @@
 
     <h2>Part one: the lap</h2>
 
-    <h3>Deriving circuit geometry from telemetry</h3>
+    <h3>Circuit geometry from telemetry</h3>
     <p>The model needs circuit geometry, specifically the corner radius at every point. Rather than looking up a track map, I derived it from the car's own X and Y position telemetry. Curvature is computed analytically from the path:</p>
 
     <pre><code>kappa = |x' y'' - y' x''| / (x'^2 + y'^2)^(3/2)     R = 1 / kappa</code></pre>
@@ -155,7 +157,7 @@
       <figcaption>The model (dashed) against Piastri's pole lap (solid), with the driver's real throttle, brake and DRS inputs below. Predicted lap time 89.197 s against an actual 89.841 s.</figcaption>
     </figure>
 
-    <h3>Checking that this is a prediction and not a fit</h3>
+    <h3>Prediction, or just a fit?</h3>
     <p>Three parameters are fitted to the measured speed trace, and lap time is the integral of distance over speed. Fit the speed, and a close lap time is not independent evidence of anything. The obvious objection to the number above is that it is circular, and the objection deserves a test rather than a reassurance.</p>
     <p>So the model is fitted on part of the lap and then asked about the part it has not seen. If it were memorising this particular lap, its error on unseen track would be clearly worse than on the track it was fitted to.</p>
 
@@ -182,7 +184,7 @@
     <p>Predicted lap time falls within 0.65 seconds of the measured lap. Speed trace RMSE is approximately 18 km/h, and corner-by-corner errors reach roughly 14 km/h in either direction.</p>
 
     <div class="limits">
-      <h3>The lap time is well determined. The split between grip and downforce is not.</h3>
+      <h3>What the fit cannot separate</h3>
       <p>Grip and downforce both set the cornering limit, and the speed trace cannot separate them. Holding the fit at different assumed grip levels and refitting the aerodynamics each time gives almost the same quality of fit across a wide range:</p>
       <ul>
         <li>&mu; = 1.30 with C<sub>L</sub>A = 10.8, speed RMSE <strong>18.1 km/h</strong></li>
@@ -221,7 +223,7 @@
       <figcaption>Left: every usable racing lap, fuel effect removed, with the fitted degradation per compound. Right: what those slopes cost cumulatively across a stint.</figcaption>
     </figure>
 
-    <h3>Limitations of the degradation fit</h3>
+    <h3>Limits of the fit</h3>
     <p>The model resolves <em>base pace</em> correctly, with the soft compound quickest and the harder compounds progressively slower, as expected. It does not resolve degradation <em>rates</em> between compounds. All three return values close to 0.1 seconds per lap, and the hard compound returns a marginally higher rate than the soft, which is not physically credible.</p>
     <p>The likely reason is that compound allocation is not random. Compounds get used in particular phases of a race, in particular track and traffic conditions, and by particular cars. A linear model fitted to one Grand Prix cannot pull those apart from the behaviour of the tyre. Fixing it would need several races pooled together and a stint-level fit rather than a lap-level one. Treat the degradation rates as indicative and nothing more.</p>
 
@@ -295,13 +297,13 @@
 
     <p class="muted-note">Worth trying: push the pit loss above about 30 seconds and the one stop becomes optimal. Drop the hard compound degradation rate and the shape of the best strategy changes completely.</p>
 
-    <h2>Part three: strategy under uncertainty</h2>
+    <h2>Part three: uncertainty</h2>
 
     <p>Everything above assumes the race runs to plan. Real races do not. A pit stop varies by more than a second and occasionally goes badly wrong, one set of tyres is not quite the last set, and roughly two races in five throw a safety car that rearranges the order for reasons nobody predicted. A strategy that is quickest on paper is not automatically the one that wins most often.</p>
 
     <p>So the useful question is not "which strategy is fastest". It is <strong>"which strategy wins most often, and what does it cost me when it goes wrong"</strong>. That is a distribution, not a number, and the way to get one is to run the race a few thousand times. The one, two and three stop strategies below are each optimised on the mean parameters first, then raced against each other through identical sampled races.</p>
 
-    <h3>What varies, and why it is modelled that way</h3>
+    <h3>What varies, and why</h3>
 
     <p><strong>Tyre life and the cliff.</strong> Degradation is not linear to the end of a stint. Each compound has a usable life, and beyond it the loss grows quadratically as the tyre goes off. This matters more than any other choice here: with purely linear degradation a long stint is only linearly slower, and the one stop looks far safer than it really is. The cliff is what makes an over-extended stint genuinely expensive.</p>
 
@@ -311,7 +313,7 @@
 
     <p><strong>Safety car hazard is not uniform.</strong> The opening laps carry several times the rate of the rest of the race, since that is when the field is closest together and the tyres and brakes are coldest. A large part of the strategic option value sits in those first two laps.</p>
 
-    <h3>The mechanic that actually decides it</h3>
+    <h3>What actually decides it</h3>
 
     <p>The interesting effect is not that a safety car slows everyone down, because it slows the whole field equally and cancels out of a comparison. It is that <strong>a stop taken under a safety car costs a little under half of a green flag stop</strong>, and under a virtual safety car around seventy per cent of one. A strategy still holding a stop when the caution appears collects that discount. A strategy that has already stopped collects nothing.</p>
 
@@ -446,7 +448,7 @@
 
     <p class="muted-note">Worth trying: set both safety car rates to zero and the ranking collapses back to raw pace, which is what the deterministic calculator already told you. Put the early race safety car rate back up and the strategy still holding a stop starts winning races it has no right to win on pace. Drop the cliff severity to zero and the one stop becomes far too attractive, which is exactly the error a linear degradation model makes. Widen the slow stop percentage and watch the three stop tail stretch, since it is exposed to that risk three times.</p>
 
-    <h3>What this model does not do</h3>
+    <h3>What it does not do</h3>
     <ul>
       <li>There are no other cars. No track position, no traffic, no undercut and no dirty air, and in a real race those frequently matter more than the pace left on the table. This is one car against the clock under uncertainty, which is a useful question but not the whole one.</li>
       <li>Safety car laps are not slowed in absolute terms. The effect is common to every strategy, so only the change in pit loss is modelled. That keeps the comparison honest but means the absolute race times are not realistic.</li>
@@ -469,7 +471,7 @@
     <p class="muted-note">The lap model and the stint and strategy model, each implemented twice. The Python versions use FastF1 to pull the session data and reproduce every figure on this page. The MATLAB versions (<code>f1_lap_model.m</code>, <code>f1_stint_model.m</code>) carry the same solver and the same regression, reading the extracted circuit geometry and cleaned lap set from <code>data/</code> so they run without a FastF1 install. Session download stays in Python because FastF1 has no MATLAB equivalent. The interactive version above is a JavaScript port of the same solver, since neither Python nor MATLAB runs in a browser.</p>
     <nav class="pagenav" aria-label="Project navigation">
       <a class="prev" href="coursework.html"><span class="dir">&larr; Previous project</span><span class="ttl">Coursework &amp; Papers</span></a>
-      <a class="next" href="motogp.html"><span class="dir">Next project &rarr;</span><span class="ttl">Cornering Aerodynamics of a MotoGP-Style Motorcycle</span></a>
+      <a class="next" href="motogp.html"><span class="dir">Next project &rarr;</span><span class="ttl">MotoGP-Style Cornering Aerodynamics</span></a>
     </nav>
 
   </article>

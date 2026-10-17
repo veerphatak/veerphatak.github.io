@@ -4,3 +4,9 @@
 code/f1-lapsim/cache/
 **/__pycache__/
 *.pyc
+
+# OpenF1 raw telemetry pulls (not redistributed)
+code/f1-lapsim/cache_openf1/
+
+# Local design previews, never published
+_preview/
