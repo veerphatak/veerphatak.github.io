@@ -58,7 +58,7 @@ import fastf1
 import sys as _sys
 _sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from site_palette import (P, accent, series, use_site_style, cmap_accent,
-                          cmap_diverging, shades)
+                          cmap_diverging, shades, finish, legend_above)
 use_site_style()
 
 warnings.filterwarnings("ignore")
@@ -264,14 +264,14 @@ def main():
     ax.set_ylabel("Speed (km/h)"); ax.set_ylim(0, 340)
     ax.set_title(f"{YEAR} {ses.event['EventName']}: model against measured pole lap "
                  f"({real_time:.3f} s actual, {model_time:.3f} s predicted)")
-    ax.legend(loc="lower right", fontsize=9); ax.grid(alpha=0.3)
+    legend_above(ax, ncol=3); ax.grid(alpha=0.3)
 
     ax2 = axes[1]
     ax2.plot(d, tel["Throttle"], color=series(5), lw=1.2, label="Throttle (%)")
     ax2.plot(d, tel["Brake"] * 100, color=accent("f1"), lw=1.2, label="Brake (on/off)")
     ax2.fill_between(d, 0, 100, where=(drs > 0), color=accent("site"), alpha=0.28, label="DRS open")
     ax2.set_xlabel("Distance around lap (m)"); ax2.set_ylabel("Driver inputs")
-    ax2.set_xlim(d[0], d[-1]); ax2.legend(loc="lower right", fontsize=8, ncol=3); ax2.grid(alpha=0.3)
+    ax2.set_xlim(d[0], d[-1]); legend_above(ax2, ncol=3, fontsize=8); ax2.grid(alpha=0.3)
     fig.tight_layout(); fig.savefig(FIGS / "f1-speed-trace.png", dpi=150); plt.close(fig)
 
     # ---------------- Figure 2: corner speeds + gear ----------------
@@ -282,7 +282,7 @@ def main():
     ax.bar(xs + 0.2, [v_model[i]*3.6 for i in corners], 0.4, color=accent("f1"), label="Model")
     ax.set_xticks(xs); ax.set_xticklabels([f"T{i+1}" for i in xs], fontsize=8)
     ax.set_ylabel("Apex speed (km/h)"); ax.set_title("Minimum speed, corner by corner")
-    ax.legend(fontsize=9); ax.grid(alpha=0.3, axis="y")
+    legend_above(ax, ncol=2); ax.grid(alpha=0.3, axis="y")
 
     ax = axes[1]
     sc = ax.scatter(tel["Speed"], tel["nGear"], c=tel["Throttle"], cmap=cmap_accent("f1"), s=8)

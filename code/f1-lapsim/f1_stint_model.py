@@ -50,7 +50,7 @@ import fastf1
 import sys as _sys
 _sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from site_palette import (P, accent, series, use_site_style, cmap_accent,
-                          cmap_diverging, shades)
+                          cmap_diverging, shades, finish, legend_above)
 use_site_style()
 
 warnings.filterwarnings("ignore")
@@ -256,7 +256,7 @@ def main():
                 color=COLOURS[c], lw=2.4)
     ax.set_xlabel("Tyre age (laps)"); ax.set_ylabel("Fuel-corrected lap time (s)")
     ax.set_title("Degradation by compound, fuel effect removed")
-    ax.legend(fontsize=8); ax.grid(alpha=0.3)
+    legend_above(ax, ncol=3, fontsize=8); ax.grid(alpha=0.3)
 
     ax = axes[1]
     ages = np.arange(1, 31)
@@ -264,7 +264,7 @@ def main():
         ax.plot(ages, model["deg"][c] * ages, color=COLOURS[c], lw=2.4, label=c)
     ax.set_xlabel("Laps on the tyre"); ax.set_ylabel("Time lost to degradation (s)")
     ax.set_title("Cumulative cost of staying out")
-    ax.legend(fontsize=9); ax.grid(alpha=0.3)
+    legend_above(ax, ncol=3); ax.grid(alpha=0.3)
     fig.tight_layout(); fig.savefig(FIGS / "f1-degradation.png", dpi=150); plt.close(fig)
 
     # ---------------- Figure 2: strategy space ----------------
@@ -284,7 +284,7 @@ def main():
     ax.set_xlabel("Lap of the first pit stop")
     ax.set_ylabel("Best achievable race time, lost vs optimum (s)")
     ax.set_title("The pit window")
-    ax.set_ylim(-1, 40); ax.legend(fontsize=8.5); ax.grid(alpha=0.3)
+    ax.set_ylim(-1, 40); legend_above(ax, ncol=3, fontsize=8.5); ax.grid(alpha=0.3)
 
     ax = axes[1]
     one = table[table["stops"] == 1]["time"].min()

@@ -111,6 +111,41 @@ def finish(ax, legend=True, loc="best"):
     return ax
 
 
+def legend_above(ax, ncol=None, fontsize=9):
+    """
+    Put the key above the plot, outside the data area.
+
+    A legend placed inside the axes competes with the thing it is labelling.
+    `loc="best"` only searches for the least-bad overlap, and on a dense
+    scatter there is no good answer: the degradation chart ended up with its
+    key sitting on top of the very points it described, hiding a corner of
+    the data behind an opaque box.
+
+    Above the axes there is nothing to collide with, the key reads before the
+    plot rather than after it, and it cannot drift onto the data when the
+    numbers change. No frame, because once it is outside the plot the box is
+    doing nothing except adding a line.
+    """
+    handles, labels = ax.get_legend_handles_labels()
+    if not handles:
+        return ax
+    # The title lives just above the axes too, so make room for the key
+    # between them. Without this they are drawn on top of each other.
+    if ax.get_title():
+        ax.set_title(ax.get_title(), pad=26)
+    lg = ax.legend(
+        handles, labels,
+        loc="lower left", bbox_to_anchor=(0.0, 1.015),
+        ncol=ncol or min(len(handles), 4),
+        frameon=False, fontsize=fontsize,
+        handlelength=1.8, columnspacing=1.4, handletextpad=0.6,
+        borderaxespad=0.0,
+    )
+    for t in lg.get_texts():
+        t.set_color(P["body"])
+    return ax
+
+
 def cmap_accent(name="site", n=256):
     """
     Sequential ramp from a dim step to the page accent.

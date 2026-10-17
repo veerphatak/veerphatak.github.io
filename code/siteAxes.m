@@ -33,9 +33,11 @@ function siteAxes(ax, P)
     ax.Title.FontWeight = 'normal';
     ax.Title.FontSize   = 11.5;
 
+    % Legends sit outside the axes, so they cannot land on the data. Once
+    % outside, the surrounding box is doing nothing but adding a line.
     lg = get(ax, 'Legend');
     if ~isempty(lg)
-        set(lg, 'Color', P.sunken, 'TextColor', P.body, ...
-                'EdgeColor', P.border, 'Box', 'on');
+        set(lg, 'Color', 'none', 'TextColor', P.body, ...
+                'EdgeColor', 'none', 'Box', 'off');
     end
 end
