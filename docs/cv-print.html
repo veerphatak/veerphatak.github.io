@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<title>Veer Phatak CV</title>
+<!--
+  Source for docs/Veer Phatak CV.pdf. Edit this file, then regenerate the PDF:
+
+    chrome --headless --no-pdf-header-footer --print-to-pdf="docs/Veer Phatak CV.pdf" docs/cv-print.html
+
+  No phone number here on purpose: this file and the PDF are public. Add it
+  by hand to copies sent directly to an employer.
+-->
+<style>
+  @page { size: A4; margin: 13mm 15mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 9.6pt; line-height: 1.32; color: #1a1a1a; margin: 0; }
+  a { color: #1f4e79; text-decoration: none; }
+  h1 { font-size: 23pt; text-align: center; color: #17324d; margin: 0 0 3pt; }
+  .contact { text-align: center; font-size: 9.2pt; margin: 0 0 7pt; }
+  h2 { font-size: 10.8pt; letter-spacing: 0.06em; color: #17324d; border-bottom: 1.3pt solid #17324d;
+       margin: 8pt 0 3.5pt; padding-bottom: 1.5pt; break-after: avoid; }
+  p { margin: 0 0 2.5pt; }
+  .profile { text-align: justify; }
+  .entry { margin-bottom: 4pt; break-inside: avoid; }
+  .head { display: flex; justify-content: space-between; gap: 10pt; font-weight: bold; color: #17324d; break-after: avoid; }
+  .head span:last-child { font-weight: normal; color: #1a1a1a; white-space: nowrap; }
+  .sub { font-style: italic; break-after: avoid; }
+  ul { margin: 1pt 0 0; padding-left: 13pt; }
+  li { margin-bottom: 1pt; break-inside: avoid; }
+  b { color: #17324d; }
+  .skills p { margin-bottom: 1.5pt; }
+</style>
+</head>
+<body>
+
+<h1>Veer Phatak</h1>
+<p class="contact">
+  <a href="mailto:veerphatak@gmail.com">veerphatak@gmail.com</a> &nbsp;|&nbsp;
+  <a href="https://veerphatak.github.io">veerphatak.github.io</a> &nbsp;|&nbsp;
+  <a href="https://www.linkedin.com/in/veer-phatak-683665238">linkedin.com/in/veer-phatak-683665238</a> &nbsp;|&nbsp;
+  Maidenhead / Southampton, UK
+</p>
+
+<h2>PROFILE</h2>
+<p class="profile">Final-year MEng Aeronautics and Astronautics student specialising in Aerodynamics at the University of Southampton, graduating July 2027 with a 71.7% first-class Year 3 average. Team leader and aerodynamic design lead on a final-year project investigating the cornering aerodynamics of a MotoGP-style motorcycle through CFD and wind tunnel testing. Three seasons of Formula Student race engineering, a Formula 1 lap time and race strategy model validated against telemetry, a first-class experimental fluid dynamics project with a bespoke computer-vision measurement system, and an R&amp;D internship at TREND Networks where a redesigned part was approved for manufacture.</p>
+
+<h2>CORE SKILLS</h2>
+<div class="skills">
+<p><b>Aerodynamics and CFD:</b> ANSYS Fluent, XFLR5, XFOIL, OpenVSP/VSPAERO, panel methods (Python), aerofoil and boundary layer analysis, aerodynamic trade studies</p>
+<p><b>Wind tunnel and experimental:</b> wind tunnel testing, CFD and experiment correlation, test rig design and build, calibration, computer-vision measurement, uncertainty analysis</p>
+<p><b>Modelling and data:</b> Python (NumPy, pandas, SciPy, OpenCV, Matplotlib), MATLAB, JavaScript, Excel, Git; lap time simulation, least-squares fitting, Monte Carlo, Kalman filtering</p>
+<p><b>CAD and manufacture:</b> SolidWorks, design for manufacture (injection moulding, additive manufacturing), rapid 3D-printed prototyping (Bambu Studio), fit and tolerance checks</p>
+<p><b>FEA and motorsport:</b> ANSYS Mechanical, mesh convergence studies; MoTeC i2, setup evaluation, race strategy modelling</p>
+</div>
+
+<h2>ENGINEERING PROJECTS</h2>
+
+<div class="entry">
+  <div class="head"><span>Final-Year Group Design Project: Cornering Aerodynamics of a MotoGP-Style Motorcycle</span><span>Sep 2026 - Present</span></div>
+  <p class="sub">Supervisors: Dr David Marshall and Dr Renan Soares</p>
+  <ul>
+    <li><b>Team leader</b> of a student group investigating how drag, downforce, side force and the yaw and roll moments vary with lean angle, through CFD and wind tunnel testing; coordinating the team and liaising with supervisors.</li>
+    <li><b>Aerodynamic design lead</b>, responsible for aerodynamic direction across the CFD and wind tunnel programme.</li>
+    <li><b>CAD development and manufacturing lead</b>, responsible for the CAD model and manufacture of the wind tunnel test model.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="head"><span>Formula 1 Lap Time and Race Strategy Model (personal project, runs in the browser)</span><span>2026</span></div>
+  <ul>
+    <li>Built a quasi-steady lap time model in Python on circuit geometry derived from car position telemetry, predicting the 2025 Bahrain pole lap to <b>within about 1%</b> (90.36 s against 89.84 s) and holding that accuracy on sections of track it was not fitted to.</li>
+    <li>Fitted tyre degradation, fuel and driver effects by least squares across <b>979 racing laps</b>, measured pit loss from 28 green-flag stops, and ranked <b>14,532 legal strategies</b>, placing the winning strategy 3.8 s from the calculated optimum.</li>
+    <li>Extended it to a Monte Carlo treatment of strategy under safety cars, pit stop variation and tyre scatter, and ported the solver to JavaScript so it can be re-run interactively at veerphatak.github.io.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="head"><span>Individual Master's Project: Hydrodynamic Analysis of Large Plastics in Open-Channel Flow</span><span>Oct 2025 - May 2026</span></div>
+  <p class="sub">Graded 75% (First). Supervisor: Dr Sergio Maldonado</p>
+  <ul>
+    <li>Designed and built a laboratory open-channel flume and paddlewheel drive (SolidWorks, Arduino stepper control) to reproduce turbulent flow, covering component selection, bearing and shaft mounting, sealing and camera illumination.</li>
+    <li>Developed a Python/OpenCV measurement system (segmentation, contour fitting, Kalman filtering, homography calibration) reconstructing trajectories from 240 fps footage at <b>98.4% mean detection coverage and 1.5 mm positional accuracy</b>.</li>
+    <li>Analysed <b>58 experimental runs</b> across spheres, rods and discs using velocity, slip, drag, dispersion and tortuosity, with Reynolds and Stokes number analysis comparing flume and water tunnel results.</li>
+    <li>Validated every tracked run against raw footage to reject reflections and missed detections; roughly 9,400 lines of published Python.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="head"><span>Fixed-Wing UAV Wing Design, Aerodynamics and Stability Lead (Group Project)</span><span>2024 - 2025</span></div>
+  <ul>
+    <li><b>Ranked 1st in the cohort:</b> delivered the largest minimum-to-maximum speed range in the year group, <b>23.1 m/s predicted in XFLR5 against 19.8 m/s measured in flight</b>, using single-slot Fowler flaps and vortex generators.</li>
+    <li>Designed the box-spar wing structure over three test-driven iterations on a purpose-built bending and torsion rig, and compared planforms in XFLR5 and XFOIL within mass and volume limits.</li>
+    <li>Led configuration selection using decision matrices, and managed Gantt and resource planning that delivered the project early.</li>
+  </ul>
+</div>
+
+<h2>ENGINEERING EXPERIENCE</h2>
+
+<div class="entry">
+  <div class="head"><span>TREND Networks, R&amp;D Intern</span><span>Jul 2026 - Sep 2026</span></div>
+  <ul>
+    <li><b>Battery compartment redesign:</b> redesigned an existing product's battery compartment for user-replaceable batteries under EU regulations within a fixed envelope, balancing battery protection, durability, styling and ease of use. Ten iterations produced a design <b>approved and released for manufacture</b>.</li>
+    <li><b>Handheld instrument enclosure:</b> designed from initial concept around a pre-manufactured PCB, fitting clearances, port positions and mounting points while reconciling requirements from several engineers, over three iterations.</li>
+    <li><b>Ribbon fibre spool:</b> designed a spool to feed and protect fibre during testing, maximising stored fibre length within each tester case over three iterations.</li>
+    <li>Ran all office 3D printing, prototyping each iteration the same day to check fit, wall thickness, warping and tolerances against the CAD, with injection moulding in mind for production parts.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="head"><span>Southampton University Formula Student (SUFST), Race Engineering and Chassis</span><span>2023 - Present</span></div>
+  <ul>
+    <li>Built Python and MATLAB lap-time and tyre degradation simulations and analysed logged data in MoTeC i2 to evaluate setup trade-offs, contributing to <b>1st in the FSUK Simulator Championship 2026</b>, and to 2nd in the Simulator Championship and 10th overall at FSUK 2025.</li>
+    <li>Researched front roll hoop integration into the chassis and presented technical and feasibility findings to the department and team management.</li>
+  </ul>
+</div>
+
+<h2>EDUCATION</h2>
+
+<div class="entry">
+  <div class="head"><span>University of Southampton, MEng Aeronautics and Astronautics (Aerodynamics)</span><span>Sep 2023 - Jul 2027</span></div>
+  <ul>
+    <li><b>Year 3: 71.7% average (First).</b> Aerospace Control Design 80%, Individual Project 75%, Aircraft Structural Design 75%, Advanced Aeronautics 74%, Aerothermodynamics 68%.</li>
+    <li><b>Wind tunnel laboratories:</b> measured NACA 0020 pressure distribution against angle of attack, boundary layer development and finite wing lift and drag, and correlated results against CFD, XFOIL and XFLR5.</li>
+    <li><b>Advanced Aeronautics:</b> implemented a Python doublet panel method with accuracy and panel-distribution convergence studies.</li>
+    <li><b>FEA:</b> ANSYS Mechanical mesh convergence study from roughly 24,000 to 1.9 million elements, balancing peak stress accuracy against solve time and memory.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="head"><span>Reading School, Reading</span><span>Sep 2016 - Jul 2023</span></div>
+  <ul>
+    <li>A-levels: A* Economics, A Mathematics, A Physics, B Classical Civilisation. AS Additional Mathematics (A). 10 GCSEs including eight grade 9s.</li>
+  </ul>
+</div>
+
+<h2>LEADERSHIP AND WORK EXPERIENCE</h2>
+
+<div class="entry">
+  <div class="head"><span>Head Coach, Boyne Hill Cricket Club</span><span>May 2025 - Present</span></div>
+  <ul>
+    <li>Plan and lead weekly two-hour training sessions for U9 girls and U13 boys teams.</li>
+  </ul>
+</div>
+<p><b>Other experience:</b> Private Tutor, ages 8 to 14 (2022 - 2025); Front of House, Seasonality Restaurant (2022 - 2024); Dynamos Cricket Coach, ECB programme (2021 - 2022); Tutor, Brilliant Tutors Academy (2022); Sales Assistant and Till Manager, Kay's Chemist (2021 - 2022).</p>
+
+<h2>ACHIEVEMENTS AND INTERESTS</h2>
+<ul>
+  <li>1st overall, FSUK Simulator Championship 2026; 2nd in the FSUK lap time challenge and Simulator Championship 2025.</li>
+  <li>Boyne Hill CC 1st XI wicketkeeper-batter with 16 years of competitive cricket; captained Southampton University CC indoor team and outdoor 3rd XI.</li>
+  <li>ECB and Berkshire qualified cricket coach; qualified first aider; Sports Prefect at Reading School.</li>
+</ul>
+<p style="margin-top:4pt"><i>References available on request.</i></p>
+
+</body>
+</html>
