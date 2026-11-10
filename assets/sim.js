@@ -184,6 +184,9 @@
         vc[i] = bracket > 0 ? Math.min(Math.sqrt(p.mu * G / bracket), p.vMax) : p.vMax;
       }
 
+      // Drive goes through the rear axle only, which carries roughly this
+      // share of the tyre load under power. Braking uses all four tyres.
+      const driveFrac = this.data.fitted.driveLoadFrac || 1;
       const drag = (v, d) => 0.5 * RHO * p.cdA * (1 - 0.12 * d) * v * v;
       const load = v => p.mass * G + 0.5 * RHO * p.clA * v * v;
 
@@ -200,7 +203,7 @@
           const grip = p.mu * load(v);
           const lat = R[i] === null ? 0 : p.mass * v * v / R[i];
           const rem = Math.sqrt(Math.max(grip * grip - lat * lat, 0));
-          const f = Math.min(p.power / Math.max(v, 1), rem) - drag(v, drs[i]);
+          const f = Math.min(p.power / Math.max(v, 1), driveFrac * rem) - drag(v, drs[i]);
           vf[i + 1] = Math.min(Math.sqrt(Math.max(v * v + 2 * (f / p.mass) * ds, 1)), p.vMax);
         }
       }

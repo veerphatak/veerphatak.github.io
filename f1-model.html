@@ -75,7 +75,7 @@
     </div>
 
     <div class="stats four">
-      <div class="stat"><div class="num">0.72%</div><div class="label">Lap time error against the real pole lap, 0.3% to 2.5% depending on the fitting subset</div></div>
+      <div class="stat"><div class="num">0.58%</div><div class="label">Lap time error against the real pole lap, 0.05% to 1.15% depending on the fitting subset</div></div>
       <div class="stat"><div class="num">1.0&times;</div><div class="label">Held-out speed error against fitted, so the lap is predicted rather than memorised</div></div>
       <div class="stat"><div class="num">0.58 s</div><div class="label">Race pace model RMSE over 979 laps</div></div>
       <div class="stat"><div class="num">14,532</div><div class="label">Race strategies evaluated</div></div>
@@ -89,19 +89,19 @@
       <div class="sim-grid">
         <div class="sim-controls">
           <label>Tyre grip, <span class="muted">peak μ</span>
-            <input type="range" id="mu" min="1.0" max="2.5" step="0.01" value="1.48">
+            <input type="range" id="mu" min="1.0" max="2.5" step="0.01" value="1.55">
             <output id="muVal"></output>
           </label>
           <label>Downforce, <span class="muted">C<sub>L</sub>A</span>
-            <input type="range" id="clA" min="2" max="14" step="0.05" value="8.95">
+            <input type="range" id="clA" min="2" max="14" step="0.05" value="7.9">
             <output id="clAVal"></output>
           </label>
           <label>Drag, <span class="muted">C<sub>D</sub>A</span>
-            <input type="range" id="cdA" min="0.6" max="4.5" step="0.05" value="2.49">
+            <input type="range" id="cdA" min="0.6" max="4.5" step="0.05" value="2.35">
             <output id="cdAVal"></output>
           </label>
           <label>Mass, <span class="muted">kg</span>
-            <input type="range" id="mass" min="700" max="1000" step="5" value="850">
+            <input type="range" id="mass" min="700" max="1000" step="5" value="800">
             <output id="massVal"></output>
           </label>
           <label>Power, <span class="muted">kW at the wheels</span>
@@ -149,12 +149,12 @@
     </figure>
 
     <h3>Solving the lap</h3>
-    <p>The solver is quasi-steady and makes three passes: a cornering limit that accounts for downforce growing with speed, then a forward pass limited by power and traction, then a backward pass limited by braking, with longitudinal and lateral tyre demand sharing capacity through a friction ellipse. DRS is taken from the real telemetry and applied as a reduction in drag where the driver had it open.</p>
-    <p>Mass, power and braking limits are publicly available. Grip, downforce and drag are not, so those three parameters are fitted to the measured speed trace. The remainder of the solution is determined by the physics and the circuit geometry.</p>
+    <p>The solver is quasi-steady and makes three passes: a cornering limit that accounts for downforce growing with speed, then a forward pass limited by power and traction, then a backward pass limited by braking, with longitudinal and lateral tyre demand sharing capacity through a friction circle. Drive goes through the rear axle only, which is taken to carry 60% of the tyre load under power, while braking uses all four tyres. DRS is taken from the real telemetry and applied as a reduction in drag where the driver had it open.</p>
+    <p>Mass (the 800 kg regulation minimum), power and braking limits are publicly available, and the rear axle load share is assumed from typical weight and aero balance. Grip, downforce and drag are not, so those three parameters are fitted to the measured speed trace. The remainder of the solution is determined by the physics and the circuit geometry.</p>
 
     <figure>
       <img src="media/figures/f1-speed-trace.png" alt="Upper: measured and modelled speed around the lap. Lower: throttle, brake and DRS traces from the real car." loading="lazy">
-      <figcaption>The model (dashed) against Piastri's pole lap (solid), with the driver's real throttle, brake and DRS inputs below. Predicted lap time 89.197 s against an actual 89.841 s.</figcaption>
+      <figcaption>The model (dashed) against Piastri's pole lap (solid), with the driver's real throttle, brake and DRS inputs below. Predicted lap time 90.363 s against an actual 89.841 s.</figcaption>
     </figure>
 
     <h3>Prediction, or just a fit?</h3>
@@ -167,36 +167,38 @@
         <tr><th>Fitted on</th><th>Predicted</th><th>Lap time error</th><th>Speed error, fitted</th><th>Speed error, unseen</th><th>Ratio</th></tr>
       </thead>
       <tbody>
-        <tr><td>First 50%</td><td>Last 50%</td><td>-0.30%</td><td>18.1 km/h</td><td>17.8 km/h</td><td>0.98</td></tr>
-        <tr><td>First 66%</td><td>Last 34%</td><td>-0.77%</td><td>19.2 km/h</td><td>15.2 km/h</td><td>0.79</td></tr>
-        <tr><td>First 75%</td><td>Last 25%</td><td>-1.35%</td><td>18.9 km/h</td><td>14.9 km/h</td><td>0.79</td></tr>
-        <tr><td>Last 66%</td><td>First 34%</td><td>-0.81%</td><td>18.5 km/h</td><td>16.6 km/h</td><td>0.90</td></tr>
-        <tr><td>Alternating 100 m blocks</td><td>The gaps between them</td><td>-2.46%</td><td>17.5 km/h</td><td>18.7 km/h</td><td>1.06</td></tr>
+        <tr><td>First 50%</td><td>Last 50%</td><td>+0.40%</td><td>13.2 km/h</td><td>15.0 km/h</td><td>1.14</td></tr>
+        <tr><td>First 66%</td><td>Last 34%</td><td>+0.05%</td><td>14.4 km/h</td><td>13.9 km/h</td><td>0.96</td></tr>
+        <tr><td>First 75%</td><td>Last 25%</td><td>-0.22%</td><td>14.6 km/h</td><td>12.3 km/h</td><td>0.84</td></tr>
+        <tr><td>Last 66%</td><td>First 34%</td><td>+1.15%</td><td>15.2 km/h</td><td>12.7 km/h</td><td>0.83</td></tr>
+        <tr><td>Alternating 100 m blocks</td><td>The gaps between them</td><td>-1.07%</td><td>14.1 km/h</td><td>14.5 km/h</td><td>1.03</td></tr>
       </tbody>
     </table>
     </div>
 
-    <p>Every ratio sits at or below about 1.0, so the model is no worse on track it never saw than on track it was fitted to. That is the result that makes the lap time worth quoting: the geometry and the physics are carrying the prediction, not the fit.</p>
-    <p>The same table sets the honest precision. Re-fitting on different parts of the lap moves the predicted lap time between <strong>0.30% and 2.46%</strong>. The headline 0.72% is one draw from that range, not a repeatable accuracy figure, and <strong>within about 1%</strong> is the claim this method actually supports.</p>
+    <p>Four of the five ratios sit at or below about 1.0. The worst is 1.14, when the model is fitted on the first half of the lap and asked about the second, so on unseen track it is at most a little worse than on track it was fitted to. That is the result that makes the lap time worth quoting: the geometry and the physics are carrying the prediction, not the fit.</p>
+    <p>The same table sets the honest precision. Re-fitting on different parts of the lap moves the predicted lap time between <strong>0.05% and 1.15%</strong>. The headline 0.58% is one draw from that range, not a repeatable accuracy figure, and <strong>within about 1%</strong> is the claim this method actually supports.</p>
     <p class="muted-note">The table above, and the grip sweep in the limitations below it, are both produced by <a href="https://github.com/veerphatak/veerphatak.github.io/blob/main/code/f1-lapsim/f1_validate_outofsample.py" target="_blank" rel="noopener">f1_validate_outofsample.py</a>, which runs the five splits and the sweep and prints exactly the numbers shown here.</p>
 
     <h3>Accuracy and limitations</h3>
-    <p>Predicted lap time falls within 0.65 seconds of the measured lap. Speed trace RMSE is approximately 18 km/h, and corner-by-corner errors reach roughly 14 km/h in either direction.</p>
+    <p>Predicted lap time falls within 0.52 seconds of the measured lap. Speed trace RMSE is approximately 14 km/h, and corner-by-corner errors reach roughly 14 km/h in either direction.</p>
 
     <div class="limits">
       <h3>What the fit cannot separate</h3>
       <p>Grip and downforce both set the cornering limit, and the speed trace cannot separate them. Holding the fit at different assumed grip levels and refitting the aerodynamics each time gives almost the same quality of fit across a wide range:</p>
       <ul>
-        <li>&mu; = 1.30 with C<sub>L</sub>A = 10.8, speed RMSE <strong>18.1 km/h</strong></li>
-        <li>&mu; = 1.48 with C<sub>L</sub>A = 9.0, speed RMSE <strong>17.9 km/h</strong></li>
-        <li>&mu; = 1.60 with C<sub>L</sub>A = 8.0, speed RMSE <strong>17.9 km/h</strong></li>
-        <li>&mu; = 1.80 with C<sub>L</sub>A = 6.6, speed RMSE <strong>18.3 km/h</strong></li>
+        <li>&mu; = 1.30 with C<sub>L</sub>A = 10.9, speed RMSE <strong>14.7 km/h</strong></li>
+        <li>&mu; = 1.48 with C<sub>L</sub>A = 8.5, speed RMSE <strong>14.1 km/h</strong></li>
+        <li>&mu; = 1.60 with C<sub>L</sub>A = 7.6, speed RMSE <strong>14.0 km/h</strong></li>
+        <li>&mu; = 1.80 with C<sub>L</sub>A = 6.3, speed RMSE <strong>14.5 km/h</strong></li>
       </ul>
-      <p>Downforce changes by a factor of 1.6 across that list while the fit quality changes by half a km/h, which is nothing. The two parameters trade along a ridge, and the data does not say where on it the real car sits. There is a genuine optimum near &mu; = 1.5, so the model is not degenerate, but the precision is in the pair rather than in either number.</p>
+      <p>Downforce changes by a factor of 1.75 across that list while the fit quality changes by 0.7 km/h, which is nothing. The two parameters trade along a ridge, and the data does not say where on it the real car sits. There is a genuine optimum near &mu; = 1.6, so the model is not degenerate, but the precision is in the pair rather than in either number.</p>
       <p>This is why the fitted values are not presented as measurements of the 2025 car. The sliders above open at one point on that ridge because the solver has to start somewhere. Moving grip and downforce in opposite directions will produce a lap that fits about as well, which is the limitation made visible rather than described.</p>
-      <p>Separating them needs something the speed trace does not contain: a second configuration of the same car, a straight-line aerodynamic measurement, or tyre data. That is a data problem, not a solver problem, and no amount of further fitting will fix it.</p>
+      <p>Drag has a different problem. The fit returns C<sub>D</sub>A = 2.33 m<sup>2</sup>, and that is not a credible drag area for a 2025 car, which should sit nearer 1.5. With it the model tops out at 300 km/h where the real car reached 315. The model holds a constant 760 kW at every speed, with no gearshifts, no torque curve and no energy deployment limits, so it accelerates too hard through the middle of every straight, and the only parameter the fit can use to slow it down is drag. The number is absorbing missing powertrain physics, and should be read as an effective value for this model rather than as the car's drag.</p>
+      <p>An earlier version of the model drove through all four tyres. Restricting drive to the rear axle took the speed error from 17 km/h to 14 km/h but moved the fitted drag very little, which rules traction out as the cause.</p>
+      <p>Separating grip from downforce needs something the speed trace does not contain: a second configuration of the same car, a straight-line aerodynamic measurement, or tyre data. That is a data problem, not a solver problem, and no amount of further fitting will fix it.</p>
     </div>
-    <p>The errors are systematic, and they point straight at what a quasi-steady model leaves out. It carries too much speed through the slowest corners because it assumes grip is available the instant it is asked for, when in reality the car needs time to transfer load and settle and the driver eases it to the apex. It is slightly slow through some of the faster sections, where the real car gets aerodynamic behaviour that a point mass with one downforce coefficient cannot reproduce. There is no tyre temperature in it, no suspension, and nothing representing how a driver manages a lap.</p>
+    <p>The errors are systematic, and they point straight at what a quasi-steady model leaves out. It carries too much speed through the slowest corners because it assumes grip is available the instant it is asked for, when in reality the car needs time to transfer load and settle and the driver eases it to the apex. It is slow, by up to 14 km/h, through several of the medium and fast corners, where the real car gets aerodynamic behaviour that a point mass with one downforce coefficient cannot reproduce. There is no tyre temperature in it, no suspension, and nothing representing how a driver manages a lap.</p>
 
     <figure>
       <img src="media/figures/f1-corner-gear.png" alt="Left: bar chart comparing measured and modelled minimum speed for each corner. Right: scatter of gear against speed coloured by throttle." loading="lazy">
@@ -209,14 +211,14 @@
     <p>The race is 1,128 laps, and a large share of them tell you nothing about the tyre. Safety car and yellow flag laps are not representative racing laps. In-laps and out-laps include pit lane transit time. Laps completed in traffic measure the effect of the car ahead. Filtering to green-flag racing laps, excluding pit-affected laps, and removing laps more than 7% slower than each driver's own best leaves <strong>979 usable laps</strong>.</p>
 
     <h3>Separating degradation from fuel burn</h3>
-    <p>Lap time does not measure tyre condition directly, because two effects pull on it at once in opposite directions. The tyres wear, which costs time. The car burns around 1.7 kg of fuel a lap and gets lighter, which gains time. Fit degradation on its own and you will understate it, because the fuel effect has already cancelled part of it out.</p>
+    <p>Lap time does not measure tyre condition directly, because two effects pull on it at once in opposite directions. The tyres wear, which costs time. The car burns around 1.7 kg of fuel a lap and gets lighter, which gains time, and the track rubbers in as the race goes on, which gains a little more. Fit degradation on its own and you will understate it, because the fuel effect has already cancelled part of it out.</p>
     <p>So I fit both terms at once, in a single regression rather than one after the other:</p>
 
     <pre><code>laptime = driver_baseline + compound_offset + degradation(compound) * tyre_age
                            + fuel_effect * lap_number</code></pre>
 
     <p>The driver baseline term is more significant than it appears. Without it, the regression compares a front-running car on hard tyres against a midfield car on softs and attributes the difference to the compound. Assigning each driver an individual intercept reduced the model error from <strong>0.821 s to 0.576 s</strong>, the largest single improvement made during development.</p>
-    <p>The fitted fuel effect is 0.064 s per lap, equivalent to approximately 3.6 seconds across the race, which is consistent with a car shedding around 100 kg of fuel.</p>
+    <p>The fitted effect is 0.064 s per lap, so a lap at the end of the race is about 3.6 seconds quicker than the same lap at the start, tyres being equal. That is about 0.038 s per kilogram, close to the usual rule of thumb of 0.03 to 0.035, and consistent with a car shedding around 100 kg of fuel. The term is labelled fuel, but it is a coefficient on lap number, so it also contains track evolution and the regression cannot tell the two apart.</p>
 
     <figure>
       <img src="media/figures/f1-degradation.png" alt="Left: scatter of fuel-corrected lap time against tyre age for each compound with fitted lines. Right: cumulative time lost to degradation over 30 laps by compound." loading="lazy">
@@ -228,15 +230,16 @@
     <p>The likely reason is that compound allocation is not random. Compounds get used in particular phases of a race, in particular track and traffic conditions, and by particular cars. A linear model fitted to one Grand Prix cannot pull those apart from the behaviour of the tyre. Fixing it would need several races pooled together and a stint-level fit rather than a lap-level one. Treat the degradation rates as indicative and nothing more.</p>
 
     <h3>Strategy evaluation</h3>
-    <p>Pit loss was measured from the race itself rather than assumed, by comparing in-laps and out-laps against normal racing laps: <strong>26.1 seconds</strong>. With that, the model enumerates every legal strategy, including the rule that a dry race requires two different compounds, and ranks all <strong>14,532</strong> of them.</p>
+    <p>Pit loss was measured from the race itself rather than assumed, stop by stop: each driver's in-lap plus out-lap, less twice the median of the same driver's clean laps within five laps either side, using only the 28 stops made under green flags. The median is <strong>23.0 seconds</strong>, with an interquartile range of 22.1 to 24.5. An earlier version compared field-wide medians against the quickest fifth of all laps and included safety car stops, which overstated the loss at 26.1 seconds. With that, the model enumerates every legal strategy, including the rule that a dry race requires two different compounds, and ranks all <strong>14,532</strong> of them.</p>
 
     <figure>
       <img src="media/figures/f1-strategy.png" alt="Left: best achievable race time against the lap of the first pit stop, for one-stop and two-stop strategies. Right: bar chart comparing best one stop, best two stop and the winner's actual strategy." loading="lazy">
       <figcaption>Left: the pit window. For each possible first stop, the best race time still achievable afterwards. Right: the winner's actual strategy against the model's best one-stop and two-stop options.</figcaption>
     </figure>
 
-    <p>The model says a two-stop was correct, that the ideal shape was three roughly equal stints of about 19 laps, and that the best available one-stop would have cost around 3.6 seconds. Piastri, who won, stopped on lap 14 and ran 14, 18 and 25. The model scores that at <strong>3.8 seconds off its own optimum</strong>, over a race lasting more than 94 minutes: an error of roughly 0.07%.</p>
-    <p>A model built from public data lands within a few seconds of what a team with far more information actually did. The flat region in the left-hand plot shows why: any first stop between about lap 16 and lap 22 costs almost nothing, so the exact lap was never the decisive call. Track position and traffic matter more than the theoretical pace left on the table, and this model represents neither.</p>
+    <p>The model says a two-stop was correct, that the ideal shape was three roughly equal stints of about 19 laps, and that the best available one-stop would have cost around 6.6 seconds. Piastri, who won, stopped on lap 14 and ran 14, 18 and 25. The model scores that at <strong>3.8 seconds off its own optimum</strong>, over a race lasting more than 94 minutes: an error of roughly 0.07%.</p>
+    <p>That comparison needs a caveat. Piastri's first stop, on lap 14, was a free choice under green flags. His second, on lap 32, was not: the safety car came out on that lap and he pitted under it. The 3.8 seconds therefore compares a plan made with no interruptions against a race that had one, and the lap of the second stop says nothing about what McLaren would have chosen in a clean race. The first stop is the fairer test, and lap 14 sits two laps before the window the model considers free.</p>
+    <p>A model built from public data lands within a few seconds of what a team with far more information actually did. The flat region in the left-hand plot shows why: any first stop between lap 16 and lap 22 costs less than a second, so the exact lap was never the decisive call. Track position and traffic matter more than the theoretical pace left on the table, and this model represents neither.</p>
 
     <h2>Interactive strategy calculator</h2>
     <p>The same calculation, running in the browser. Setting the tyre behaviour and pit loss causes it to evaluate every legal one and two stop strategy, identify the quickest, and plot the resulting pit window.</p>
@@ -251,7 +254,7 @@
             <output id="raceLapsVal"></output>
           </label>
           <label>Pit loss, <span class="muted">s</span>
-            <input type="range" id="pitLoss" min="14" max="36" step="0.5" value="26">
+            <input type="range" id="pitLoss" min="14" max="36" step="0.5" value="23">
             <output id="pitLossVal"></output>
           </label>
           <label>Fuel effect, <span class="muted">s per lap</span>
@@ -324,7 +327,7 @@
         <div class="sim-controls">
           <p class="sim-group">Pit stop</p>
           <label>Mean pit loss, <span class="muted">s</span>
-            <input type="range" id="mcPitMean" min="14" max="36" step="0.5" value="26">
+            <input type="range" id="mcPitMean" min="14" max="36" step="0.5" value="23">
             <output id="mcPitMeanVal"></output>
           </label>
           <label>Normal spread, <span class="muted">standard deviation, s</span>

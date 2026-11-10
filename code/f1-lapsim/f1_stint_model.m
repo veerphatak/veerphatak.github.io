@@ -41,7 +41,7 @@ function f1_stint_model
 
 COMPOUNDS = {'SOFT','MEDIUM','HARD'};
 TOTAL_LAPS = 57;        % Bahrain Grand Prix race distance
-PIT_LOSS   = 26.083;    % s, measured from the race itself, not assumed
+PIT_LOSS   = 23.033;    % s, median of 28 green-flag stops in the race (see f1_stint_model.py)
 
 here = fileparts(mfilename('fullpath'));
 csvFile = fullfile(here, '..', '..', 'data', 'bahrain-race-laps.csv');

@@ -7,7 +7,7 @@ Veer Phatak, 2026.
 THE OBJECTION THIS ANSWERS
 --------------------------
 `f1_lap_model.py` fits three parameters (grip, downforce, drag) to the measured
-speed trace, and then reports that the predicted lap time is within 0.72% of
+speed trace, and then reports that the predicted lap time is within about 1% of
 the real one. Lap time is the integral of distance over speed. If you fit the
 speed, a close lap time is close to guaranteed, and the headline number is a
 goodness-of-fit statistic wearing the clothes of a prediction.
@@ -138,7 +138,7 @@ def main():
     print( "  model is no worse on track it never saw, so the geometry and the physics")
     print( "  are carrying the prediction rather than the fit.")
     print(f"\n  Lap time error ranges {min(errors):.2f}% to {max(errors):.2f}% across the five")
-    print( "  splits. The headline 0.72% is one draw from that range, so 'within about")
+    print( "  splits. The headline figure is one draw from that range, so 'within about")
     print( "  1%' is the claim this method supports. Quoting two significant figures")
     print( "  would overstate the precision.")
 

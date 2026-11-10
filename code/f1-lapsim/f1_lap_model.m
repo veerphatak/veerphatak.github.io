@@ -29,10 +29,10 @@ function f1_lap_model
 %        through the quick corners, which is the whole point of the aero.
 %
 %     2. Forward pass. Traction limited acceleration, with lateral and
-%        longitudinal tyre demand combined through a friction ellipse, less
+%        longitudinal tyre demand combined through a friction circle, less
 %        aerodynamic drag. Drag is reduced where DRS is open.
 %
-%     3. Backward pass. Braking limited deceleration through the same ellipse.
+%     3. Backward pass. Braking limited deceleration through the same circle.
 %
 %   Lap time is the integral of ds/v.
 %
@@ -75,6 +75,7 @@ car = struct('mass',    d.fitted.mass, ...
              'cd_a',    d.fitted.cdA, ...
              'brake_g', d.fitted.brakeG, ...
              'v_max',   d.fitted.vMax, ...
+             'drive_load_frac', d.fitted.driveLoadFrac, ...
              'rho',     1.225, ...
              'drs_drag_cut', 0.12);
 
@@ -130,7 +131,8 @@ for pass = 1:2
         grip = car.mu * normalLoad(car, vi);
         if isfinite(R(i)), lat = car.mass * vi^2 / R(i); else, lat = 0.0; end
         remaining = sqrt(max(grip^2 - lat^2, 0.0));
-        f = min(car.power / max(vi,1.0), remaining) - dragForce(car, vi, drs(i));
+        % drive goes through the rear axle only
+        f = min(car.power / max(vi,1.0), car.drive_load_frac * remaining) - dragForce(car, vi, drs(i));
         vF(i+1) = min(sqrt(max(vi^2 + 2*(f/car.mass)*ds, 1.0)), car.v_max);
     end
 end

@@ -36,7 +36,8 @@ METHOD
 3. Solve the lap with the same three-pass quasi-steady method used in my
    Formula Student model: a cornering limit that accounts for speed-dependent
    downforce, then forward (traction) and backward (braking) passes sharing
-   tyre capacity through a friction ellipse.
+   tyre capacity through a friction circle. Drive goes through the rear axle
+   only; braking uses all four tyres.
 4. Fit the handful of parameters that are not public (effective grip, downforce
    and drag levels) to the measured speed trace, then report the error honestly.
 """
@@ -125,7 +126,7 @@ def curvature_radius(x, y, ds=DS, window=31):
 # ----------------------------------------------------------------------
 @dataclass
 class F1Car:
-    mass: float = 850.0        # kg, 2025 minimum weight plus qualifying fuel
+    mass: float = 800.0        # kg, 2025 minimum weight including driver; qualifying fuel adds only a few kg
     mu: float = 1.75           # effective peak friction, fitted
     cl_a: float = 5.0          # downforce, fitted
     cd_a: float = 1.30         # drag, fitted
@@ -134,6 +135,13 @@ class F1Car:
     rho: float = 1.20
     v_max: float = 95.0        # m/s, gearing/drag limit
     drs_drag_cut: float = 0.12 # fraction of drag removed with DRS open
+    # Share of the total tyre load carried by the driven (rear) axle under
+    # power. Static rear weight is about 54%, the aero balance is similar, and
+    # longitudinal load transfer adds a few per cent more, so 0.60 is assumed
+    # rather than fitted. Without it the model drives through all four tyres,
+    # leaves slow corners far too quickly, and the fit hides the error by
+    # inflating drag.
+    drive_load_frac: float = 0.60
 
     def drag(self, v, drs=0.0):
         cd = self.cd_a * (1.0 - self.drs_drag_cut * drs)
@@ -175,7 +183,7 @@ def solve_lap(car, R, drs=None, ds=DS):
             grip = car.mu * car.normal_load(v)
             lat = car.mass * v ** 2 / R[i] if np.isfinite(R[i]) else 0.0
             remaining = np.sqrt(max(grip ** 2 - lat ** 2, 0.0))
-            f = min(car.power / max(v, 1.0), remaining) - car.drag(v, drs[i])
+            f = min(car.power / max(v, 1.0), car.drive_load_frac * remaining) - car.drag(v, drs[i])
             v_f[i + 1] = min(np.sqrt(max(v ** 2 + 2 * (f / car.mass) * ds, 1.0)), car.v_max)
 
     v_b = np.empty(n); v_b[-1] = v_corner[-1]
@@ -320,7 +328,7 @@ def main():
     # The JavaScript simulator on the website runs the same solver on this data,
     # so visitors can change the car and watch the lap respond.
     import json
-    step = 2                              # halve the resolution to keep it light
+    step = 1                              # same 2 m grid as the Python solve, so the browser reproduces its lap time exactly
     data = {
         "circuit": f"{ses.event['EventName']} {YEAR}",
         "session": "Qualifying, pole lap",
@@ -330,7 +338,8 @@ def main():
         "ds": DS * step,
         "fitted": {"mu": round(car.mu, 3), "clA": round(car.cl_a, 3),
                    "cdA": round(car.cd_a, 3), "mass": car.mass,
-                   "power": car.power, "brakeG": car.brake_g, "vMax": car.v_max},
+                   "power": car.power, "brakeG": car.brake_g, "vMax": car.v_max,
+                   "driveLoadFrac": car.drive_load_frac},
         "distance": [round(v, 1) for v in d[::step]],
         "radius": [None if not np.isfinite(r) else round(float(r), 1) for r in R[::step]],
         "speedReal": [round(float(v) * 3.6, 1) for v in v_real[::step]],

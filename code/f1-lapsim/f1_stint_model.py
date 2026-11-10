@@ -93,13 +93,46 @@ def load_clean_laps(ses):
 
 
 def estimate_pit_loss(ses):
-    """Time lost in the pit lane, measured from the race rather than assumed."""
+    """
+    Time lost to a green-flag pit stop, measured from the race.
+
+    Each stop is costed on its own: that driver's in-lap plus out-lap, minus
+    twice the median of the same driver's clean green-flag laps within five
+    laps either side. The median across stops is returned.
+
+    An earlier version compared the field-wide median in-lap and out-lap
+    against the 20th percentile of every lap in the race. That baseline is
+    biased quick (it is dominated by late-race, low-fuel laps from the fastest
+    cars) and it included stops made under the safety car, whose in-laps are
+    slow for a reason that has nothing to do with the pit lane. Together they
+    overstated the loss by about three seconds.
+    """
     laps = ses.laps.copy()
     laps["LapTimeS"] = laps["LapTime"].dt.total_seconds()
-    base = laps["LapTimeS"].quantile(0.20)
-    inlaps = laps[laps["PitInTime"].notna()]["LapTimeS"].median()
-    outlaps = laps[laps["PitOutTime"].notna()]["LapTimeS"].median()
-    return float((inlaps - base) + (outlaps - base))
+    losses = []
+    for _, g in laps.groupby("Driver"):
+        g = g.sort_values("LapNumber").reset_index(drop=True)
+        green = g["TrackStatus"].astype(str) == "1"
+        clean = g[green & g["PitInTime"].isna() & g["PitOutTime"].isna()
+                  & g["LapTimeS"].notna()]
+        for i in g.index[g["PitInTime"].notna()]:
+            if i + 1 >= len(g) or pd.isna(g.loc[i + 1, "PitOutTime"]):
+                continue
+            inlap, outlap = g.loc[i], g.loc[i + 1]
+            if pd.isna(inlap["LapTimeS"]) or pd.isna(outlap["LapTimeS"]):
+                continue
+            if not (green[i] and green[i + 1]):
+                continue                      # safety car stop: not a green-flag loss
+            near = clean[clean["LapNumber"].between(inlap["LapNumber"] - 5,
+                                                    outlap["LapNumber"] + 5)]
+            if len(near) < 4:
+                continue
+            losses.append(inlap["LapTimeS"] + outlap["LapTimeS"]
+                          - 2 * near["LapTimeS"].median())
+    print(f"Pit loss from {len(losses)} green-flag stops, "
+          f"interquartile range {np.percentile(losses, 25):.1f} to "
+          f"{np.percentile(losses, 75):.1f} s")
+    return float(np.median(losses))
 
 
 # ----------------------------------------------------------------------
@@ -224,6 +257,11 @@ def main():
     for _, s in actual.iterrows():
         print(f"   {s['Compound']:<7} laps {int(s['min']):>2}-{int(s['max']):<2} "
               f"({int(s['count'])} laps)")
+    # Was each of the winner's stops a free choice, or forced by a caution?
+    for lapno in wl[wl["PitInTime"].notna()]["LapNumber"]:
+        status = str(wl[wl["LapNumber"] == lapno]["TrackStatus"].iloc[0])
+        kind = "green flag" if status == "1" else f"under caution (track status {status})"
+        print(f"   stop on lap {int(lapno)}: {kind}")
 
     table = best_strategies(model, total_laps, pit_loss)
     print(f"\nStrategies evaluated   : {len(table)}")
