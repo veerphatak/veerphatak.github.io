@@ -82,7 +82,7 @@
     </div>
 
     <h2>Interactive lap simulation</h2>
-    <p>The solver below is the same model, ported to JavaScript and running in your browser on circuit geometry derived from position telemetry. Change any parameter and it re-solves the lap straight away. Blue is the measured pole lap, red is the car you have configured.</p>
+    <p>The solver below is the same model, ported to JavaScript and running in your browser on circuit geometry derived from position telemetry. Change any parameter and it re-solves the lap straight away. The solid grey line is the measured pole lap and the dashed red line is the car you have configured. Hover or tap the chart to read both speeds at any point on the lap.</p>
     <p class="sub-meta" id="simCircuit">Loading circuit data...</p>
 
     <div class="sim">
@@ -112,7 +112,7 @@
             <input type="range" id="brakeG" min="3" max="7" step="0.1" value="5">
             <output id="brakeGVal"></output>
           </label>
-          <button id="resetSim" class="btn">Reset to the real car</button>
+          <button id="resetSim" class="btn">Reset to the fitted car</button>
         </div>
 
         <div class="sim-output">
@@ -123,7 +123,7 @@
             <div><span class="big" id="lapVmax">–</span><span class="lbl">Top speed</span></div>
             <div><span class="big" id="lapVmin">–</span><span class="lbl">Slowest corner</span></div>
           </div>
-          <canvas id="lapChart"></canvas>
+          <canvas id="lapChart" role="img" aria-label="Speed against distance around the lap: the measured pole lap and the lap of the car configured with the sliders"></canvas>
         </div>
       </div>
     </div>
@@ -290,7 +290,7 @@
             <div><span class="big" id="stratStops">–</span><span class="lbl">Optimal</span></div>
             <div class="wide"><span class="big" id="stratPlan">–</span><span class="lbl">Stint plan</span></div>
           </div>
-          <canvas id="stratChart"></canvas>
+          <canvas id="stratChart" role="img" aria-label="Time lost against the best strategy, by lap of the first pit stop, for one stop and two stop strategies"></canvas>
         </div>
       </div>
     </div>
@@ -415,14 +415,14 @@
 
         <div class="sim-output">
           <div class="sim-readouts">
-            <div><span class="big" id="mcWinner">–</span><span class="lbl">Wins most often</span></div>
+            <div><span class="big" id="mcWinner">–</span><span class="lbl">Quickest most often</span></div>
             <div><span class="big" id="mcWinProb">–</span><span class="lbl">Of races simulated</span></div>
             <div><span class="big" id="mcMedianTime">–</span><span class="lbl">Quickest median race</span></div>
           </div>
 
           <table class="mc-table">
             <thead>
-              <tr><th>Strategy</th><th>Wins</th><th>Median</th><th>5th to 95th</th><th>Bad day (99th)</th></tr>
+              <tr><th>Strategy</th><th>Quickest</th><th>Median</th><th>5th to 95th</th><th>Bad day (99th)</th></tr>
             </thead>
             <tbody>
               <tr>
@@ -440,7 +440,7 @@
             </tbody>
           </table>
 
-          <canvas id="mcChart"></canvas>
+          <canvas id="mcChart" role="img" aria-label="Distribution of simulated race times for the one, two and three stop strategies, relative to the quickest median"></canvas>
           <p class="mc-status" id="mcStatus">Running...</p>
         </div>
       </div>

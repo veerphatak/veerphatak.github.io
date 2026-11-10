@@ -119,14 +119,20 @@ function [lapTime, v] = solveLap(car, R, drs, ds)
 n       = numel(R);
 vCorner = cornerLimit(car, R);
 
+% A flying lap is periodic: the car crosses the line at the speed it reached
+% at the end of the previous lap, not at the speed cap. The forward pass
+% therefore runs twice, the second starting from the first's exit speed.
 vF = zeros(n,1); vF(1) = vCorner(1);
-for i = 1:n-1
-    vi   = min(vF(i), vCorner(i));
-    grip = car.mu * normalLoad(car, vi);
-    if isfinite(R(i)), lat = car.mass * vi^2 / R(i); else, lat = 0.0; end
-    remaining = sqrt(max(grip^2 - lat^2, 0.0));
-    f = min(car.power / max(vi,1.0), remaining) - dragForce(car, vi, drs(i));
-    vF(i+1) = min(sqrt(max(vi^2 + 2*(f/car.mass)*ds, 1.0)), car.v_max);
+for pass = 1:2
+    if pass > 1, vF(1) = min(vF(n), vCorner(1)); end
+    for i = 1:n-1
+        vi   = min(vF(i), vCorner(i));
+        grip = car.mu * normalLoad(car, vi);
+        if isfinite(R(i)), lat = car.mass * vi^2 / R(i); else, lat = 0.0; end
+        remaining = sqrt(max(grip^2 - lat^2, 0.0));
+        f = min(car.power / max(vi,1.0), remaining) - dragForce(car, vi, drs(i));
+        vF(i+1) = min(sqrt(max(vi^2 + 2*(f/car.mass)*ds, 1.0)), car.v_max);
+    end
 end
 
 vB = zeros(n,1); vB(n) = vCorner(n);

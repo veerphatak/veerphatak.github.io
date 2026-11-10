@@ -161,14 +161,22 @@ def solve_lap(car, R, drs=None, ds=DS):
     drs = np.zeros(n) if drs is None else drs
     v_corner = corner_limit(car, R)
 
+    # A flying lap is periodic: the car crosses the line at the speed it
+    # reached at the end of the previous lap, not at the speed cap. Starting
+    # at v_corner[0] put it on the line at v_max (342 km/h against a measured
+    # 292), so the forward pass runs twice and the second starts from the
+    # first's exit speed.
     v_f = np.empty(n); v_f[0] = v_corner[0]
-    for i in range(n - 1):
-        v = min(v_f[i], v_corner[i])
-        grip = car.mu * car.normal_load(v)
-        lat = car.mass * v ** 2 / R[i] if np.isfinite(R[i]) else 0.0
-        remaining = np.sqrt(max(grip ** 2 - lat ** 2, 0.0))
-        f = min(car.power / max(v, 1.0), remaining) - car.drag(v, drs[i])
-        v_f[i + 1] = min(np.sqrt(max(v ** 2 + 2 * (f / car.mass) * ds, 1.0)), car.v_max)
+    for lap_pass in range(2):
+        if lap_pass:
+            v_f[0] = min(v_f[-1], v_corner[0])
+        for i in range(n - 1):
+            v = min(v_f[i], v_corner[i])
+            grip = car.mu * car.normal_load(v)
+            lat = car.mass * v ** 2 / R[i] if np.isfinite(R[i]) else 0.0
+            remaining = np.sqrt(max(grip ** 2 - lat ** 2, 0.0))
+            f = min(car.power / max(v, 1.0), remaining) - car.drag(v, drs[i])
+            v_f[i + 1] = min(np.sqrt(max(v ** 2 + 2 * (f / car.mass) * ds, 1.0)), car.v_max)
 
     v_b = np.empty(n); v_b[-1] = v_corner[-1]
     for i in range(n - 1, 0, -1):

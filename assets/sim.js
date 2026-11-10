@@ -18,7 +18,10 @@
      on. Fallbacks cover the case where the stylesheet has not parsed yet. */
   const css = (name, fallback) => {
     try {
-      const v = getComputedStyle(document.documentElement)
+      /* Read from <body>, not <html>: the per-page accent is set by the
+         data-accent attribute on <body>, so the root element only ever
+         reports the site default. */
+      const v = getComputedStyle(document.body || document.documentElement)
                   .getPropertyValue(name).trim();
       return v || fallback;
     } catch (e) { return fallback; }
@@ -87,34 +90,32 @@
     ro.observe(cv);
   }
 
-  function axes(ctx, w, h, pad, xr, yr, xlabel, ylabel) {
+  const sx = (v, xr, pad, w) => pad.l + (v - xr[0]) / (xr[1] - xr[0]) * (w - pad.l - pad.r);
+  const sy = (v, yr, pad, h) => pad.t + (yr[1] - v) / (yr[1] - yr[0]) * (h - pad.t - pad.b);
+
+  /* Ticks sit on round values (every xStep, yStep) rather than on equal
+     fractions of the range, which gave labels like 88, 175, 263 km/h. */
+  function axes(ctx, w, h, pad, xr, yr, xlabel, ylabel, xStep, yStep) {
     ctx.clearRect(0, 0, w, h);
     ctx.strokeStyle = GRID; ctx.lineWidth = 1;
     ctx.fillStyle = MUTED; ctx.font = "11px system-ui, sans-serif";
-    for (let i = 0; i <= 4; i++) {
-      const y = pad.t + (h - pad.t - pad.b) * i / 4;
+    ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    for (let val = Math.ceil(yr[0] / yStep) * yStep; val <= yr[1] + 1e-9; val += yStep) {
+      const y = sy(val, yr, pad, h);
       ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(w - pad.r, y); ctx.stroke();
-      const val = yr[1] - (yr[1] - yr[0]) * i / 4;
-      ctx.textAlign = "right"; ctx.textBaseline = "middle";
       ctx.fillText(Math.round(val), pad.l - 6, y);
     }
-    for (let i = 0; i <= 5; i++) {
-      const x = pad.l + (w - pad.l - pad.r) * i / 5;
-      const val = xr[0] + (xr[1] - xr[0]) * i / 5;
-      ctx.textAlign = "center"; ctx.textBaseline = "top";
-      ctx.fillText(Math.round(val), x, h - pad.b + 6);
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    for (let val = Math.ceil(xr[0] / xStep) * xStep; val <= xr[1] + 1e-9; val += xStep) {
+      ctx.fillText(Math.round(val), sx(val, xr, pad, w), h - pad.b + 6);
     }
-    ctx.textAlign = "center";
     ctx.fillText(xlabel, pad.l + (w - pad.l - pad.r) / 2, h - 14);
     ctx.save();
-    ctx.translate(12, pad.t + (h - pad.t - pad.b) / 2);
+    ctx.translate(2, pad.t + (h - pad.t - pad.b) / 2);
     ctx.rotate(-Math.PI / 2); ctx.textBaseline = "top";
     ctx.fillText(ylabel, 0, 0);
     ctx.restore();
   }
-
-  const sx = (v, xr, pad, w) => pad.l + (v - xr[0]) / (xr[1] - xr[0]) * (w - pad.l - pad.r);
-  const sy = (v, yr, pad, h) => pad.t + (yr[1] - v) / (yr[1] - yr[0]) * (h - pad.t - pad.b);
 
   function line(ctx, xs, ys, xr, yr, pad, w, h, colour, width, dash) {
     ctx.save(); ctx.strokeStyle = colour; ctx.lineWidth = width;
@@ -186,15 +187,22 @@
       const drag = (v, d) => 0.5 * RHO * p.cdA * (1 - 0.12 * d) * v * v;
       const load = v => p.mass * G + 0.5 * RHO * p.clA * v * v;
 
-      // forward pass: traction limited
+      // forward pass: traction limited.
+      // A flying lap is periodic: the car crosses the line at whatever speed
+      // it reached at the end of the previous lap. Starting at vc[0] put it
+      // on the line at the speed cap (342 km/h, against a measured 292), so
+      // the pass runs twice and the second starts from the first's exit speed.
       const vf = new Float64Array(n); vf[0] = vc[0];
-      for (let i = 0; i < n - 1; i++) {
-        const v = Math.min(vf[i], vc[i]);
-        const grip = p.mu * load(v);
-        const lat = R[i] === null ? 0 : p.mass * v * v / R[i];
-        const rem = Math.sqrt(Math.max(grip * grip - lat * lat, 0));
-        const f = Math.min(p.power / Math.max(v, 1), rem) - drag(v, drs[i]);
-        vf[i + 1] = Math.min(Math.sqrt(Math.max(v * v + 2 * (f / p.mass) * ds, 1)), p.vMax);
+      for (let pass = 0; pass < 2; pass++) {
+        if (pass > 0) vf[0] = Math.min(vf[n - 1], vc[0]);
+        for (let i = 0; i < n - 1; i++) {
+          const v = Math.min(vf[i], vc[i]);
+          const grip = p.mu * load(v);
+          const lat = R[i] === null ? 0 : p.mass * v * v / R[i];
+          const rem = Math.sqrt(Math.max(grip * grip - lat * lat, 0));
+          const f = Math.min(p.power / Math.max(v, 1), rem) - drag(v, drs[i]);
+          vf[i + 1] = Math.min(Math.sqrt(Math.max(v * v + 2 * (f / p.mass) * ds, 1)), p.vMax);
+        }
       }
 
       // backward pass: braking limited
@@ -217,8 +225,20 @@
       return { speed: v, lapTime: t };
     },
 
+    /* A slider can only sit on its step grid, so the fitted values (mu 1.483,
+       CdA 2.489) were being rounded on load and the page opened on a different
+       lap time from the fit. Until a slider is actually moved, the solver uses
+       the exact fitted value for it. */
+    touched: {},
+    fittedFor(id) {
+      const f = this.data.fitted;
+      return id === "power" ? f.power / 1000 : f[id];
+    },
+
     params() {
-      const g = id => parseFloat(document.getElementById(id).value);
+      const g = id => this.touched[id]
+        ? parseFloat(document.getElementById(id).value)
+        : this.fittedFor(id);
       return {
         mu: g("mu"), clA: g("clA"), cdA: g("cdA"), mass: g("mass"),
         power: g("power") * 1000, brakeG: g("brakeG"),
@@ -244,7 +264,7 @@
 
       document.getElementById("lapTime").textContent = lapTime.toFixed(3) + " s";
       const dEl = document.getElementById("lapDelta");
-      dEl.textContent = (delta >= 0 ? "+" : "") + delta.toFixed(3) + " s vs real";
+      dEl.textContent = (delta >= 0 ? "+" : "−") + Math.abs(delta).toFixed(3) + " s";
       dEl.style.color = Math.abs(delta) < 1 ? GOOD : (delta > 0 ? ACC : REF);
       document.getElementById("lapRmse").textContent = rmse.toFixed(1) + " km/h";
       document.getElementById("lapVmax").textContent = Math.round(vmax) + " km/h";
@@ -253,9 +273,10 @@
       // chart
       const cv = document.getElementById("lapChart");
       const { ctx, w, h } = setupCanvas(cv);
-      const pad = { l: 46, r: 12, t: 14, b: 40 };
+      const pad = { l: 50, r: 12, t: 14, b: 40 };
       const xr = [0, d[d.length - 1]], yr = [0, 350];
-      axes(ctx, w, h, pad, xr, yr, "Distance around lap (m)", "Speed (km/h)");
+      axes(ctx, w, h, pad, xr, yr, "Distance around lap (m)", "Speed (km/h)", 1000, 50);
+      this.geom = { pad, xr, w };
 
       // corner shading
       ctx.save(); ctx.fillStyle = "rgba(148,159,176,0.08)";
@@ -271,36 +292,89 @@
       line(ctx, d, real, xr, yr, pad, w, h, NAVY, 2);
       line(ctx, d, Array.from(speed, v => v * 3.6), xr, yr, pad, w, h, RED, 1.8, [6, 4]);
 
-      legend(ctx, w, pad, [
-        { label: "Measured (real pole lap)", colour: NAVY },
-        { label: "Your car", colour: RED, dash: [6, 4] },
-      ]);
+      // Hover readout: a crosshair with both speeds at that point of the lap.
+      if (this.hover !== null && this.hover !== undefined) {
+        const i = Math.max(0, Math.min(d.length - 1, this.hover));
+        const X = sx(d[i], xr, pad, w);
+        const model = speed[i] * 3.6, diff = Math.round(model) - Math.round(real[i]);
+        ctx.save();
+        ctx.strokeStyle = MUTED; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+        ctx.beginPath(); ctx.moveTo(X, pad.t); ctx.lineTo(X, h - pad.b); ctx.stroke();
+        ctx.setLineDash([]);
+        for (const [val, col] of [[real[i], NAVY], [model, RED]]) {
+          ctx.fillStyle = col; ctx.beginPath();
+          ctx.arc(X, sy(val, yr, pad, h), 3.5, 0, 2 * Math.PI); ctx.fill();
+        }
+        const rows = [
+          `${Math.round(d[i])} m`,
+          `Measured ${Math.round(real[i])} km/h`,
+          `Your car ${Math.round(model)} km/h (${diff > 0 ? "+" : diff < 0 ? "−" : ""}${Math.abs(diff)})`,
+        ];
+        ctx.font = "11px system-ui, sans-serif";
+        ctx.textAlign = "left"; ctx.textBaseline = "middle";
+        let tw = 0;
+        for (const r of rows) tw = Math.max(tw, ctx.measureText(r).width);
+        const bw = tw + 16, bh = rows.length * 16 + 10;
+        let bx = X + 10;
+        if (bx + bw > w - pad.r) bx = X - 10 - bw;
+        bx = Math.max(pad.l + 2, bx);
+        const by = h - pad.b - bh - 6;
+        ctx.fillStyle = PANEL; ctx.strokeStyle = GRID;
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, 6); else ctx.rect(bx, by, bw, bh);
+        ctx.fill(); ctx.stroke();
+        ctx.fillStyle = MUTED;
+        rows.forEach((r, k) => ctx.fillText(r, bx + 8, by + 13 + k * 16));
+        ctx.restore();
+      } else {
+        legend(ctx, w, pad, [
+          { label: "Measured (real pole lap)", colour: NAVY },
+          { label: "Your car", colour: RED, dash: [6, 4] },
+        ]);
+      }
     },
 
     init(data) {
       this.data = data;
+      this.hover = null;
       document.getElementById("simCircuit").textContent =
         `${data.circuit}, ${data.driver} (${data.team}), ${data.realLapTime.toFixed(3)} s`;
       const ids = ["mu", "clA", "cdA", "mass", "power", "brakeG"];
+      const showFitted = id => {
+        const v = this.fittedFor(id);
+        document.getElementById(id).value = v;
+        document.getElementById(id + "Val").textContent = String(+v.toFixed(3));
+      };
       ids.forEach(id => {
         const el = document.getElementById(id);
         el.addEventListener("input", () => {
+          this.touched[id] = true;
           document.getElementById(id + "Val").textContent = el.value;
           this.render();
         });
-        document.getElementById(id + "Val").textContent = el.value;
+        showFitted(id);
       });
       document.getElementById("resetSim").addEventListener("click", () => {
-        const f = data.fitted;
-        const set = (id, v) => {
-          document.getElementById(id).value = v;
-          document.getElementById(id + "Val").textContent = v;
-        };
-        set("mu", f.mu); set("clA", f.clA); set("cdA", f.cdA);
-        set("mass", f.mass); set("power", Math.round(f.power / 1000)); set("brakeG", f.brakeG);
+        this.touched = {};
+        ids.forEach(showFitted);
         this.render();
       });
-      onResize(document.getElementById("lapChart"), () => this.render());
+
+      const cv = document.getElementById("lapChart");
+      const track = e => {
+        if (!this.geom) return;
+        const { pad, xr, w } = this.geom;
+        const x = e.clientX - cv.getBoundingClientRect().left;
+        const dist = xr[0] + (x - pad.l) / (w - pad.l - pad.r) * (xr[1] - xr[0]);
+        if (dist < xr[0] || dist > xr[1]) { this.hover = null; }
+        else this.hover = Math.round(dist / data.ds);
+        this.render();
+      };
+      cv.addEventListener("pointermove", track);
+      cv.addEventListener("pointerdown", track);
+      cv.addEventListener("pointerleave", () => { this.hover = null; this.render(); });
+
+      onResize(cv, () => this.render());
       this.render();
     }
   };
@@ -325,7 +399,8 @@
     },
 
     best(p) {
-      const comps = ["S", "M", "H"], MIN = 6;
+      // Same minimum stint as the Python enumeration and the Monte Carlo.
+      const comps = ["S", "M", "H"], MIN = 8;
       let best = null;
       const window1 = [], window2 = [];
 
@@ -373,12 +448,11 @@
 
       const cv = document.getElementById("stratChart");
       const { ctx, w, h } = setupCanvas(cv);
-      const pad = { l: 52, r: 12, t: 14, b: 40 };
+      const pad = { l: 50, r: 12, t: 14, b: 40 };
       const ref = best.time;
-      const all = window1.concat(window2).map(d => d[1] - ref).filter(v => isFinite(v));
-      const yr = [0, Math.min(60, Math.max(10, Math.ceil(Math.min(...all.map(v => v)) + 40)))];
+      const yr = [0, 40];
       const xr = [0, p.laps];
-      axes(ctx, w, h, pad, xr, yr, "Lap of the first pit stop", "Time lost vs best (s)");
+      axes(ctx, w, h, pad, xr, yr, "Lap of the first pit stop", "Time lost vs best (s)", 10, 10);
 
       const draw = (win, colour) => {
         const xs = win.map(d => d[0]), ys = win.map(d => Math.min(d[1] - ref, yr[1]));

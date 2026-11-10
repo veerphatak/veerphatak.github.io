@@ -48,7 +48,8 @@
      picks up this page's --accent without being told which page it is on. */
   const css = (name, fallback) => {
     try {
-      const v = getComputedStyle(document.documentElement)
+      /* <body> carries the data-accent attribute, so read it there. */
+      const v = getComputedStyle(document.body || document.documentElement)
                   .getPropertyValue(name).trim();
       return v || fallback;
     } catch (e) { return fallback; }
@@ -169,12 +170,26 @@
     ctx.restore();
   }
 
-  /* ---------- random numbers ---------- */
+  /* ---------- random numbers ----------
+     Seeded (mulberry32) rather than Math.random, and re-seeded with the same
+     value at the start of every sweep. Moving a slider then replays the same
+     set of races with the new parameter, so the change in the result is the
+     effect of the slider and not a fresh roll of the dice. "Run again" picks
+     a new seed. */
+  let seed = 20250413, state = seed;
+  function reseed() { state = seed >>> 0; spare = null; }
+  function rnd() {
+    state = (state + 0x6D2B79F5) >>> 0;
+    let t = state;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
   let spare = null;
   function gauss() {
     if (spare !== null) { const s = spare; spare = null; return s; }
     let u, v, s2;
-    do { u = Math.random() * 2 - 1; v = Math.random() * 2 - 1; s2 = u * u + v * v; }
+    do { u = rnd() * 2 - 1; v = rnd() * 2 - 1; s2 = u * u + v * v; }
     while (s2 >= 1 || s2 === 0);
     const f = Math.sqrt(-2 * Math.log(s2) / s2);
     spare = v * f;
@@ -235,7 +250,7 @@
     },
 
     nominalPlans(p) {
-      const MIN = 5;
+      const MIN = 8;   // same minimum stint as the calculator and the Python enumeration
       let one = null, two = null, three = null;
 
       for (let n1 = MIN; n1 <= p.laps - MIN; n1++) {
@@ -290,19 +305,19 @@
         if (sc[lap]) continue;
         // opening laps carry a far higher rate than the rest of the race
         const hazard = lap <= 2 ? p.pScL1 : p.pSc;
-        if (Math.random() < hazard) {
-          const dur = 3 + Math.floor(Math.random() * 3);
+        if (rnd() < hazard) {
+          const dur = 3 + Math.floor(rnd() * 3);
           for (let k = 0; k < dur && lap + k <= n; k++) sc[lap + k] = true;
         }
       }
       for (let lap = 1; lap <= n; lap++) {
         if (sc[lap] || vsc[lap]) continue;
-        if (Math.random() < p.pVsc) {
-          const dur = 1 + Math.floor(Math.random() * 2);
+        if (rnd() < p.pVsc) {
+          const dur = 1 + Math.floor(rnd() * 2);
           for (let k = 0; k < dur && lap + k <= n; k++) if (!sc[lap + k]) vsc[lap + k] = true;
         }
       }
-      if (Math.random() < p.pRf) rf[1 + Math.floor(Math.random() * n)] = true;
+      if (rnd() < p.pRf) rf[1 + Math.floor(rnd() * n)] = true;
 
       // one correlated condition term for the whole race, shared by every
       // strategy, so it moves absolute times but largely cancels in the
@@ -314,9 +329,9 @@
       const pit = [];
       for (let i = 0; i < 3; i++) {
         let loss = p.pitMean + gauss() * p.pitSd;
-        const r = Math.random();
-        if (r < p.pSlow * 0.15) loss += 5 + Math.random() * 12;   // disaster: wheelgun, cross-threaded nut
-        else if (r < p.pSlow) loss += 0.8 + Math.random() * 2.5;  // a slow but unremarkable stop
+        const r = rnd();
+        if (r < p.pSlow * 0.15) loss += 5 + rnd() * 12;   // disaster: wheelgun, cross-threaded nut
+        else if (r < p.pSlow) loss += 0.8 + rnd() * 2.5;  // a slow but unremarkable stop
         pit.push(Math.max(0, loss));
       }
       return { sc, vsc, rf, condition, pit };
@@ -380,6 +395,7 @@
       keys.forEach(k => { times[k] = []; wins[k] = 0; });
 
       const maxStints = Math.max(...keys.map(k => plans[k].plan.length));
+      reseed();
 
       for (let i = 0; i < p.runs; i++) {
         const ev = this.sampleRace(p);
@@ -551,7 +567,10 @@
       const runs = document.getElementById("mcRuns");
       if (runs) runs.addEventListener("change", () => this.render());
       const btn = document.getElementById("mcRun");
-      if (btn) btn.addEventListener("click", () => this.render());
+      if (btn) btn.addEventListener("click", () => {
+        seed = (Math.random() * 4294967296) >>> 0;   // a fresh set of races
+        this.render();
+      });
       // Debounced: a render here re-runs the whole race set, so resizing
       // should not fire one per pixel.
       onResize(document.getElementById("mcChart"), queue);
