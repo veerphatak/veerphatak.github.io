@@ -251,40 +251,52 @@
 
     nominalPlans(p) {
       const MIN = 8;   // same minimum stint as the calculator and the Python enumeration
+      const L = p.laps;
+
+      /* The fuel term is a coefficient on race lap number, so its total over
+         a race is the same for every strategy. That leaves the cost of a
+         stint depending only on compound and length, which can be tabulated
+         once. The search below is then lookups rather than re-summing every
+         stint lap by lap, and the three stop search no longer freezes the
+         page for a second on each slider move. */
+      const T = {};
+      for (const c of COMPS) {
+        T[c] = new Float64Array(L + 1);
+        for (let a = 1; a <= L; a++) {
+          const over = a - p.life[c];
+          T[c][a] = T[c][a - 1] + p.base[c] + p.deg[c] * a
+                  + (over > 0 ? p.cliff * over * over : 0);
+        }
+      }
+      const fuelTotal = p.fuel * L * (L + 1) / 2;
       let one = null, two = null, three = null;
 
-      for (let n1 = MIN; n1 <= p.laps - MIN; n1++) {
+      for (let n1 = MIN; n1 <= L - MIN; n1++) {
         for (const a of COMPS) for (const b of COMPS) {
           if (a === b) continue;                     // two compounds required
-          const t = this.stintTime(p, a, n1, 1)
-                  + this.stintTime(p, b, p.laps - n1, n1 + 1) + p.pitMean;
-          if (!one || t < one.time) one = { time: t, plan: [[a, n1], [b, p.laps - n1]] };
+          const t = T[a][n1] + T[b][L - n1] + fuelTotal + p.pitMean;
+          if (!one || t < one.time) one = { time: t, plan: [[a, n1], [b, L - n1]] };
         }
       }
 
-      for (let n1 = MIN; n1 <= p.laps - 2 * MIN; n1++) {
-        for (let n2 = MIN; n2 <= p.laps - n1 - MIN; n2++) {
-          const n3 = p.laps - n1 - n2;
+      for (let n1 = MIN; n1 <= L - 2 * MIN; n1++) {
+        for (let n2 = MIN; n2 <= L - n1 - MIN; n2++) {
+          const n3 = L - n1 - n2;
           for (const a of COMPS) for (const b of COMPS) for (const c of COMPS) {
-            if (new Set([a, b, c]).size < 2) continue;
-            const t = this.stintTime(p, a, n1, 1)
-                    + this.stintTime(p, b, n2, n1 + 1)
-                    + this.stintTime(p, c, n3, n1 + n2 + 1) + 2 * p.pitMean;
+            if (a === b && b === c) continue;
+            const t = T[a][n1] + T[b][n2] + T[c][n3] + fuelTotal + 2 * p.pitMean;
             if (!two || t < two.time) two = { time: t, plan: [[a, n1], [b, n2], [c, n3]] };
           }
         }
       }
 
-      for (let n1 = MIN; n1 <= p.laps - 3 * MIN; n1++) {
-        for (let n2 = MIN; n2 <= p.laps - n1 - 2 * MIN; n2++) {
-          for (let n3 = MIN; n3 <= p.laps - n1 - n2 - MIN; n3++) {
-            const n4 = p.laps - n1 - n2 - n3;
+      for (let n1 = MIN; n1 <= L - 3 * MIN; n1++) {
+        for (let n2 = MIN; n2 <= L - n1 - 2 * MIN; n2++) {
+          for (let n3 = MIN; n3 <= L - n1 - n2 - MIN; n3++) {
+            const n4 = L - n1 - n2 - n3;
             for (const a of COMPS) for (const b of COMPS) for (const c of COMPS) for (const d of COMPS) {
-              if (new Set([a, b, c, d]).size < 2) continue;
-              const t = this.stintTime(p, a, n1, 1)
-                      + this.stintTime(p, b, n2, n1 + 1)
-                      + this.stintTime(p, c, n3, n1 + n2 + 1)
-                      + this.stintTime(p, d, n4, n1 + n2 + n3 + 1) + 3 * p.pitMean;
+              if (a === b && b === c && c === d) continue;
+              const t = T[a][n1] + T[b][n2] + T[c][n3] + T[d][n4] + fuelTotal + 3 * p.pitMean;
               if (!three || t < three.time)
                 three = { time: t, plan: [[a, n1], [b, n2], [c, n3], [d, n4]] };
             }
@@ -469,7 +481,7 @@
       const cv = document.getElementById("mcChart");
       if (!cv) return;
       const { ctx, w, h } = setupCanvas(cv);
-      const pad = { l: 54, r: 14, t: 16, b: 44 };
+      const pad = { l: 54, r: 14, t: 34, b: 44 };
 
       const pooled = [];
       r.keys.forEach(k => { for (const v of r.times[k]) pooled.push(v - fastestMed); });
@@ -501,41 +513,24 @@
       for (const c of curves)
         line(ctx, xs, c.d, xr, yr, pad, w, h, c.s.colour, 2.2, c.s.dash);
 
-      // legend: colour plus dash pattern plus text, so identity survives
-      // both colour blindness and a black and white print
-      // It sits on an opaque panel and is sized from the measured text, so a
-      // curve passing underneath can no longer run through the labels.
+      // Legend: colour plus dash pattern plus text, so identity survives both
+      // colour blindness and a black and white print. It runs along the top
+      // margin, outside the plot, because the peaks of the distributions are
+      // the part of this chart people read and a box in the corner sat on
+      // top of them on a narrow screen.
       ctx.font = "12px system-ui, sans-serif";
       ctx.textAlign = "left"; ctx.textBaseline = "middle";
-
-      const SW = 22, GAP = 8, ROW = 18, PX = 10, PY = 7;
-      let tw = 0;
-      for (const c of curves) tw = Math.max(tw, ctx.measureText(c.s.label).width);
-      const bw = PX * 2 + SW + GAP + tw;
-      const bh = PY * 2 + ROW * curves.length;
-      // Clamp into the plot area: on a narrow panel the measured text can be
-      // wider than the space to the right of pad.l, which pushed the legend
-      // off the left edge of the canvas.
-      const bx = Math.max(pad.l + 4, w - pad.r - bw - 4);
-      const by = pad.t + 4;
-
-      ctx.save();
-      ctx.fillStyle = PANEL; ctx.strokeStyle = GRID; ctx.lineWidth = 1;
-      ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, 6);
-      else ctx.rect(bx, by, bw, bh);
-      ctx.fill(); ctx.stroke();
-      ctx.restore();
-
-      let ly = by + PY + ROW / 2;
+      const SW = 18, GAP = 6, SEP = 12;
+      let lx = 8;   // from the canvas edge, not the plot edge, so three entries fit on a phone
+      const ly = 14;
       for (const c of curves) {
         ctx.save();
         ctx.strokeStyle = c.s.colour; ctx.lineWidth = 2.2;
         if (c.s.dash) ctx.setLineDash(c.s.dash);
-        ctx.beginPath(); ctx.moveTo(bx + PX, ly); ctx.lineTo(bx + PX + SW, ly); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(lx + SW, ly); ctx.stroke();
         ctx.restore();
-        ctx.fillStyle = MUTED; ctx.fillText(c.s.label, bx + PX + SW + GAP, ly);
-        ly += ROW;
+        ctx.fillStyle = MUTED; ctx.fillText(c.s.label, lx + SW + GAP, ly);
+        lx += SW + GAP + ctx.measureText(c.s.label).width + SEP;
       }
     },
 

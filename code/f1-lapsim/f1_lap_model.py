@@ -324,6 +324,16 @@ def main():
     plt.colorbar(pts, ax=ax, label="Model minus measured (km/h)", shrink=0.8)
     fig.tight_layout(); fig.savefig(FIGS / "f1-track-map.png", dpi=150); plt.close(fig)
 
+    # ---------------- Homepage thumbnail ----------------
+    # A clean 16:9 crop of the speed map with no axes or text, since the card
+    # is too small for a two-panel figure's labels to be legible.
+    fig = plt.figure(figsize=(8, 4.5))
+    ax = fig.add_axes([0.04, 0.05, 0.92, 0.90])
+    ax.scatter(tel["X"], tel["Y"], c=v_real * 3.6, cmap=cmap_accent("f1"), s=22)
+    ax.set_aspect("equal"); ax.axis("off")
+    fig.savefig(FIGS.parent / "thumbs" / "f1-model.jpg", dpi=100,
+                pil_kwargs={"quality": 88}); plt.close(fig)
+
     # ---------------- Export for the interactive browser version ----------------
     # The JavaScript simulator on the website runs the same solver on this data,
     # so visitors can change the car and watch the lap respond.
@@ -336,8 +346,8 @@ def main():
         "team": str(lap["Team"]),
         "realLapTime": round(real_time, 3),
         "ds": DS * step,
-        "fitted": {"mu": round(car.mu, 3), "clA": round(car.cl_a, 3),
-                   "cdA": round(car.cd_a, 3), "mass": car.mass,
+        "fitted": {"mu": round(car.mu, 5), "clA": round(car.cl_a, 5),
+                   "cdA": round(car.cd_a, 5), "mass": car.mass,
                    "power": car.power, "brakeG": car.brake_g, "vMax": car.v_max,
                    "driveLoadFrac": car.drive_load_frac},
         "distance": [round(v, 1) for v in d[::step]],

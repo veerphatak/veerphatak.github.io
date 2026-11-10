@@ -225,7 +225,14 @@ a:hover { text-decoration: underline; }
    ratio), so without this the 1fr track can be pushed past the panel edge and
    the chart overflows its box on a high-DPI screen. */
 .sim-grid > * { min-width: 0; }
-@media (max-width: 780px) { .sim-grid { grid-template-columns: 1fr; } }
+@media (max-width: 780px) {
+  .sim-grid { grid-template-columns: 1fr; }
+  /* Stacked, the result goes first, and a long control list scrolls inside
+     its own box, so the chart is never more than a short scroll from the
+     slider being moved. */
+  .sim-output { order: -1; }
+  .sim-controls { max-height: 60vh; overflow-y: auto; padding-right: 0.5rem; }
+}
 
 .sim-controls label {
   display: flex;
@@ -666,16 +673,24 @@ button:focus-visible, select:focus-visible, input:focus-visible {
   .nav-icon-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .nav-icon { padding: 0.4rem; }
 }
+/* Phones: two tidy rows instead of three ragged ones. The name and the
+   contact icons share the first row, the page links take the second. The
+   links wrapper is dissolved with display: contents so its children can be
+   ordered as items of the bar itself. The bar also stops being sticky here:
+   pinned, it covered about a sixth of a phone screen. */
 @media (max-width: 720px) {
-  .nav-inner { flex-wrap: wrap; row-gap: 0.6rem; padding: 0.8rem 1.1rem; }
-  .nav-links { flex-wrap: wrap; justify-content: flex-end; row-gap: 0.5rem; }
-  .nav-links a:not(.nav-icon) { margin-left: 0.9rem; font-size: 0.85rem; }
-  .nav-divider { margin-left: 0.9rem; }
-  .nav-icon { margin-left: 0.6rem; }
+  .nav { position: static; }
+  .nav-inner { flex-wrap: wrap; row-gap: 0.55rem; padding: 0.8rem 1.1rem; }
+  .nav-links { display: contents; }
+  .nav-inner .brand { order: 0; margin-right: auto; }
+  .nav-icon { order: 1; margin-left: 0.5rem; }
+  .nav-divider { display: none; }
+  .nav-inner::after { content: ""; order: 2; flex-basis: 100%; height: 0; }
+  .nav-links a:not(.nav-icon) { order: 3; margin-left: 0; margin-right: 1.1rem; font-size: 0.88rem; }
 }
 @media (max-width: 430px) {
   .nav-inner .brand { font-size: 0.95rem; }
-  .nav-links a:not(.nav-icon) { margin-left: 0.75rem; font-size: 0.8rem; }
+  .nav-links a:not(.nav-icon) { margin-right: 0.8rem; font-size: 0.84rem; }
 }
 
 /* ================================================================
